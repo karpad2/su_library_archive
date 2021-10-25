@@ -1,0 +1,15 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+.vscode
+.idea
+node_modules
+./server_part/.idea
+./server_part/config.php
+~$index.docx
+.~$index.docx
+.~lock.diplomamunka_fájl_rev0.docx#
+.~lock.diplomamunka_fájl_rev0.docx
+.~lock.index.docx#
+./esp32_software/.idea
+package-lock.json
+src/firebase/credentials.js
+dist

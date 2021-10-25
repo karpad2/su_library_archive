@@ -1,0 +1,38 @@
+{
+    "users":
+        {
+        "6ZMB5XNK1gd2PsJA8ae8vJs9jkP2" : {
+            "devices":[
+                "0001","00020"
+            ],
+            "user_profile_color":"dark",
+            "rooms":
+                {
+                    "0001":{
+                        "room_name":"test",
+                        "programs":{
+                           "program_1": {
+                                "program_name":"test program",
+                                "program_xml":"",
+                                "program_javascript":"",
+                                "program_active":true}
+                        }
+                        ,
+                        "devices":["0001"]
+                    }
+                }
+            
+
+        }
+    }
+    ,
+    "devices":[
+        {
+            "0001":{
+                "device_name":"test",
+                "last_online":"Tue, 24 Aug 2021 12:58:15 GMT,"
+            }
+        }
+    ]
+
+}
