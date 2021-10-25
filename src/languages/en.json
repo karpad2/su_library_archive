@@ -28,7 +28,8 @@
     "bookname":"Book title",
     "Author":"Author",
     "publisher":"publisher",
-    "keywords":"Keywords"
+    "keywords":"Keywords",
+    "add_new_book":"Add a new book"
 
 
 }

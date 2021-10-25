@@ -30,6 +30,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 	import {FirebaseAuth,FireDb} from "@/firebase";
 	import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
 	import glogo from "@/assets/glogo";
+	import {get_text} from "@/languages";
 
 	export default {
 		name: "AccountLogin",
@@ -72,6 +73,10 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 						}
 					});
 				}
+			},
+			gt(a)
+			{
+				return get_text(a);
 			},
 			loginwithgoogle: function()
 			{

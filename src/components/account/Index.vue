@@ -4,7 +4,7 @@
 			<md-app-toolbar class="md-primary" md-elevation="5">
 				<router-link class="router-link" to="/home">
 					<logo class="bar-logo" />
-					<span class="md-title">Escape Room Management Software</span>
+					<span class="md-title">{{gt("app-title")}}</span>
 				</router-link>
 			</md-app-toolbar>
 
@@ -12,7 +12,7 @@
 				<div class="middle-center">
 					
 					<logo class="logo" />
-					<div> <h4>Escape Room Management Software</h4></div>
+					<div> <h4>{{gt("app-title")}}</h4></div>
 					<router-view @themeChanged="themeChanged"/>
 				</div>
 			</md-app-content>
@@ -22,6 +22,7 @@
 
 <script>
 import logo from '@/assets/logo';
+import {get_text} from "@/languages";
 	export default {
 		components: {
 		logo
@@ -42,6 +43,10 @@ import logo from '@/assets/logo';
 				if (this.themeSwitch) localStorage.userTheme = "dark";
 				else localStorage.userTheme = "light";
 				this.$emit('themeChanged');
+			},
+			gt(a)
+			{
+				return get_text(a);
 			},
 		}
 	}
