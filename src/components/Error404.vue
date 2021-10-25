@@ -4,7 +4,7 @@
 			<md-app-toolbar class="md-primary" md-elevation="5">
 				<router-link class="router-link" to="/">
 					<logo class="img-responsive" height="50pt" color />
-					<span class="md-title">Escape Room management</span>
+					<span class="md-title">{{gt("app-title")}}</span>
 				</router-link>
 			</md-app-toolbar>
 
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import {get_text} from "../languages";
 import logo from '@/assets/logo';
 	export default {
 		components: {
@@ -32,6 +33,12 @@ import logo from '@/assets/logo';
 			if (localStorage.userTheme === "dark") {
 				this.userTheme = "dark";
 			}
+		},
+		methods:{
+			gt(a)
+				{
+					return get_text(a);
+				},
 		}
 	}
 </script>

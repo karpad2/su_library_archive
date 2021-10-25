@@ -8,7 +8,7 @@
 
 <script>
 import axios from "axios";
-
+import {get_text} from "../languages";
 	export default {
 		name: "Info",
 		data:function ()
@@ -34,7 +34,11 @@ import axios from "axios";
 				console.log(ver);
 			});
 			return ver;
-			}
+			},
+			gt(a)
+				{
+					return get_text(a);
+				},
 		}
 	}
 </script>
