@@ -59,7 +59,6 @@ const router = new VueRouter ({
 					name: 'book',
 					component: Book,
 				},
-				
 				{
 					path: 'book/:bid/:pid',
 					name: 'book',

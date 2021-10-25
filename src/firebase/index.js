@@ -19,7 +19,7 @@ const analytics = getAnalytics();
 logEvent(analytics, 'notification_received');
 
 const appCheck = initializeAppCheck(app, {
-	provider: new ReCaptchaV3Provider('6LckM_IcAAAAAJjv3sIzeQP535EjkBl-so0aCuPH'),
+	provider: new ReCaptchaV3Provider('6LckM_IcAAAAALovmVfNagj6x76dCQX1WkWCZb4M'),
   
 	// Optional argument. If true, the SDK automatically refreshes App Check
 	// tokens as needed.
@@ -27,19 +27,7 @@ const appCheck = initializeAppCheck(app, {
   });
 // key for recatchpa3 
 //const appcheck=firebase.appCheck()
-getToken(messaging, { vapidKey: 'BM6YzLuzrt6MiOzbKf7QFnEgxmGTofpknXrEyJR09BT8DDhSkI3KRmCGVIlSZIc6dMBj7gF6pYeN9UHmNfLRXtc' }).then((currentToken) => {
-	if (currentToken) {
-	  // Send the token to your server and update the UI if necessary
-	  // ...
-	} else {
-	  // Show permission request UI
-	  console.log('No registration token available. Request permission to generate one.');
-	  // ...
-	}
-  }).catch((err) => {
-	console.log('An error occurred while retrieving token. ', err);
-	// ...
-  });
+
 
 // Request Permission of Notifications
 

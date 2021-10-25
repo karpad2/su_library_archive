@@ -21,5 +21,14 @@
     "account":"Account",
     "cookie_text":"This website uses cookies to ensure you get the best experience on our website.",
     "search_for_books":"Search for books",
-    "search":"search"
+    "search":"search",
+    "search_by_name":"Search by name...",
+    "users_cant_found":"No users found",
+    "no_user_cant_be_found":"No user found for this",
+    "bookname":"Book title",
+    "Author":"Author",
+    "publisher":"publisher",
+    "keywords":"Keywords"
+
+
 }

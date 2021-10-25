@@ -8,47 +8,17 @@
 
       <md-card-content>
         Hello, <span class="profile">{{profilename}}</span>
+		<p>Your profile is active until: <span class="profile">{{profilexpire}}</span> </p>
       </md-card-content>
 
       <md-card-actions>
+
         
       </md-card-actions>
     </md-card>
-
-	<md-card md-with-hover @click="navigate('devices')">
-      <md-card-header>
-        <div class="md-title">Devices</div>
-      </md-card-header>
-
-      <md-card-content>
-        <span v-if="active==0">Devices are offline</span>
-		<span v-else-if="inactive==0">Devices are online</span>
-		<span v-else>{{active}} are online, and {{inactive}} are offline</span>
-      </md-card-content>
-
-      <md-card-actions>
-        
-      </md-card-actions>
-    </md-card>
-
-	
-		</div>
-	<div class="section">
-		<md-card md-with-hover @click="navigate('devices')">
-      <md-card-header>
-        <div class="md-title">Calendar</div>
-      </md-card-header>
-		
-      <md-card-content>
-        <Calendar :min-date='new Date()' :attributes='attributes'/>
-		
-      </md-card-content>
-
-      <md-card-actions>
-        
-      </md-card-actions>
-    </md-card>
-
+</div>
+<div class="section">
+	<h4>Newer books:</h4>
 	</div>
 	</div>
 	
@@ -57,13 +27,14 @@
 <script>
 import {FireDb,FirebaseAuth,userId} from "@/firebase";
 import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/get_data";
-import {  Calendar } from 'v-calendar';
+
 	export default {
 		name: "Home",
 		data: () => ({
 			selectedMovies: [],
 			selectedDate: null,
 			boolean: false,
+			profilexpire:"",
 			active:0,
 			inactive:0,
 			devices:{},
@@ -73,7 +44,7 @@ import {  Calendar } from 'v-calendar';
 		}),
 		components:{
 			
-    		Calendar,
+    		
 		},
 		computed: {
 			firstDayOfAWeek: {
