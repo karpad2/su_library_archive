@@ -8,13 +8,15 @@ import { getMessaging,getToken } from "firebase/messaging";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 
 
 import firebaseCredentials from './credentials';
 const app = initializeApp(firebaseCredentials.config);
 const messaging = getMessaging();
 const perf = getPerformance(app);
-const storage = getStorage();
+const storage = getStorage(app);
+const firestore = getFirestore(app);
 const analytics = getAnalytics();
 logEvent(analytics, 'notification_received');
 
@@ -78,6 +80,7 @@ export {
 	FirebaseAuth,
 	storage,
 	FireDb,
+	firestore,
 	change_Theme_Fb,
 	user,
 	userId

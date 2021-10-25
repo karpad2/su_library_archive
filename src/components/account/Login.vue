@@ -2,24 +2,24 @@
 	<div id="account-login-container">
 		<div v-if="false">
 		<md-field>
-			<label>Email</label>
+			<label>{{gt("email")}}</label>
 			<md-input id="email" v-model="email"></md-input>
 		</md-field>
 
 		<md-field>
-			<label>Password</label>
+			<label>{{gt("password")}}</label>
 			<md-input id="password" v-model="password" type="password"></md-input>
 		</md-field>
 
 		
 
-		<md-button class="md-raised md-primary" @click="login">Login</md-button>
+		<md-button class="md-raised md-primary" @click="login">{{gt("login")}}</md-button>
 		</div>
 		<md-field>
-			<p>Sign in with the Google</p>
-			<md-button class="md-raised md-primary" @click="loginwithgoogle">Login with <glogo/></md-button>
+			<p>{{gt("login_with_google")}}</p>
+			<md-button class="md-raised md-primary" @click="loginwithgoogle">{{gt("login_with")}} <glogo/></md-button>
 		</md-field>
-		<p>For security reasons we support Google profile authentication only.</p>
+		<p> {{gt("login_reason")}}</p>
 		<p style="color:red;">{{errorMessage}}</p>
 
 	</div>

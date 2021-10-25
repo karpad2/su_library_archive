@@ -6,6 +6,7 @@ import {IconsPlugin } from 'bootstrap-vue';
 import BootstrapVue from "bootstrap-vue";
 import VueNoty from 'vuejs-noty';
 import VCalendar from 'v-calendar';
+import disableDevtool from 'disable-devtool';
 import AudioRecorder from 'vue-audio-recorder';
 import vueAwesomeCountdown from 'vue-awesome-countdown'
 import VueMaterial from 'vue-material'; // TODO: import only needed component, not all
@@ -41,7 +42,9 @@ Vue.config.productionTip = false;
 //console.log(this.webpackHotUpdate);
 if(!Vue.config.devtools)
 {
-document.oncontextmenu = new Function("return false");
+	disableDevtool();
+}
+/*document.oncontextmenu = new Function("return false");
 
 document.addEventListener('keydown',(event)=>
 {

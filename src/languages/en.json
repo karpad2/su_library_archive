@@ -3,6 +3,10 @@
     "app-title":"Gradska biblioteka Subotica",
     "login":"Login",
     "books":"books",
+    "email":"Email",
+    "password":"password",
+    "login_with":"Login with",
+    "login_with_google":"Login with Google",
     "Books":"Books",
     "username":"User name",
     "useremail":"User email",
@@ -29,7 +33,8 @@
     "Author":"Author",
     "publisher":"publisher",
     "keywords":"Keywords",
-    "add_new_book":"Add a new book"
+    "add_new_book":"Add a new book",
+    "login_reason":"For security reasons we support Google profile authentication only."
 
 
 }

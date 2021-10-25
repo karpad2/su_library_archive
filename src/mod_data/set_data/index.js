@@ -1,57 +1,50 @@
-
-import {FireDb,FirebaseAuth,userId} from "@/firebase";
-import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
+import {FireDb,FirebaseAuth,firestore,userId} from "@/firebase";
+import { collection, doc, setDoc, query, where, getDocs,getDoc  } from "firebase/firestore";
 import {deletep} from "@/mod_data/del_data";
 import router from "@/router";
+import { getStorage, ref,uploadBytes } from "firebase/storage";
+import PDFJS from "pdfjs";
 
-function add_program(room_id,l,k=null)
+function add_user(k)
     {
-     if(l=="") return;
-      console.log("Add program");
-      const userId = FirebaseAuth.currentUser.uid;   
-    let postData =  {
-                        "program_name":l,
-                        "program_xml":"",
-                        "program_javascript":"",
-                        "program_encode":"base64"
-                      };
-     if(k!=null) postData=k;                 
-     try
-        {
-      let frooms= ref(FireDb, `/users/${userId}/rooms/${room_id}/programs`);
-      let newroomref = push(frooms);
-      set(newroomref,postData);
-      }
-      catch (E)
-      {
-        console.error(E);
-      }
-
-      l="";
+      getAuth()
+      .createUser({
+        email: k.useremail,
+        emailVerified: false,
+        phoneNumber: k.phone,
+        password: k.phone,
+        displayName: k.name,
+        photoURL: 'http://www.example.com/12345678/photo.png',
+        disabled: false,
+      })
+      .then((userRecord) => {
+        // See the UserRecord reference doc for the contents of userRecord.
+        console.log('Successfully created new user:', userRecord.uid);
+      })
+      .catch((error) => {
+        console.log('Error creating new user:', error);
+      });
     }
-    function add_event(room_id,contact=null)
+    function add_book(k,pdf)
     {
-      if(room_id=="") return;
-     if(contact==null) return;
-      console.log("Add Event");
-      const userId = FirebaseAuth.currentUser.uid;   
-    let postData =  {
-                        "contact_name":"",
-                        "contact_phone":"",
-                        "date":Date(),
-                      };
-     if(contact!=null) postData=contact;                 
-     try
-      {
-      let frooms= ref(FireDb, `/users/${userId}/rooms/${room_id}/events`);
-      let newroomref = push(frooms);
-      set(newroomref,postData);
-      }
-      catch (E)
-      {
-        console.error(E);
-      }
+      PDFJS.disableWorker = true;
+      const booksRef = collection(firestore, "books");
+      
+      console.log(FirebaseAuth.currentUser.uid);
 
+      setDoc(doc(citiesRef),{
+        "author":k.author,
+        "title":k.title,
+        "publisher":k.publisher,
+        "keywords":k.keywords,
+        photoURL:k.storagelink
+      });
+
+      const metadata = {
+        contentType: 'image/jpeg',
+      };
+      const storageRef = ref(storage, 'images/mountains.jpg');
+      const uploadTask = uploadBytes(storageRef, file, metadata);
       
     }    
     function add_camera (room_id,l,k=null){
@@ -205,13 +198,13 @@ function status_run(room_id)
 
 export
 {
-    add_program,
     add_camera,
     add_device,
     start_run,
     status_run,
     stop_run,
     add_room,
-    add_event
+    add_event,
+    add_user
 
 }
