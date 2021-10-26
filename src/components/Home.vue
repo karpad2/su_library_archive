@@ -1,21 +1,7 @@
 <template>
 	<div>
 		<div class="section">
-	<md-card md-with-hover>
-      <md-card-header>
-        <div class="md-title">Profile</div>
-      </md-card-header>
-
-      <md-card-content>
-        Hello, <span class="profile">{{profilename}}</span>
-		<p>Your profile is active until: <span class="profile">{{profilexpire}}</span> </p>
-      </md-card-content>
-
-      <md-card-actions>
-
-        
-      </md-card-actions>
-    </md-card>
+	
 </div>
 <div class="section">
 	<h4>Newer books:</h4>
@@ -96,38 +82,7 @@ import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/
 					killer: true,
 					timeout: 1500,
 				});
-			},
-			get_name()
-			{
-				//this.profilename=;
-				console.log(FirebaseAuth);
-			},
-			navigate(k)
-			{
-			console.log("try to navigate");
-			this.$route.push(`/${k}`)
-			},
-	get_active_devices(index)
-    {
-    this.devices=get_data_fromroomdb(index,"devices");
-     let k;
-
-      this.devices.forEach(element => {
-        console.log(element.data.lastonline);
-        k=Date.now()-Date(element.data.lastonline);
-        if(k<12*1000)
-        {
-          this.active++;
-        }
-        else
-        {
-          this.inactive++;
-        }
-       
-       // console.log(k);
-      });
-      
-    },
+			}
 		},
 		
 	}

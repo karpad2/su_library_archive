@@ -9,6 +9,18 @@ import AccountIndex from "../components/account/Index";
 import AccountInfo from "../components/account/AccountInfo";
 import AccountLogin from "../components/account/Login";
 
+import AccountAdminIndex from "../components/admin/account/Index";
+import AccountAdminInfo from "../components/admin/account/AccountInfo";
+import AccountAdminLogin from "../components/admin/account/Login";
+
+import AdminUsers from "../components/admin/ad_users";
+import AdminUser from "../components/admin/ad_user";
+import AdminBooks from "../components/admin/ad_books";
+import AdminBook from "../components/admin/ad_book";
+import AdminBlogs from "../components/admin/ad_blogs";
+import AdminBlog from "../components/admin/ad_blog";
+
+
 import Home from "../components/Home";
 import Info from "../components/Info";
 import Books from "../components/Books";
@@ -107,7 +119,7 @@ const router = new VueRouter ({
 				{
 					path: 'books',
 					name: 'admin-books',
-					component: AccountLogin,
+					component: A,
 				}
 			]
 		}
@@ -118,6 +130,7 @@ const router = new VueRouter ({
 router.beforeEach((to, from, next) => {
 	let currentUser = FirebaseAuth.currentUser;
 	let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+	console.log(from);
 	if(requiresAuth && !currentUser) next('/account/login');
 	else next();
 });

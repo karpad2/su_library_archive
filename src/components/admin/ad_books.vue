@@ -23,10 +23,10 @@
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-                <md-table-cell :md-label="gt('bookname')" md-sort-by="bookname">{{ item.book_name }}</md-table-cell>
-                <md-table-cell :md-label="gt('Author')" md-sort-by="author">{{ item.author }}</md-table-cell>
-                <md-table-cell :md-label="gt('publisher')" md-sort-by="releaser">{{ item.publisher }}</md-table-cell>
-                <md-table-cell :md-label="gt('keywords')" md-sort-by="keywords">{{ item.keywords }}</md-table-cell>
+                <md-table-cell :md-label="gt('bookname')" md-sort-by="bookname">{{ item.data.book_name }}</md-table-cell>
+                <md-table-cell :md-label="gt('Author')" md-sort-by="author">{{ item.data.author }}</md-table-cell>
+                <md-table-cell :md-label="gt('publisher')" md-sort-by="releaser">{{ item.data.publisher }}</md-table-cell>
+                <md-table-cell :md-label="gt('keywords')" md-sort-by="keywords">{{ item.data.keywords }}</md-table-cell>
             </md-table-row>
         </md-table>
         </div>
@@ -38,9 +38,9 @@
     </div>
 </template>
 <script>
-import { collection, doc, setDoc } from "firebase/firestore";
-import {Firedb} from "@firebase"; 
-import {get_text} from "../languages";
+import { collection, query, where, getDocs,setDoc,limit } from "firebase/firestore";
+import {Firedb,firestore} from "@/firebase"; 
+import {get_text} from "@/languages";
 
 const toLower = text => {
     return text.toString().toLowerCase()
@@ -73,10 +73,15 @@ export default {
     },
     computed:
     {
-        books()
-        {
-
-
+books(){
+const q = query(collection(firestore, "books"),limit(20));
+const querySnapshot = getDocs(q);
+let b=[];
+querySnapshot.forEach((doc) => {
+  // doc.data() is never undefined for query doc snapshots
+  b.push({key:doc.id,data:doc.data()});
+});  
+    return b;
         }
     }
 }

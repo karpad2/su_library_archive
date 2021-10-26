@@ -11,6 +11,7 @@
     "username":"User name",
     "useremail":"User email",
     "valid_until":"Valid until:",
+    "error404":"Error Four-oh-Fouahh This links need a medic bag ×)",
     "delete":"delete",
     "Delete":"Delete",
     "upload_a_title_book":"List of books:",
@@ -33,6 +34,12 @@
     "Author":"Author",
     "publisher":"publisher",
     "keywords":"Keywords",
+    "hello":"Hello",
+    "app_info":"App informations",
+    "latest_version":"Latest version",
+    "app_made_by":"App made by",
+    "profile_expiration_txt":"Your profile will be expired on",
+    "Profile":"Profile",
     "add_new_book":"Add a new book",
     "login_reason":"For security reasons we support Google profile authentication only."
 

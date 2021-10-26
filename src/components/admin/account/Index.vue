@@ -1,17 +1,19 @@
 <template>
-	<div id="error-404-container">
+	<div id="account-index-container">
 		<md-app md-waterfall md-mode="fixed" :md-theme="userTheme">
 			<md-app-toolbar class="md-primary" md-elevation="5">
-				<router-link class="router-link" to="/">
-					<logo class="img-responsive" height="50pt" color />
+				<router-link class="router-link" to="/home">
+					<logo class="bar-logo" />
 					<span class="md-title">{{gt("app-title")}}</span>
 				</router-link>
 			</md-app-toolbar>
 
 			<md-app-content>
 				<div class="middle-center">
-					<logo />
-					<h1>{{gt("error404")}}</h1>
+					
+					<logo class="logo" />
+					<div> <h4>{{gt("app-title")}}</h4></div>
+					<router-view @themeChanged="themeChanged"/>
 				</div>
 			</md-app-content>
 		</md-app>
@@ -19,32 +21,39 @@
 </template>
 
 <script>
-import {get_text} from "@/languages";
 import logo from '@/assets/logo';
+import {get_text} from "@/languages";
 	export default {
 		components: {
 		logo
 		},
-		name: "Error404",
+		name: "AccountIndex",
 		data: () => ({
 			userTheme: "default",
 		}),
 		mounted() {
-			if (localStorage.userTheme === "dark") {
-				this.userTheme = "dark";
-			}
+			this.themeChanged();
 		},
-		methods:{
+		methods: {
+			themeChanged: function () {
+				if (localStorage.userTheme === "dark") this.userTheme = "dark";
+				else this.userTheme = "default";
+			},
+			changeTheme: function () {
+				if (this.themeSwitch) localStorage.userTheme = "dark";
+				else localStorage.userTheme = "light";
+				this.$emit('themeChanged');
+			},
 			gt(a)
-				{
-					return get_text(a);
-				},
+			{
+				return get_text(a);
+			},
 		}
 	}
 </script>
 
 <style lang="scss">
-	#error-404-container {
+	#account-index-container {
 		.md-app {
 			height: 100vh;
 
@@ -55,6 +64,7 @@ import logo from '@/assets/logo';
 
 			.bar-logo {
 				width: 35px !important;
+				height: 30pt;
 			}
 
 			.middle-center {
@@ -69,13 +79,6 @@ import logo from '@/assets/logo';
 
 			.logo {
 				height: 200px;
-				transform: rotate(50deg);
-				transition: transform .3s;
-
-				&:hover {
-					transform: rotate(0deg);
-					transition: transform 1s;
-				}
 			}
 		}
 	}

@@ -93,7 +93,7 @@
 
 <script>
 import {signOut} from "firebase/auth";
-import {get_text} from "../languages";
+import {get_text} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb} from "@/firebase";
 import {ref, set ,onValue,get, child} from "firebase/database";
 import loading from "@/components/parts/loading";
