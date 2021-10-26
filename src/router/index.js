@@ -119,7 +119,23 @@ const router = new VueRouter ({
 				{
 					path: 'books',
 					name: 'admin-books',
-					component: A,
+					component: AdminBooks,
+				},
+				{
+					path: 'books',
+					name: 'admin-book',
+					component: AdminBook,
+					
+				},
+				{
+					path: 'users',
+					name: 'admin-users',
+					component: AdminUsers,
+				},
+				{
+					path: 'blogs',
+					name: 'admin-user',
+					component: AdminUser,
 				}
 			]
 		}
