@@ -9,6 +9,15 @@
 					<logo class="bar-logo" />
 					<span class="md-title">{{gt("app-title")}}</span>
 				</router-link>
+
+				 <md-autocomplete
+					class="search"
+					v-model="selectedEmployee"
+					:md-options="employees"
+					md-layout="box">
+					<label>{{gt("search")}}</label>
+					</md-autocomplete>
+
 				<div  class="md-toolbar-section-end">
         			
 					<md-avatar  style="z-index:999" >

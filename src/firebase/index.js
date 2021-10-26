@@ -8,7 +8,7 @@ import { getMessaging,getToken } from "firebase/messaging";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore,doc,getDoc,updateDoc,update } from "firebase/firestore";
 
 
 import firebaseCredentials from './credentials';
@@ -66,12 +66,15 @@ const change_Theme_Fb= (value)=>{
 	if( localStorage.getItem("userTheme")===null) localStorage.userTheme = "light";
 	if (localStorage.userTheme=="light")
 	{ localStorage.userTheme = "dark";
-	set(ref(FireDb,`users/${userId}/user_profile_color`),"dark");
+	const docRef = doc(firestore, "users").doc(FirebaseAuth.currentUser.uid);
+	docRef.update({theme: localStorage.userTheme});
+	//set(ref(FireDb,`users/${userId}/user_profile_color`),"dark");
 	}
 	else
 	{
 		localStorage.userTheme = "light";
-		set(ref(FireDb,`users/${userId}/user_profile_color`),"light");
+		const docRef = doc(firestore, "users").doc(FirebaseAuth.currentUser.uid);
+		docRef.update({theme: localStorage.userTheme});
 		
 	}
 };
