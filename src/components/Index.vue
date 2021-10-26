@@ -12,8 +12,8 @@
 
 				 <md-autocomplete
 					class="search"
-					v-model="selectedEmployee"
-					:md-options="employees"
+					v-model="selectedBooks"
+					:md-options="books"
 					md-layout="box">
 					<label>{{gt("search")}}</label>
 					</md-autocomplete>
@@ -108,6 +108,7 @@ import {ref, set ,onValue,get, child} from "firebase/database";
 import loading from "@/components/parts/loading";
 import logo from "@/assets/logo";
 
+
 	export default {
 		components: {
 		logo,
@@ -115,6 +116,7 @@ import logo from "@/assets/logo";
 		},
 		name: 'Index',
 		title:"",
+		selectedBooks: null,
 		data: () => ({
 			profile_picture_url:"",
 			profile_name:"",
@@ -197,6 +199,13 @@ import logo from "@/assets/logo";
 				
 			
 			]
+		},
+		computed:{
+			books()
+			{
+				let a=[];
+				return  a;
+			}
 		},
 		methods: {
 			toggleMenu: function() {
@@ -312,5 +321,9 @@ import logo from "@/assets/logo";
 		width: 230px;
 		max-width: calc(100vw - 125px);
  		 }
+		  
 	}
+	.search {
+    max-width: 500px;
+  }
 </style>

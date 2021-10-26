@@ -41,9 +41,7 @@ const router = new VueRouter ({
 		{
 			path: '/',
 			component: Index,
-			meta: {
-				requiresAuth: true
-			},
+			meta: {requiresAuth: true},
 			children: [
 				{
 					path: 'home',
@@ -65,16 +63,19 @@ const router = new VueRouter ({
 					path: 'books',
 					name: 'books',
 					component: Books,
+					meta: {requiresAuth: false}
 				},
 				{
 					path: 'book/:bid',
 					name: 'book',
 					component: Book,
+					meta: {requiresAuth: false}
 				},
 				{
 					path: 'book/:bid/:pid',
 					name: 'book',
 					component: Page,
+					
 				},
 				{
 					path: 'support',
@@ -149,10 +150,10 @@ const router = new VueRouter ({
 router.beforeEach((to, from, next) => {
 	let currentUser = FirebaseAuth.currentUser;
 	let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-	let requireAdmin = to.matched.some(record=>record.meta.requireAdmin);
+	//let requireAdmin = to.matched.some(record=>record.meta.requireAdmin);
 	console.log(from);
 	if(requiresAuth && !currentUser) next('/account/login');
-	if(requireAdmin && currentUser) next('/admin/login');
+	//if(requireAdmin && currentUser) next('/admin/login');
 	else next();
 });
 /*
