@@ -11,7 +11,7 @@
 			<md-app-content>
 				<div class="middle-center">
 					<logo />
-					<h1>{{gt("error404")}}</h1>
+					<h3>{{gt("error404")}}</h3>
 				</div>
 			</md-app-content>
 		</md-app>

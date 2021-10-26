@@ -105,6 +105,9 @@ const router = new VueRouter ({
 		{
 			path: '/admin',
 			component: AccountIndex,
+			meta: {
+				requireAdmin: true
+			},
 			children: [
 				{
 					path: '',
@@ -146,8 +149,10 @@ const router = new VueRouter ({
 router.beforeEach((to, from, next) => {
 	let currentUser = FirebaseAuth.currentUser;
 	let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+	let requireAdmin = to.matched.some(record=>record.meta.requireAdmin);
 	console.log(from);
 	if(requiresAuth && !currentUser) next('/account/login');
+	if(requireAdmin && currentUser) next('/admin/login');
 	else next();
 });
 /*

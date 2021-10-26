@@ -172,48 +172,12 @@ import logo from "@/assets/logo";
 					auth: true,
 				},
 				{
-					icon: 'event',
-					title: 'Calendar',
-					link: '/events',
-					auth: true,
-				},
-				{
-					icon: 'other_houses',
-					title: 'Rooms',
-					link: '/rooms',
-					auth: true,
-				},
-				{
-					icon: 'precision_manufacturing',
-					title: 'Devices',
-					link: '/devices',
-					auth: true,
-				},
-				{
-					icon: 'info',
-					title: 'Info',
-					link: '/info',
+					icon: 'book',
+					title: this.gt("home"),
+					link: '/books',
 					auth: true,
 				},
 				
-				{
-					icon: 'developer_mode',
-					title: 'Programs',
-					link: '/programs',
-					auth: true,
-				},
-				{
-					icon: 'videocam',
-					title: 'Cameras',
-					link: '/cameras',
-					auth: true,
-				},
-				{
-					icon: 'history_toggle_off',
-					title: 'Previous Runs',
-					link: '/pruns',
-					auth: true,
-				},
 				{
 					icon: 'contact_support',
 					title: this.gt("support"),
