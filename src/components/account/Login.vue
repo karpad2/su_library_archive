@@ -27,10 +27,11 @@
 
 <script>
 import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider,getAuth } from "firebase/auth";
-	import {FirebaseAuth,FireDb} from "@/firebase";
+	import {FirebaseAuth,firestore} from "@/firebase";
 	import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
 	import glogo from "@/assets/glogo";
 	import {get_text} from "@/languages";
+	import { collection, doc, setDoc, query, where, getDocs,getDoc  } from "firebase/firestore";
 
 	export default {
 		name: "AccountLogin",
@@ -49,7 +50,8 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 			onAuthStateChanged(auth,(user) => {
 				if (user && this.email === "") this.$router.replace('/account').catch(() => {
 				localStorage.user=this.user;
-				set(ref(FireDb,`users/${FirebaseAuth.currentUser.uid}/user_name`),FirebaseAuth.currentUser.displayName);
+				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid,"data_of_user"),
+				{name:user.displayName});
 				
 				}); // User already logged
 			});
@@ -91,7 +93,10 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				const user = result.user;
 				this.$router.replace('/home');	
 				this.set_user_data_local();
-				set(ref(FireDb,`users/${FirebaseAuth.currentUser.uid}/user_name`),FirebaseAuth.currentUser.displayName);
+				
+				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid,"data_of_user"),
+				{name:user.displayName});
+
 				}).catch((error) => {
 						if (error.code === 'auth/wrong-password') {
 							_this.errorMessage = "Password wrong";

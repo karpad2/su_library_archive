@@ -1,5 +1,7 @@
 {
     "logout":"Logout",
+    "logout_success":"Logout success",
+    "logout_error_pls_refresh":"Logout error, please refresh the page",
     "app-title":"Gradska biblioteka Subotica",
     "login":"Login",
     "books":"books",
@@ -11,7 +13,7 @@
     "username":"User name",
     "useremail":"User email",
     "valid_until":"Valid until:",
-    "error404":"Error Four-oh-Fouahh This links need a medic bag ×)",
+    "error404":"Error Four-oh-Fouahh This links need a medic bag",
     "delete":"delete",
     "Delete":"Delete",
     "upload_a_title_book":"List of books:",
@@ -41,7 +43,18 @@
     "profile_expiration_txt":"Your profile will be expired on",
     "Profile":"Profile",
     "add_new_book":"Add a new book",
-    "login_reason":"For security reasons we support Google profile authentication only."
+    "not_verified_user":"Not validated email address.",
+    "login_reason":"For security reasons we support Google profile authentication only.",
+    "add_keywords":"Add keywords...",
+    "up_to_keywords":"Maximum number of keywords",
+    "upload_book_cover":"Upload book cover",
+    "upload_book":"Upload book",
+    "upload_book_keywords":"Select keywords",
+    "book_name":"Title of book",
+    "author_name":"Authors name",
+    "first_page_as_cover":"Use first page as cover?"
+
+
 
 
 }

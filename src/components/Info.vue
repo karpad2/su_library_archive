@@ -38,13 +38,14 @@
 
 <script>
 import axios from "axios";
+import package_file from "../../package.json";
 import {get_text} from "@/languages";
 	export default {
 		name: "Info",
 		data:function ()
 		{
 			return {
-			v:"0.1.0"
+			v:package_file.version
 			}
 		},
 		methods:{

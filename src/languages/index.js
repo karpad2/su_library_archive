@@ -12,15 +12,23 @@ function get_text(indicator)
     console.log(auth.languageCode);
     switch(code)
     {
-        case "en":{text=english[indicator];} break;
-        case "hu":{text=hungarian[indicator];} break;
-        case "rs":{text=serbian[indicator];} break;
+        case "en":{text=contains_the_array(english,indicator);} break;
+        case "hu-HU":{text=contains_the_array(hungarian,indicator);} break;
+        case "rs":{text=contains_the_array(serbian,indicator);} break;
     }
     return text
 }
 function get_title()
 {
     return get_text("title");
+}
+function contains_the_array(array,word)
+{
+    if(array[word]==undefined)
+        return english[word];
+    else 
+        return array[word];
+
 }
 export
 {

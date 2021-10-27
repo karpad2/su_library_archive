@@ -2,6 +2,7 @@ import Vue from 'vue';
 import router from './router';
 import ForkeMeOnGithub from 'fork-me-on-github-vue';
 import {IconsPlugin } from 'bootstrap-vue';
+import VueQuillEditor from 'vue-quill-editor';
 
 import BootstrapVue from "bootstrap-vue";
 import VueNoty from 'vuejs-noty';
@@ -12,8 +13,16 @@ import vueAwesomeCountdown from 'vue-awesome-countdown'
 import VueMaterial from 'vue-material'; // TODO: import only needed component, not all
 import 'vue-material/dist/vue-material.min.css';
 import VueMeta from 'vue-meta';
-Vue.use(VueMeta)
+Vue.use(VueMeta);
 Vue.use(VueMaterial);
+
+
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
+
+Vue.use(VueQuillEditor, /* { default global options } */);
+
 //Vue.use(ForkeMeOnGithub);
 
 

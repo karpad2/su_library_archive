@@ -1,176 +1,30 @@
 <template>
-	<div id="vue-js-index-container">
-		<md-app md-waterfall md-mode="fixed" :md-theme="userTheme">
-			<md-app-toolbar class="md-primary" md-elevation="5">
-				<md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
-					<md-icon>menu</md-icon>
-				</md-button>
-				<router-link class="router-link" to="/home">
-					<logo class="bar-logo" />
-					<span class="md-title">Escape Room Management Software</span>
-				</router-link>
-				<div  class="md-toolbar-section-end">
-        			
-					<md-avatar  style="z-index:999" >
-						<img @click="toggleSidepanel" :src="profile_picture_url" alt="Avatar">
-					</md-avatar>
-     		 	</div>
-				</md-app-toolbar>
+	<div>
+		<h1>{{book_title}}</h1>
+		{{gt("author")}}
 
-			<md-app-drawer :md-active.sync="menuVisible" md-persistent="mini">
-				<md-toolbar class="md-transparent" md-elevation="3">
-					<span>Navigation</span>
-					<div class="md-toolbar-section-end">
-						<md-button class="md-icon-button md-dense" @click="toggleMenu">
-							<md-icon>keyboard_arrow_left</md-icon>
-						</md-button>
-					</div>
-				</md-toolbar>
-
-				<md-list>
-					<div v-for="tab in menuTab" :key="tab.title">
-						<router-link :to="tab.link">
-							<md-list-item v-if="tab.auth" :class="{'active': $route.fullPath.includes(tab.link)}">
-								<md-icon class="md-icon">{{tab.icon}}</md-icon>
-								<span class="md-list-item-text">{{tab.title}}</span>
-							</md-list-item>
-							
-						</router-link>
-					</div>
-					<md-list-item v-if="true" v-on:click="changeTheme()">
-								<md-icon class="md-icon">settings_brightness</md-icon>
-								<span class="md-list-item-text">Color Theme</span>
-					</md-list-item>
-					<md-list-item v-if="true" v-on:click="logout()">
-								<md-icon class="md-icon">logout</md-icon>
-								<span class="md-list-item-text">Logout</span>
-					</md-list-item>
-					<md-divider></md-divider>
-					
-				</md-list>
-			</md-app-drawer>
-
-	<md-drawer class="md-right" :md-active.sync="showSidepanel">
-      <md-toolbar class="md-transparent" md-elevation="0">
-        <span class="md-title">Account</span>
-      </md-toolbar>
-
-      <md-list>
-        <md-list-item>
-          <span class="md-list-item-text">Abbey Christansen</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon class="md-primary">chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-
-        <md-list-item>
-          <span class="md-list-item-text">Alex Nelson</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon class="md-primary">chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-
-        <md-list-item>
-          <span class="md-list-item-text">Mary Johnson</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon>chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-      </md-list>
-    </md-drawer>
-
-			<md-app-content>
-				<router-view  v-if="!loading_screen"/>
-				<loading v-else />
-			</md-app-content>
-			
-		</md-app>
+		<md-chips v-model="book_keywords" md-static></md-chips>
 	</div>
+
 </template>
 
 <script>
 import {signOut} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb} from "@/firebase";
 import {ref, set ,onValue,get, child} from "firebase/database";
-import loading from "@/components/parts/loading";
-import logo from "@/assets/logo";
+
 
 	export default {
 		components: {
-		logo,
-		loading
+	
 		},
 		name: 'Index',
 		data: () => ({
-			profile_picture_url:"",
-			profile_name:"",
-			showSidepanel:false,
-			menuVisible: false,
-			userTheme: "default",
-			loading_screen:false,
-			menuTab: [
-				{
-					icon: 'home',
-					title: 'Home',
-					link: '/home',
-					auth: true,
-				},
-				{
-					icon: 'event',
-					title: 'Calendar',
-					link: '/events',
-					auth: true,
-				},
-				{
-					icon: 'other_houses',
-					title: 'Rooms',
-					link: '/rooms',
-					auth: true,
-				},
-				{
-					icon: 'precision_manufacturing',
-					title: 'Devices',
-					link: '/devices',
-					auth: true,
-				},
-				{
-					icon: 'info',
-					title: 'Info',
-					link: '/info',
-					auth: true,
-				},
-				
-				{
-					icon: 'developer_mode',
-					title: 'Programs',
-					link: '/programs',
-					auth: true,
-				},
-				{
-					icon: 'videocam',
-					title: 'Cameras',
-					link: '/cameras',
-					auth: true,
-				},
-				{
-					icon: 'history_toggle_off',
-					title: 'Previous Runs',
-					link: '/pruns',
-					auth: true,
-				},
-				{
-					icon: 'contact_support',
-					title: 'Support & Troubleshooting',
-					link: '/support',
-					auth: true,
-				},
-				
-				
+			book_title:"",
+			book_author:"",
+			book_year:"",
+			book_keywords:[],
 			
-			]
 		}),
 		mounted() {
 			

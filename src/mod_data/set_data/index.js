@@ -1,5 +1,5 @@
 import {FireDb,FirebaseAuth,firestore,userId} from "@/firebase";
-import { collection, doc, setDoc, query, where, getDocs,getDoc  } from "firebase/firestore";
+import { collection, doc, setDoc, query, where, getDocs,getDoc,Timestamp  } from "firebase/firestore";
 import {deletep} from "@/mod_data/del_data";
 import router from "@/router";
 import { getStorage, ref,uploadBytes } from "firebase/storage";
@@ -30,15 +30,18 @@ function add_user(k)
       PDFJS.disableWorker = true;
       const booksRef = collection(firestore, "books");
       
-      console.log(FirebaseAuth.currentUser.uid);
+     // console.log(FirebaseAuth.currentUser.uid);
 
-      setDoc(doc(citiesRef),{
+      booksRef.add({
         "author":k.author,
         "title":k.title,
         "publisher":k.publisher,
+        "upload_time":Timestamp.now(),
+        "highlighted_ones":false,
         "keywords":k.keywords,
-        photoURL:k.storagelink
+        "photoURL":k.storagelink
       });
+      
 
       const metadata = {
         contentType: 'image/jpeg',

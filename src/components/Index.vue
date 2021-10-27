@@ -1,5 +1,5 @@
 <template>
-	<div id="vue-js-index-container">
+	<div v-if="dataReady" id="vue-js-index-container">
 		<md-app md-waterfall md-mode="fixed" :md-theme="userTheme">
 			<md-app-toolbar class="md-primary" md-elevation="5">
 				<md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
@@ -92,6 +92,8 @@
     </md-drawer>
 
 			<md-app-content>
+				    <b-alert v-if="FirebaseAuth.currentUser.email" variant="success" show>{{gt("not_verified_user")}}</b-alert>
+
 				<router-view  v-if="!loading_screen"/>
 				<loading v-else />
 			</md-app-content>
@@ -103,7 +105,8 @@
 <script>
 import {signOut} from "firebase/auth";
 import {get_text} from "@/languages";
-import {FireDb,FirebaseAuth,change_Theme_Fb} from "@/firebase";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc  } from "firebase/firestore";
 import {ref, set ,onValue,get, child} from "firebase/database";
 import loading from "@/components/parts/loading";
 import logo from "@/assets/logo";
@@ -120,6 +123,8 @@ import logo from "@/assets/logo";
 		data: () => ({
 			profile_picture_url:"",
 			profile_name:"",
+			admin:false,
+			dataReady: false,
 			showSidepanel:false,
 			menuVisible: false,
 			userTheme: "default",
@@ -131,7 +136,7 @@ import logo from "@/assets/logo";
 					auth: true,
 				}]
 		}),
-		mounted() {
+		async mounted() {
 			
 			this.$router.beforeEach((to,from,next)=>{
 				
@@ -146,21 +151,36 @@ import logo from "@/assets/logo";
 			try{
 			//localStorage.user= FirebaseAuth._currentUser;
 			
-			this.profile_picture_url=FirebaseAuth.currentUser.photoURL;
-			this.profile_name=FirebaseAuth.displayName;
-			
+			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
+			this.profile_name=await FirebaseAuth.displayName;
+
+			let theme="light";
+			/*await getDoc(firestore,"users",FirebaseAuth.uid)
+			.then((a)=>
+			{	
+				if(a.exists())
+				{
+				theme=a.data().theme;
+				this.admin=a.data().admin;
+				localStorage.userTheme=theme;
+				}
+				else
+				{
+					console.log("err")
+				}
+			});*/
+/*
+			getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid,"admin"))
+			.then((a)=>
+			{
+				
+				this.admin=a.exists();
+				//console.log(`Admin ${this.admin?"true":"false"}`)
+
+			});*/
 			
 			//console.log(FirebaseAuth.currentUser);
-			get(child(FireDb.once, `users/${FirebaseAuth.currentUser.uid}/user_profile_color`)).then((snapshot) => {
-        if (snapshot.exists()) {
-            //this.rooms=snapshot;
-			localStorage.userTheme=snapshot.val().user_profile_color;
-		}
-		else 
-		{
-			set(ref(FireDb,`users/${FirebaseAuth.currentUser.uid}/user_profile_color`),"light");
-		}});
-
+			
 			console.log("Index");
 			}
 			catch (e)
@@ -178,13 +198,13 @@ import logo from "@/assets/logo";
 			this.menuTab= [
 				{
 					icon: 'home',
-					title: this.gt("home"),
+					title: this.gt("Home"),
 					link: '/home',
 					auth: true,
 				},
 				{
 					icon: 'book',
-					title: this.gt("home"),
+					title: this.gt("Books"),
 					link: '/books',
 					auth: true,
 				},
@@ -198,7 +218,20 @@ import logo from "@/assets/logo";
 				
 				
 			
-			]
+			];
+			if(this.admin)
+			{
+				this.menuTab.push({
+						
+					icon: 'contact_support',
+					title: this.gt("users"),
+					link: '/admin/users',
+					auth: true,
+					admin:true
+				
+					});
+			}
+			this.dataReady=true;
 		},
 		computed:{
 			books()
@@ -235,15 +268,14 @@ import logo from "@/assets/logo";
 				signOut(FirebaseAuth).then(() => {
 					// Automatic redirect to login (onAuthStateChanged)
 					localStorage.clear();
-					_this.$noty.success("Logout confirmed", {
+					_this.$noty.success(this.gt("logout_success"), {
 						killer: true,
-						
 						timeout: 1500,
 					});
 					this.$router.replace('/account/login').catch(() => {}); // User not logged
 				}).catch((error) => {
 					console.log("signOut()", error);
-					_this.$noty.error("Logout error, please refresh the page.");
+					_this.$noty.error(this.gt("logout_error_pls_refresh"));
 				});
 			}
 		}
@@ -324,6 +356,7 @@ import logo from "@/assets/logo";
 		  
 	}
 	.search {
+	margin: auto;
     max-width: 500px;
   }
 </style>

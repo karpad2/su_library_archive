@@ -9,9 +9,6 @@ import AccountIndex from "../components/account/Index";
 import AccountInfo from "../components/account/AccountInfo";
 import AccountLogin from "../components/account/Login";
 
-import AccountAdminIndex from "../components/admin/account/Index";
-import AccountAdminInfo from "../components/admin/account/AccountInfo";
-import AccountAdminLogin from "../components/admin/account/Login";
 
 import AdminUsers from "../components/admin/ad_users";
 import AdminUser from "../components/admin/ad_user";

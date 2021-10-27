@@ -1,4 +1,4 @@
-import {getAuth} from 'firebase/auth';
+import {getAuth,setPersistence,inMemoryPersistence} from 'firebase/auth';
 import user_default from "./user_default.json";
 const { initializeAppCheck, ReCaptchaV3Provider } = require("firebase/app-check");
 import {getDatabase,ref,set, onValue,onDisconnect,child} from 'firebase/database';
@@ -8,10 +8,11 @@ import { getMessaging,getToken } from "firebase/messaging";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
-import { getFirestore,doc,getDoc,updateDoc,update } from "firebase/firestore";
+import { getFirestore,doc,getDoc,updateDoc,update,setDoc,getDocFromServer } from "firebase/firestore";
 
 
 import firebaseCredentials from './credentials';
+import { isAdmin } from '@firebase/util';
 const app = initializeApp(firebaseCredentials.config);
 const messaging = getMessaging();
 const perf = getPerformance(app);
@@ -37,8 +38,11 @@ const appCheck = initializeAppCheck(app, {
 
 //appcheck.setTokenAutoRefreshEnabled();
 const FirebaseAuth = getAuth();
+setPersistence(FirebaseAuth,inMemoryPersistence);
 //const Firebase = firebase;
 const FireDb = getDatabase();
+console.log(`Language code: ${FirebaseAuth.useDeviceLanguage()}`);
+
 const presenceRef = ref(FireDb, "disconnectmessage");
 
 onDisconnect(presenceRef).set("I disconnected!");
@@ -48,34 +52,40 @@ const connectedRef = ref(FireDb, ".info/connected");
 onValue(connectedRef, (snap) => {
   if (snap.val() === true) {
 	
-    console.log("connected");
+    console.log("Connected to database");
   } else {
-    console.log("not connected");
+    console.log("Not connected");
   }
 });
 
 
-const userId = null;
-const auth = getAuth();
-const user= getAuth.currentUser;
+let userId = null;
+let auth = null;
+let user=null;
+let user_email_verified= null;
+let user_is_admin= null;
+(async () => {
+    auth = await getAuth();
+	user= auth.currentUser;
+	user_email_verified= user==null? true : user.emailVerified;
+	user_is_admin= user==null?false: await getDocFromServer(`users/${FirebaseAuth.currentUser.uid}`,"admin");
+    // all of the script.... 
 
+})();
 //const user_data = child(dbRef, `users/${FirebaseAuth._currentUser.uid}`);
 let user_data ="";
-const change_Theme_Fb= (value)=>{
+const change_Theme_Fb= async (value)=>{
 	const userId = FirebaseAuth.currentUser.uid;
 	if( localStorage.getItem("userTheme")===null) localStorage.userTheme = "light";
 	if (localStorage.userTheme=="light")
 	{ localStorage.userTheme = "dark";
-	const docRef = doc(firestore, "users").doc(FirebaseAuth.currentUser.uid);
-	docRef.update({theme: localStorage.userTheme});
+	await setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{theme:localStorage.userTheme},{merge:true});
 	//set(ref(FireDb,`users/${userId}/user_profile_color`),"dark");
 	}
 	else
 	{
 		localStorage.userTheme = "light";
-		const docRef = doc(firestore, "users").doc(FirebaseAuth.currentUser.uid);
-		docRef.update({theme: localStorage.userTheme});
-		
+		await	setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{theme:localStorage.userTheme},{merge:true});
 	}
 };
 
@@ -86,6 +96,8 @@ export {
 	firestore,
 	change_Theme_Fb,
 	user,
-	userId
+	userId,
+	user_is_admin,
+	user_email_verified,
 }
 
