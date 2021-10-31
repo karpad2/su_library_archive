@@ -2,13 +2,13 @@
 <md-card>
       <md-card-media-cover md-solid>
         <md-card-media md-ratio="1:1">
-          <img src="/vuematerial/assets/examples/card-sky.jpg" alt="Skyscraper">
+          <img src="/vuematerial/assets/examples/card-sky.jpg" alt="book_cover">
         </md-card-media>
 
         <md-card-area>
           <md-card-header>
-            <span class="md-title">Solid background</span>
-            <span class="md-subhead">1/1 image</span>
+            <span class="md-title">{{book_cover}}</span>
+            <span class="md-subhead">{{book_author}}</span>
           </md-card-header>
 
           <md-card-actions>
@@ -41,7 +41,10 @@ export default {
   data()
   {
       return{
-          
+          book_cover:"",
+          book_title:"",
+          book_author:"",
+          book_keywords:""
       }
   },
   mounted()

@@ -20,6 +20,11 @@
         <div class="md-helper-text">{{gt('up_to_keywords')}}</div>
     </md-chips>
     </md-field>
+<md-field>
+      <label>{{gt("first_page_as_cover_switch")}}</label>
+      <md-switch v-model="use_first_page_as_cover">{{gt("switch")}}</md-switch>
+    </md-field>
+    
 
     <md-field>
       <label>{{gt('first_page_as_cover')}}</label>
@@ -37,6 +42,13 @@
       <md-file v-model="placeholder" :placeholder="gt('upload_book')" />
     </md-field>
 
+    <md-field>
+      <label>{{gt("uploading_date")}}</label>
+       <md-datepicker v-model="date" />
+    </md-field>
+
+   
+
 </div>
 </template>
 <script>
@@ -49,6 +61,7 @@ export default {
         keywords:[],
         book_name:"",
         author_name:"",
+        use_first_page_as_cover:true,
         file:null
     }
     },

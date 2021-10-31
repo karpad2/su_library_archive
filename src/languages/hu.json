@@ -52,7 +52,11 @@
     "upload_book_keywords":"Könyv keresési kulcsszavai",
     "book_name":"Könyv címe",
     "author_name":"Szerző neve",
-    "first_page_as_cover":"A pdf legelső lapja legyen-e a borító?"
+    "first_page_as_cover":"A pdf legelső lapja legyen-e a borító?",
+    "language":"Nyelv",
+    "serbian":"Srpski",
+    "hungarian":"Magyar",
+    "english":"English"
 
 
 

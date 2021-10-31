@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter  from 'vue-router';
-import {FirebaseAuth} from '../firebase';
+import {FirebaseAuth,isAdmin} from '../firebase';
 Vue.use(VueRouter);
 
 import Index from "../components/Index";
@@ -14,6 +14,7 @@ import AdminUsers from "../components/admin/ad_users";
 import AdminUser from "../components/admin/ad_user";
 import AdminBooks from "../components/admin/ad_books";
 import AdminBook from "../components/admin/ad_book";
+import Admin_Dashboard from "../components/admin/ad_dashboard.vue";
 import AdminBlogs from "../components/admin/ad_blogs";
 import AdminBlog from "../components/admin/ad_blog";
 
@@ -30,10 +31,16 @@ const router = new VueRouter ({
 	mode: 'history',
 	base: '/',
 	routes: [
+		
 		{
-			path: '*',
-			name: 'error404',
-			component: Error404,
+			path: '/home',
+			name: 'home',
+			component: Index,
+		},
+		{
+			path: '/',
+			name: 'unloggined',
+			component: Index,
 		},
 		{
 			path: '/',
@@ -41,9 +48,16 @@ const router = new VueRouter ({
 			meta: {requiresAuth: true},
 			children: [
 				{
+					path: '/',
+					name: 'home',
+					component: Home,
+					meta: {requiresAuth: false}
+				},
+				{
 					path: 'home',
 					name: 'home',
 					component: Home,
+					meta: {requiresAuth: false}
 				},
 				
 				{
@@ -63,13 +77,13 @@ const router = new VueRouter ({
 					meta: {requiresAuth: false}
 				},
 				{
-					path: 'book/:bid',
+					path: 'book/:bid/:b_author/:b_name',
 					name: 'book',
 					component: Book,
 					meta: {requiresAuth: false}
 				},
 				{
-					path: 'book/:bid/:pid',
+					path: 'book/:bid/:b_author/:b_name/page/:pid',
 					name: 'book',
 					component: Page,
 					
@@ -84,6 +98,7 @@ const router = new VueRouter ({
 			
 			]
 		},
+		
 		{
 			path: '/account',
 			component: AccountIndex,
@@ -102,15 +117,12 @@ const router = new VueRouter ({
 		},
 		{
 			path: '/admin',
-			component: AccountIndex,
-			meta: {
-				requireAdmin: true
-			},
+			component: Index,
 			children: [
 				{
-					path: '',
+					path: '/',
 					name: 'admin-info',
-					component: AccountInfo,
+					component: Admin_Dashboard,
 				},
 				{
 					path: 'users',
@@ -139,7 +151,12 @@ const router = new VueRouter ({
 					component: AdminUser,
 				}
 			]
-		}
+		},
+		{
+			path: '*',
+			name: 'error404',
+			component: Error404,
+		},
 
 	]
 });
@@ -147,11 +164,19 @@ const router = new VueRouter ({
 router.beforeEach((to, from, next) => {
 	let currentUser = FirebaseAuth.currentUser;
 	let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+//	if(String(to.path)=="/home") next("/home"); 
+
+
+ 	if (String(to.path).indexOf("admin")>=0 && !isAdmin()) {
+		next("/")
+	}
 	//let requireAdmin = to.matched.some(record=>record.meta.requireAdmin);
-	console.log(from);
+	//console.log(from);
 	if(requiresAuth && !currentUser) next('/account/login');
 	//if(requireAdmin && currentUser) next('/admin/login');
 	else next();
+	//next();
 });
 /*
 router.beforeEach((to, from, next) => {

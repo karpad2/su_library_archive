@@ -1,11 +1,21 @@
 <template>
-	<div id="account-index-container">
+	<div v-if="dataReady" id="account-index-container">
 		<md-app md-waterfall md-mode="fixed" :md-theme="userTheme">
 			<md-app-toolbar class="md-primary" md-elevation="5">
 				<router-link class="router-link" to="/home">
 					<logo class="bar-logo" />
 					<span class="md-title">{{gt("app-title")}}</span>
 				</router-link>
+				<div class="md-toolbar-section-end">
+					
+        			<md-field>
+						<label for="lang">{{gt("language")}}</label>
+						<md-select v-model="language">
+							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
+						</md-select>
+					</md-field>
+					</div>
+				
 			</md-app-toolbar>
 
 			<md-app-content>
@@ -22,7 +32,8 @@
 
 <script>
 import logo from '@/assets/logo';
-import {get_text} from "@/languages";
+import {getAuth} from "firebase/auth";
+import {get_text,languages,get_defaultlanguage} from "@/languages";
 	export default {
 		components: {
 		logo
@@ -30,14 +41,28 @@ import {get_text} from "@/languages";
 		name: "AccountIndex",
 		data: () => ({
 			userTheme: "default",
+			languages:languages,
+			language:"",
+			dataReady:false
 		}),
 		mounted() {
 			this.themeChanged();
+			if(localStorage.getItem("language")!=undefined|| localStorage.getItem("language")!=undefined) localStorage.setItem("language",get_defaultlanguage());
+			else this.language=localStorage.getItem("language");
+			this.dataReady=true;
 		},
 		methods: {
 			themeChanged: function () {
 				if (localStorage.userTheme === "dark") this.userTheme = "dark";
 				else this.userTheme = "default";
+			},
+			lang_change()
+			{
+				this.dataReady=false;
+				//getAuth().languageCode=this.language;
+				console.log(this.language);
+				localStorage.setItem("language",this.language);
+				this.dataReady=true;
 			},
 			changeTheme: function () {
 				if (this.themeSwitch) localStorage.userTheme = "dark";
@@ -82,4 +107,9 @@ import {get_text} from "@/languages";
 			}
 		}
 	}
+	/*.md-select{
+		max-width: 200pt;
+		min-width: 100pt;
+		
+	}*/
 </style>

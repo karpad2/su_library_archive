@@ -1,18 +1,26 @@
 <template>
 	<div>
-		<div class="section">
-	
+<div class="section">
+	<h4>{{gt("popular_ones")}}</h4>
+	<div>
+		<bookcard />
+	</div>
 </div>
 <div class="section">
-	<h4>Newer books:</h4>
+	<h4>{{gt("newest_ones")}}</h4>
+		<bookcard />
 	</div>
 	</div>
 	
 </template>
 
 <script>
-import {FireDb,FirebaseAuth,userId} from "@/firebase";
+import {FireDb,FirebaseAuth,userId,firestore} from "@/firebase";
+import bookcard from "@/components/parts/bookcard";
+import {get_text,languages,get_defaultlanguage} from "@/languages";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
 import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/get_data";
+import { orderByValue } from '@firebase/database';
 
 	export default {
 		name: "Home",
@@ -29,7 +37,7 @@ import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/
 			
 		}),
 		components:{
-			
+			bookcard
     		
 		},
 		computed: {
@@ -40,6 +48,39 @@ import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/
 				set(val) {
 					this.$material.locale.firstDayOfAWeek = val;
 				},
+				popular_ones()
+			{
+				let a=[];
+				let coll = collection(firestore,"books");
+				let q=query(coll,orderByValue("popularity"),limit(5));
+				let c=getDocs(q);
+				c.forEach(element => {
+				a.push({
+					book_name:element.book_name,
+					author:element.author,
+					photoURL:element.book_cover
+				})
+				
+				});
+				return  a;
+			},
+			newest_books()
+			{
+				let a=[];
+				let coll = collection(firestore,"books");
+				let q=query(coll,orderByValue("uploading_date"),limit(10));
+				let c=getDocs(q);
+				c.forEach(element => {
+				a.push({
+					book_name:element.book_name,
+					author:element.author,
+					photoURL:element.book_cover
+				})
+				
+				});
+				return  a;
+			},
+				
 				
 			},
 			dateFormat: {
@@ -69,11 +110,15 @@ import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/
 		mounted()
 		{
 			console.log(FirebaseAuth.currentUser);
-			this.get_name();
-			this.events=get_data_from_allroomdb("events");
+			//this.get_name();
+			//this.events=get_data_from_allroomdb("events");
 			//console.log(this.$route)
 		},
 		methods: {
+			gt(a)
+			{
+				return get_text(a);
+			},
 			showSuccess: function () {
 				this.$noty.success("Success!");
 			},

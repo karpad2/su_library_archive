@@ -13,6 +13,12 @@ import vueAwesomeCountdown from 'vue-awesome-countdown'
 import VueMaterial from 'vue-material'; // TODO: import only needed component, not all
 import 'vue-material/dist/vue-material.min.css';
 import VueMeta from 'vue-meta';
+
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
+
+
+Vue.use(Vuetify)
 Vue.use(VueMeta);
 Vue.use(VueMaterial);
 

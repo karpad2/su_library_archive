@@ -7,24 +7,40 @@
 				</md-button>
 				<router-link class="router-link" to="/home">
 					<logo class="bar-logo" />
-					<span class="md-title">{{gt("app-title")}}</span>
+					<span class="md-title">  {{gt("app-title")}}</span>
 				</router-link>
 
 				 <md-autocomplete
 					class="search"
-					v-model="selectedBooks"
-					:md-options="books"
+					v-model="seaching_text"
+					:md-options="searchedBooks"
+					@change="searching"
 					md-layout="box">
 					<label>{{gt("search")}}</label>
 					</md-autocomplete>
 
-				<div  class="md-toolbar-section-end">
-        			
-					<md-avatar  style="z-index:999" >
-						<img @click="toggleSidepanel" :src="profile_picture_url" alt="Avatar">
+				<div class="md-toolbar-section-end">
+        			<md-field v-if="false">
+						<md-icon>notranslate</md-icon>
+						<label for="lang">{{gt("language")}}</label>
+						<md-select @change="lang_change" v-model="language">
+							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
+						</md-select>
+					</md-field>
+					
+					<md-avatar v-if="signedin()" @click="toggleSidepanel" style="z-index:999" >
+						<img  :src="profile_picture_url" alt="Avatar">
 					</md-avatar>
+					
+						<router-link v-else  class="router-link" to="/account/login">
+							<md-icon class="md-icon">login</md-icon>
+							<span class="md-title">{{gt("login")}}</span>
+						</router-link>
+					
+
      		 	</div>
 				</md-app-toolbar>
+	
 
 			<md-app-drawer :md-active.sync="menuVisible" md-persistent="mini">
 				<md-toolbar class="md-transparent" md-elevation="3">
@@ -46,11 +62,11 @@
 							
 						</router-link>
 					</div>
-					<md-list-item v-if="true" v-on:click="changeTheme()">
+					<md-list-item v-if="signedin()" v-on:click="changeTheme()">
 								<md-icon class="md-icon">settings_brightness</md-icon>
 								<span class="md-list-item-text">{{gt("ctheme")}}</span>
 					</md-list-item>
-					<md-list-item v-if="true" v-on:click="logout()">
+					<md-list-item v-if="signedin()" v-on:click="logout()">
 								<md-icon class="md-icon">logout</md-icon>
 								<span class="md-list-item-text">{{gt("logout")}}</span>
 					</md-list-item>
@@ -92,7 +108,7 @@
     </md-drawer>
 
 			<md-app-content>
-				    <b-alert v-if="FirebaseAuth.currentUser.email" variant="success" show>{{gt("not_verified_user")}}</b-alert>
+				    <b-alert v-if="signedin() && email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
 				<router-view  v-if="!loading_screen"/>
 				<loading v-else />
@@ -103,10 +119,10 @@
 </template>
 
 <script>
-import {signOut} from "firebase/auth";
-import {get_text} from "@/languages";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc  } from "firebase/firestore";
+import {getAuth,signOut,auth,user_language} from "firebase/auth";
+import {get_text,languages,get_defaultlanguage} from "@/languages";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
 import {ref, set ,onValue,get, child} from "firebase/database";
 import loading from "@/components/parts/loading";
 import logo from "@/assets/logo";
@@ -123,8 +139,14 @@ import logo from "@/assets/logo";
 		data: () => ({
 			profile_picture_url:"",
 			profile_name:"",
-			admin:false,
+			admin:true,
+			dateFormat:"",
+			seaching_text:"",
+			languages:languages,
+			searchedBooks:[],
+			language:get_defaultlanguage(),
 			dataReady: false,
+			email_verified:true,
 			showSidepanel:false,
 			menuVisible: false,
 			userTheme: "default",
@@ -150,10 +172,13 @@ import logo from "@/assets/logo";
 			
 			try{
 			//localStorage.user= FirebaseAuth._currentUser;
-			
+			console.log()
 			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
 			this.profile_name=await FirebaseAuth.displayName;
-
+			this.email_verified=await getAuth().currentUser.emailVerified;
+			this.language=localStorage.getItem("language");
+			this.admin=await this.is_admin();
+			//this.language=await getAuth().languageCode;
 			let theme="light";
 			/*await getDoc(firestore,"users",FirebaseAuth.uid)
 			.then((a)=>
@@ -203,7 +228,7 @@ import logo from "@/assets/logo";
 					auth: true,
 				},
 				{
-					icon: 'book',
+					icon: 'auto_stories',
 					title: this.gt("Books"),
 					link: '/books',
 					auth: true,
@@ -219,11 +244,11 @@ import logo from "@/assets/logo";
 				
 			
 			];
-			if(this.admin)
+			if(this.admin && this.signedin())
 			{
 				this.menuTab.push({
 						
-					icon: 'contact_support',
+					icon: 'people',
 					title: this.gt("users"),
 					link: '/admin/users',
 					auth: true,
@@ -234,11 +259,31 @@ import logo from "@/assets/logo";
 			this.dataReady=true;
 		},
 		computed:{
-			books()
+			
+			popular_ones()
 			{
 				let a=[];
+				let coll = collection(firestore,"books");
+				let q=query(coll,where("keywords","array-contains-any",this.seaching_text),limit(10));
+				let c=getDocs(q);
+				c.forEach(element => {
+				a.push({
+					book_name:element.book_name,
+					author:element.author,
+					photoURL:element.book_cover
+				})
+				
+				});
 				return  a;
-			}
+			},
+			newest_uploads()
+			{
+				let a=[];
+				let coll = collection(firestore,"books");
+				//let query=query(collection,)
+				return  a;
+			},
+			
 		},
 		methods: {
 			toggleMenu: function() {
@@ -251,6 +296,45 @@ import logo from "@/assets/logo";
 			themeChanged: function () {
 				if (localStorage.userTheme === "dark") this.userTheme = "dark";
 				else this.userTheme = "default";
+			},
+			send_email()
+			{
+				
+			},
+			async searching()
+			{
+				let a=[];
+				if(!this.seaching_text.length>3) return [];
+				let coll = collection(firestore,"books");
+				let q=query(coll,where("keywords","array-contains-any",[this.seaching_text]),limit(10));
+				let c=await getDocs(q);
+				c.forEach(element => {
+				a.push({
+					book_name:element.book_name,
+					author:element.author,
+					photoURL:element.book_cover
+				})
+				
+				});
+
+				//let query=query(collection,)
+				//return  a;
+				this.searchedBooks=a;
+			},
+			lang_change()
+			{
+				localStorage.setItem("language",this.language);
+				//getAuth().languageCode=this.language;
+			},
+			async is_admin()
+			{ 
+				let coll=collection(firestore,"users").doc(getAuth().currentUser.uid)
+				let k=await getDoc(coll)
+				return k.data().admin==null?false:true;
+			},
+			signedin()
+			{
+				return !(getAuth().currentUser==null);
 			},
 			changeTheme: function () {
 				console.log("Change theme");
@@ -357,6 +441,16 @@ import logo from "@/assets/logo";
 	}
 	.search {
 	margin: auto;
+	min-width: 230px;
     max-width: 500px;
   }
+  @media only screen and (max-width: 1026px) { 
+  .search {
+	display:none
+  }
+}
+
+/*
+
+*/
 </style>

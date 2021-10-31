@@ -94,8 +94,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				this.$router.replace('/home');	
 				this.set_user_data_local();
 				
-				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid,"data_of_user"),
-				{name:user.displayName});
+				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName},{merge:true});
 
 				}).catch((error) => {
 						if (error.code === 'auth/wrong-password') {

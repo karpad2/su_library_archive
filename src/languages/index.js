@@ -9,12 +9,19 @@ function get_text(indicator)
 {   let text="";
     let code="en";
     const auth=getAuth();
-    console.log(auth.languageCode);
+    code=localStorage.getItem("language");
+    if(code==null)
+    {
+        code="sr-SR";
+        localStorage.setItem("sr-SR",code);
+        
+    }
+    console.log(code);
     switch(code)
     {
         case "en":{text=contains_the_array(english,indicator);} break;
         case "hu-HU":{text=contains_the_array(hungarian,indicator);} break;
-        case "rs":{text=contains_the_array(serbian,indicator);} break;
+        case "sr-SR":{text=contains_the_array(serbian,indicator);} break;
     }
     return text
 }
@@ -30,8 +37,30 @@ function contains_the_array(array,word)
         return array[word];
 
 }
+
+const languages=[
+    {
+        code:"sr-SR",
+        name:"Srpski"
+    },
+    
+    {
+        code:"hu-HU",
+        name:"Magyar"
+    },
+    {
+        code:"en",
+        name:"English"
+    },
+];
+function get_defaultlanguage()
+{
+    return languages[0].code;
+}
 export
 {
     get_text,
-    get_title
+    get_title,
+    languages,
+    get_defaultlanguage
 }

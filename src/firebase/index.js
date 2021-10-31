@@ -1,5 +1,4 @@
 import {getAuth,setPersistence,inMemoryPersistence} from 'firebase/auth';
-import user_default from "./user_default.json";
 const { initializeAppCheck, ReCaptchaV3Provider } = require("firebase/app-check");
 import {getDatabase,ref,set, onValue,onDisconnect,child} from 'firebase/database';
 import { initializeApp } from "firebase/app";
@@ -8,11 +7,11 @@ import { getMessaging,getToken } from "firebase/messaging";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
-import { getFirestore,doc,getDoc,updateDoc,update,setDoc,getDocFromServer } from "firebase/firestore";
+import { getFirestore,doc,getDoc,collection,updateDoc,update,setDoc,getDocFromServer } from "firebase/firestore";
 
 
 import firebaseCredentials from './credentials';
-import { isAdmin } from '@firebase/util';
+
 const app = initializeApp(firebaseCredentials.config);
 const messaging = getMessaging();
 const perf = getPerformance(app);
@@ -34,11 +33,31 @@ const appCheck = initializeAppCheck(app, {
 
 // Request Permission of Notifications
 
+async function isAdmin()
+{
+	let l= await getDocFromServer(collection(firestore,"users").doc(getAuth().currentUser.uid));
+	return l.data().admin==null?false:true;
+}
+async function get_user_language()
+{
+	let l= await getDocFromServer(collection(firestore,"users").doc(getAuth().currentUser.uid));
+	let k ="";
+	if(l.data().language==null)
+	{
+		k="sr-RS"
+	}
+	else 
+	{
+		k=l.data().language;
+	}
+
+	return k;
+}
 
 
 //appcheck.setTokenAutoRefreshEnabled();
 const FirebaseAuth = getAuth();
-setPersistence(FirebaseAuth,inMemoryPersistence);
+//setPersistence(FirebaseAuth,inMemoryPersistence);
 //const Firebase = firebase;
 const FireDb = getDatabase();
 console.log(`Language code: ${FirebaseAuth.useDeviceLanguage()}`);
@@ -97,6 +116,7 @@ export {
 	change_Theme_Fb,
 	user,
 	userId,
+	isAdmin,
 	user_is_admin,
 	user_email_verified,
 }

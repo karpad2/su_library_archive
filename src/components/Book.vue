@@ -1,16 +1,33 @@
 <template>
-	<div>
+	<div v-if="dataReady">
 		<h1>{{book_title}}</h1>
 		{{gt("author")}}
-
+		<img src="" alt="book_cover"/>
 		<md-chips v-model="book_keywords" md-static></md-chips>
+		<div>
+			{{book_description}}
+		</div>
+		<div>
+			{{gt("information")}}
+
+		</div>
+
+
+		<md-field>
+			<label for="">{{gt("page_number")}}</label>
+			
+		</md-field>
+	<md-field>
+		<md-datepicker v-model="upload_date" md-disabled/>
+	</md-field>
 	</div>
 
 </template>
 
 <script>
 import {signOut} from "firebase/auth";
-import {FireDb,FirebaseAuth,change_Theme_Fb} from "@/firebase";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
 import {ref, set ,onValue,get, child} from "firebase/database";
 
 
@@ -23,98 +40,23 @@ import {ref, set ,onValue,get, child} from "firebase/database";
 			book_title:"",
 			book_author:"",
 			book_year:"",
+			upload_date:"",
 			book_keywords:[],
+			dataReady: false,
 			
 		}),
-		mounted() {
-			
-			this.$router.beforeEach((to,from,next)=>{
-				
-				this.loading_screen=true;
-				next();
-			});
-			
-			this.$router.afterEach(()=>{
-				setTimeout(()=>{this.loading_screen=false},300);
-			});
-			
-			try{
-			//localStorage.user= FirebaseAuth._currentUser;
-			
-			this.profile_picture_url=FirebaseAuth.currentUser.photoURL;
-			this.profile_name=FirebaseAuth.displayName;
-			
-			
-			//console.log(FirebaseAuth.currentUser);
-			get(child(FireDb.once, `users/${FirebaseAuth.currentUser.uid}/user_profile_color`)).then((snapshot) => {
-        if (snapshot.exists()) {
-            //this.rooms=snapshot;
-			localStorage.userTheme=snapshot.val().user_profile_color;
-		}
-		else 
-		{
-			set(ref(FireDb,`users/${FirebaseAuth.currentUser.uid}/user_profile_color`),"light");
-		}});
+		async mounted() {
+			const book_id=this.$route.params.book_id;
+			let update_number=await getDoc(collection("books").doc(book_id).doc("popularity"))
+			collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
 
-			console.log("Index");
-			}
-			catch (e)
-			{
-				console.warn(e);
-			}
-			if (localStorage.userTheme === "dark") {
-				this.userTheme = "dark";
-				}
-			if (this.$route.fullPath === '/') {
-				this.$router.replace('/home').catch(() => {
-				});
-			}
+			this.dataReady=true;
 		},
 		methods: {
-			toggleMenu: function() {
-				this.menuVisible = !this.menuVisible;
-			},
-			toggleSidepanel: function()
-			{
-				this.showSidepanel = !this.showSidepanel;
-			},
-			themeChanged: function () {
-				if (localStorage.userTheme === "dark") this.userTheme = "dark";
-				else this.userTheme = "default";
-			},
-			changeTheme: function () {
-				console.log("Change theme");
-				change_Theme_Fb("change");
-				this.themeChanged();
-				
-			},
-			logout: function () {
-				this.loading = true;
-				let _this = this;
-				signOut(FirebaseAuth).then(() => {
-					// Automatic redirect to login (onAuthStateChanged)
-					localStorage.clear();
-					_this.$noty.success("Logout confirmed", {
-						killer: true,
-						
-						timeout: 1500,
-					});
-					this.$router.replace('/account/login').catch(() => {}); // User not logged
-				}).catch((error) => {
-					console.log("signOut()", error);
-					_this.$noty.error("Logout error, please refresh the page.");
-				});
-			}
+			
 		}
 	}
-	/*
-	{
-					icon: 'person',
-					title: 'Account',
-					link: '/account',
-					auth: true,
-				},
-	*/
+	
 </script>
 
 <style lang="scss">

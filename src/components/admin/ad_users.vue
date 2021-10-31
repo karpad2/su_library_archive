@@ -1,13 +1,13 @@
 <template>
      <div>
-        <md-headline>{{gt("upload_a_title_book")}}</md-headline>
-        <div>{{gt("upload_a_book")}}
+        <md-headline>{{gt("Users")}}</md-headline>
+        <div>{{gt("settings_of_users")}}
         
-        <div class="section" v-if="books.length>0">
+        <div class="section" v-if="users.length>0">
         <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
-                <h1 class="md-title">{{gt("books")}}</h1>
+                <h1 class="md-title">{{gt("users")}}</h1>
                 </div>
 
                 <md-field md-clearable class="md-toolbar-section-end">
@@ -39,11 +39,19 @@
 </template>
 <script>
 import {get_text} from "@/languages";
+//import { initializeApp, applicationDefault } from 'firebase-admin/app';
+
 export default {
     methods:
     { gt(a)
         {
             return get_text(a);
+        }
+    },
+    computed:{
+        users(){
+            let a=[];
+            return a;
         }
     }
 }
