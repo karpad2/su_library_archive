@@ -10,6 +10,12 @@
       <label>{{gt('book_author')}}</label>
       <md-input v-model="author_name" md-counter="100"></md-input>
     </md-field>
+    <md-field>
+      <label>{{gt('language_chooser')}}</label>
+     <md-select v-model="language_chooser">
+							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
+						</md-select>
+    </md-field>
     
     <quillEditor />
 
@@ -61,12 +67,31 @@ export default {
         keywords:[],
         book_name:"",
         author_name:"",
+        language_chooser:"",
+        languages:[
+          {
+            code:"rs",name:"serbian"
+          },
+          {
+            code:"hu",name:"hungarian"
+          },
+          {
+            code:"en",name:"english"
+          }
+        ],
         use_first_page_as_cover:true,
         file:null
     }
     },
     components:{
         quillEditor
+    },
+    mounted()
+    {
+      this.languages.forEach((el,i)=>{
+       this.languages[i].name=this.gt(this.languages[i].name); 
+      });
+      console.log( this.$router.params.b_mode);
     },
     methods:{
         gt(a)

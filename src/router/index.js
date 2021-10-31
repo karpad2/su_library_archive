@@ -14,7 +14,7 @@ import AdminUsers from "../components/admin/ad_users";
 import AdminUser from "../components/admin/ad_user";
 import AdminBooks from "../components/admin/ad_books";
 import AdminBook from "../components/admin/ad_book";
-import Admin_Dashboard from "../components/admin/ad_dashboard.vue";
+import Admin_Dashboard from "../components/admin/ad_dashboard";
 import AdminBlogs from "../components/admin/ad_blogs";
 import AdminBlog from "../components/admin/ad_blog";
 
@@ -93,6 +93,33 @@ const router = new VueRouter ({
 					name: 'support',
 					component: Support,
 				},
+				{
+					path: 'admin/users',
+					name: 'admin-users',
+					component: AdminUsers,
+				},
+				{
+					path: 'admin/books',
+					name: 'admin-books',
+					component: AdminBooks,
+				},
+				{
+					path: 'admin/book/:b_id',
+					name: 'admin-book',
+					component: AdminBook,
+					
+				},
+				
+				{
+					path: 'admin/blogs',
+					name: 'admin-user',
+					component: AdminBlogs,
+				},
+				{
+					path: 'admin/',
+					name: 'admin-info',
+					component: Admin_Dashboard,
+				},
 				
 				
 			
@@ -119,37 +146,13 @@ const router = new VueRouter ({
 			path: '/admin',
 			component: Index,
 			children: [
-				{
-					path: '/',
-					name: 'admin-info',
-					component: Admin_Dashboard,
-				},
+				
 				{
 					path: 'users',
 					name: 'admin-users',
 					component: AccountLogin,
 				},
-				{
-					path: 'books',
-					name: 'admin-books',
-					component: AdminBooks,
-				},
-				{
-					path: 'books',
-					name: 'admin-book',
-					component: AdminBook,
-					
-				},
-				{
-					path: 'users',
-					name: 'admin-users',
-					component: AdminUsers,
-				},
-				{
-					path: 'blogs',
-					name: 'admin-user',
-					component: AdminUser,
-				}
+				
 			]
 		},
 		{
@@ -167,10 +170,10 @@ router.beforeEach((to, from, next) => {
 
 //	if(String(to.path)=="/home") next("/home"); 
 
-
+/*
  	if (String(to.path).indexOf("admin")>=0 && !isAdmin()) {
 		next("/")
-	}
+	}*/
 	//let requireAdmin = to.matched.some(record=>record.meta.requireAdmin);
 	//console.log(from);
 	if(requiresAuth && !currentUser) next('/account/login');

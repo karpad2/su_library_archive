@@ -38,6 +38,7 @@
     "vue-cookie-law": "^1.13.3",
     "vue-cookies": "^1.7.4",
     "vue-countdown": "^1.0.4",
+    "vue-country-flag": "^2.2.0",
     "vue-material": "^1.0.0-beta-12",
     "vue-meta": "^2.4.0",
     "vue-quill-editor": "^3.0.6",

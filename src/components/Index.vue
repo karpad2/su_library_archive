@@ -110,9 +110,20 @@
 			<md-app-content>
 				    <b-alert v-if="signedin() && email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
+					 <md-dialog-confirm
+						:md-active.sync="terms"
+						:md-title="terms_text.title"
+						:md-content="terms_text.text"
+						md-confirm-text="Agree"
+						md-cancel-text="Disagree"
+						@md-cancel="logout"
+						@md-confirm="accept_terms" />
+
+
 				<router-view  v-if="!loading_screen"/>
 				<loading v-else />
 			</md-app-content>
+
 			
 		</md-app>
 	</div>
@@ -142,12 +153,17 @@ import logo from "@/assets/logo";
 			admin:true,
 			dateFormat:"",
 			seaching_text:"",
+			terms_text:{
+				title:"",
+				text:""
+			},
 			languages:languages,
 			searchedBooks:[],
 			language:get_defaultlanguage(),
 			dataReady: false,
 			email_verified:true,
 			showSidepanel:false,
+			terms:true,
 			menuVisible: false,
 			userTheme: "default",
 			loading_screen:false,
@@ -345,6 +361,29 @@ import logo from "@/assets/logo";
 			gt(a)
 				{
 					return get_text(a);
+				},
+				async check_terms()
+				{
+					let coll=collection(firestore,"users").doc(getAuth().currentUser.uid)
+					let k= await getDoc(coll);
+					let terms=false;
+					if(k.exists())
+					{
+						terms=k.data().terms;
+					}
+					else
+					{
+						terms=false;
+					}
+					return terms;
+
+
+				},
+				accept_terms()
+				{
+					let coll=collection(firestore,"users").doc(getAuth().currentUser.uid)
+				let k= setDoc(coll,{terms:true},{merge:true});
+
 				},
 			logout: function () {
 				this.loading = true;

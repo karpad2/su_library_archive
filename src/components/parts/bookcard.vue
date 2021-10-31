@@ -12,6 +12,7 @@
           </md-card-header>
 
           <md-card-actions>
+            <country-flag :country="book_language" size='normal'/>
             <md-button class="md-icon-button">
               <md-icon>favorite</md-icon>
             </md-button>
@@ -44,7 +45,8 @@ export default {
           book_cover:"",
           book_title:"",
           book_author:"",
-          book_keywords:""
+          book_keywords:"",
+          book_language:"rs"
       }
   },
   mounted()

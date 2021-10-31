@@ -26,12 +26,13 @@
                 <md-table-cell :md-label="gt('bookname')" md-sort-by="bookname">{{ item.data.book_name }}</md-table-cell>
                 <md-table-cell :md-label="gt('Author')" md-sort-by="author">{{ item.data.author }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="releaser">{{ item.data.publisher }}</md-table-cell>
+                <md-table-cell :md-label="gt('language')" md-sort-by="language"><country-flag :country="item.data.language" size='normal'/></md-table-cell>
                 <md-table-cell :md-label="gt('keywords')" md-sort-by="keywords">{{ item.data.keywords }}</md-table-cell>
             </md-table-row>
         </md-table>
         </div>
 
-        <md-button>{{gt("upload")}}</md-button>
+        <md-button @click="$router.push(`/admin/`)">{{gt("upload")}}</md-button>
         </div>
 
 
