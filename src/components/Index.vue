@@ -133,8 +133,7 @@
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
-import {ref, set ,onValue,get, child} from "firebase/database";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,  } from "firebase/firestore";
 import loading from "@/components/parts/loading";
 import logo from "@/assets/logo";
 
@@ -379,10 +378,11 @@ import logo from "@/assets/logo";
 
 
 				},
-				accept_terms()
+				async accept_terms()
 				{
-					let coll=collection(firestore,"users").doc(getAuth().currentUser.uid)
-				let k= setDoc(coll,{terms:true},{merge:true});
+				let ref=doc(firestore,"users",FirebaseAuth.currentUser.uid);
+				console.log(ref);
+				setDoc(ref,{terms:true},{merge:true});
 
 				},
 			logout: function () {
