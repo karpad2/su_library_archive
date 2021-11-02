@@ -23,6 +23,7 @@ import Home from "../components/Home";
 import Info from "../components/Info";
 import Books from "../components/Books";
 import Book from "../components/Book";
+import Favorites from "../components/Favorites";
 import Page from "../components/Page";
 
 import Support from "@/components/Support";
@@ -49,7 +50,7 @@ const router = new VueRouter ({
 			children: [
 				{
 					path: '/',
-					name: 'home',
+					name: 'homeindex',
 					component: Home,
 					meta: {requiresAuth: false}
 				},
@@ -64,6 +65,11 @@ const router = new VueRouter ({
 					path: 'info',
 					name: 'info',
 					component: Info,
+				},
+				{
+					path: 'favorites',
+					name: 'favorites',
+					component: Favorites,
 				},
 				{
 					path: 'logout',
@@ -84,7 +90,7 @@ const router = new VueRouter ({
 				},
 				{
 					path: 'book/:bid/:b_author/:b_name/page/:pid',
-					name: 'book',
+					name: 'bookpage',
 					component: Page,
 					
 				},
@@ -97,6 +103,11 @@ const router = new VueRouter ({
 					path: 'admin/users',
 					name: 'admin-users',
 					component: AdminUsers,
+				},
+				{
+					path: 'admin/user/:uid',
+					name: 'admin-user',
+					component: AdminUser,
 				},
 				{
 					path: 'admin/books',
@@ -112,9 +123,15 @@ const router = new VueRouter ({
 				
 				{
 					path: 'admin/blogs',
-					name: 'admin-user',
+					name: 'admin-blogs',
 					component: AdminBlogs,
 				},
+				{
+					path: 'admin/blog/:b_id',
+					name: 'admin-blog',
+					component: AdminBlog,
+				},
+
 				{
 					path: 'admin/',
 					name: 'admin-info',

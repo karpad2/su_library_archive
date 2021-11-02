@@ -27,8 +27,10 @@
 							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
 						</md-select>
 					</md-field>
+
+					<md-button v-if="signedin()" @click="$router.push('favorites')">❤️️ {{gt("favorites")}}</md-button>
 					
-					<md-avatar v-if="signedin()" @click="toggleSidepanel" style="z-index:999" >
+					<md-avatar v-if="signedin()"  @click="toggleSidepanel" style="z-index:999" >
 						<img  :src="profile_picture_url" alt="Avatar">
 					</md-avatar>
 					
@@ -62,15 +64,23 @@
 							
 						</router-link>
 					</div>
-					<md-list-item v-if="signedin()" v-on:click="changeTheme()">
+					<md-divider></md-divider>
+					<md-list-item v-if="signedin()" @click="changeTheme">
 								<md-icon class="md-icon">settings_brightness</md-icon>
 								<span class="md-list-item-text">{{gt("ctheme")}}</span>
 					</md-list-item>
-					<md-list-item v-if="signedin()" v-on:click="logout()">
+					
+					<md-list-item v-if="signedin()" @click="change_language">
+								<md-icon class="md-icon">notranslate</md-icon>
+								<span class="md-list-item-text">{{gt("language")}}</span>
+					</md-list-item>
+					<md-divider></md-divider>
+					<md-list-item v-if="signedin()" @click="logout">
 								<md-icon class="md-icon">logout</md-icon>
 								<span class="md-list-item-text">{{gt("logout")}}</span>
 					</md-list-item>
-					<md-divider></md-divider>
+
+					
 					
 				</md-list>
 			</md-app-drawer>
@@ -108,14 +118,14 @@
     </md-drawer>
 
 			<md-app-content>
-				    <b-alert v-if="signedin() && email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
+				    <b-alert v-if="signedin() && !email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
 					 <md-dialog-confirm
 						:md-active.sync="terms"
 						:md-title="terms_text.title"
 						:md-content="terms_text.text"
-						md-confirm-text="Agree"
-						md-cancel-text="Disagree"
+						:md-confirm-text="gt('agree')"
+						:md-cancel-text="gt('disagree')"
 						@md-cancel="logout"
 						@md-confirm="accept_terms" />
 
@@ -162,7 +172,7 @@ import logo from "@/assets/logo";
 			dataReady: false,
 			email_verified:true,
 			showSidepanel:false,
-			terms:true,
+			terms:false,
 			menuVisible: false,
 			userTheme: "default",
 			loading_screen:false,
@@ -257,6 +267,7 @@ import logo from "@/assets/logo";
 				},
 				
 				
+				
 			
 			];
 			if(this.admin && this.signedin())
@@ -264,7 +275,7 @@ import logo from "@/assets/logo";
 				this.menuTab.push({
 						
 					icon: 'people',
-					title: this.gt("users"),
+					title: this.gt("admin_users"),
 					link: '/admin/users',
 					auth: true,
 					admin:true
@@ -301,14 +312,14 @@ import logo from "@/assets/logo";
 			
 		},
 		methods: {
-			toggleMenu: function() {
+			toggleMenu() {
 				this.menuVisible = !this.menuVisible;
 			},
-			toggleSidepanel: function()
+			toggleSidepanel()
 			{
 				this.showSidepanel = !this.showSidepanel;
 			},
-			themeChanged: function () {
+			themeChanged() {
 				if (localStorage.userTheme === "dark") this.userTheme = "dark";
 				else this.userTheme = "default";
 			},
@@ -343,7 +354,7 @@ import logo from "@/assets/logo";
 			},
 			async is_admin()
 			{ 
-				let coll=collection(firestore,"users").doc(getAuth().currentUser.uid)
+				let coll=doc(collection(firestore,"users"),getAuth().currentUser.uid)
 				let k=await getDoc(coll)
 				return k.data().admin==null?false:true;
 			},
@@ -374,18 +385,37 @@ import logo from "@/assets/logo";
 					{
 						terms=false;
 					}
+
+					if(!terms)
+					{
+						let p=collection(firestore,"properties").doc("terms");
+						let terms_p=await getDoc(p);
+						console.log(terms_p);
+						if(terms_p.exists())
+						{
+							this.terms_text.text=terms_p.data().terms_text;
+							this.terms_text.title=terms_p.data().terms_title;
+							console.log(terms_p.data());
+						}
+						
+
+					}
 					return terms;
 
 
 				},
 				async accept_terms()
 				{
-				let ref=doc(firestore,"users",FirebaseAuth.currentUser.uid);
-				console.log(ref);
+				let ref=doc(collection(firestore,"users"),FirebaseAuth.currentUser.uid);
+				//console.log(ref);
 				setDoc(ref,{terms:true},{merge:true});
 
 				},
-			logout: function () {
+				change_language()
+				{
+
+				},
+			logout() {
 				this.loading = true;
 				let _this = this;
 				signOut(FirebaseAuth).then(() => {
@@ -403,14 +433,7 @@ import logo from "@/assets/logo";
 			}
 		}
 	}
-	/*
-	{
-					icon: 'person',
-					title: 'Account',
-					link: '/account',
-					auth: true,
-				},
-	*/
+	
 </script>
 
 <style lang="scss">

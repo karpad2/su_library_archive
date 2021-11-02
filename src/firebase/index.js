@@ -2,15 +2,15 @@ import {getAuth,setPersistence,inMemoryPersistence} from 'firebase/auth';
 const { initializeAppCheck, ReCaptchaV3Provider } = require("firebase/app-check");
 import {getDatabase,ref,set, onValue,onDisconnect,child} from 'firebase/database';
 import { initializeApp } from "firebase/app";
-import { enableIndexedDbPersistence } from "firebase/firestore";
 import { getMessaging,getToken } from "firebase/messaging";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
-import { getFirestore,doc,getDoc,collection,updateDoc,update,setDoc,getDocFromServer } from "firebase/firestore";
+import {enableIndexedDbPersistence, getFirestore,doc,getDoc,collection,updateDoc,update,setDoc,getDocFromServer } from "firebase/firestore";
 
 
 import firebaseCredentials from './credentials';
+
 
 const app = initializeApp(firebaseCredentials.config);
 const messaging = getMessaging();
@@ -27,6 +27,7 @@ const appCheck = initializeAppCheck(app, {
 	// tokens as needed.
 	//isTokenAutoRefreshEnabled: true
   });
+
 // key for recatchpa3 
 //const appcheck=firebase.appCheck()
 
@@ -116,6 +117,7 @@ export {
 	change_Theme_Fb,
 	user,
 	userId,
+	get_user_language,
 	isAdmin,
 	user_is_admin,
 	user_email_verified,

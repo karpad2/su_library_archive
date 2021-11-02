@@ -16,7 +16,7 @@ function get_text(indicator)
         localStorage.setItem("sr-SR",code);
         
     }
-    console.log(code);
+    //console.log(code);
     switch(code)
     {
         case "en":{text=contains_the_array(english,indicator);} break;

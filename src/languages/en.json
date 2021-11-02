@@ -63,7 +63,11 @@
     "send_email":"Send email again",
     "page_number":"Page number:",
     "uploading_date":"Uploading date:",
-    "switch":"First page as cover"
+    "switch":"First page as cover",
+    "favorites":"Favorites",
+    "agree":"Agree",
+    "disagree":"Disagree",
+    "admin_users":"Admin Users"
 
 
 
