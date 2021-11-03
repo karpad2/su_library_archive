@@ -7,10 +7,7 @@ import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 import {enableIndexedDbPersistence, getFirestore,doc,getDoc,collection,updateDoc,update,setDoc,getDocFromServer } from "firebase/firestore";
-
-
 import firebaseCredentials from './credentials';
-
 
 const app = initializeApp(firebaseCredentials.config);
 const messaging = getMessaging();
