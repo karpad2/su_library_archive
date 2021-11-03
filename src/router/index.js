@@ -133,7 +133,7 @@ const router = new VueRouter ({
 				},
 
 				{
-					path: 'admin/',
+					path: 'admin',
 					name: 'admin-info',
 					component: Admin_Dashboard,
 				},
@@ -157,19 +157,6 @@ const router = new VueRouter ({
 					name: 'account-login',
 					component: AccountLogin,
 				}
-			]
-		},
-		{
-			path: '/admin',
-			component: Index,
-			children: [
-				
-				{
-					path: 'users',
-					name: 'admin-users',
-					component: AccountLogin,
-				},
-				
 			]
 		},
 		{

@@ -29,6 +29,7 @@ import {signOut} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
 import {ref, set ,onValue,get, child} from "firebase/database";
+import {get_text,languages,get_defaultlanguage} from "@/languages";
 
 
 	export default {
@@ -42,6 +43,7 @@ import {ref, set ,onValue,get, child} from "firebase/database";
 			book_year:"",
 			upload_date:"",
 			book_keywords:[],
+			book_description:"",
 			dataReady: false,
 			
 		}),
@@ -53,7 +55,10 @@ import {ref, set ,onValue,get, child} from "firebase/database";
 			this.dataReady=true;
 		},
 		methods: {
-			
+			gt(a)
+				{
+					return get_text(a);
+				},
 		}
 	}
 	
