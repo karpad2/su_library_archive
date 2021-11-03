@@ -6,6 +6,7 @@ import { getMessaging,getToken } from "firebase/messaging";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
+import Vue from 'vue';
 import {enableIndexedDbPersistence, getFirestore,doc,getDoc,collection,updateDoc,update,setDoc,getDocFromServer } from "firebase/firestore";
 
 
@@ -21,7 +22,7 @@ const analytics = getAnalytics();
 logEvent(analytics, 'notification_received');
 
 const appCheck = initializeAppCheck(app, {
-	provider: new ReCaptchaV3Provider(firebaseCredentials.recatchpa_code),
+	provider: new ReCaptchaV3Provider((Vue.config.devtools)?firebaseCredentials.recatchpa_code:firebaseCredentials.recatchpa_deploy),
   
 	// Optional argument. If true, the SDK automatically refreshes App Check
 	// tokens as needed.
@@ -36,12 +37,12 @@ const appCheck = initializeAppCheck(app, {
 
 async function isAdmin()
 {
-	let l= await getDocFromServer(collection(firestore,"users").doc(getAuth().currentUser.uid));
+	let l= await getDocFromServer(doc(collection(firestore,"users"),getAuth().currentUser.uid));
 	return l.data().admin==null?false:true;
 }
 async function get_user_language()
 {
-	let l= await getDocFromServer(collection(firestore,"users").doc(getAuth().currentUser.uid));
+	let l= await getDocFromServer(doc(collection(firestore,"users"),getAuth().currentUser.uid));
 	let k ="";
 	if(l.data().language==null)
 	{
