@@ -1,8 +1,10 @@
 <template>
-<md-card>
+
+<md-card >
+  <div v-if="dataReady">
       <md-card-media-cover md-solid>
         <md-card-media md-ratio="1:1">
-          <img src="/vuematerial/assets/examples/card-sky.jpg" alt="book_cover">
+          <img @click="open_book" class="cover" src="/vuematerial/assets/examples/card-sky.jpg" alt="thumb_book_cover">
         </md-card-media>
 
         <md-card-area>
@@ -23,7 +25,16 @@
           </md-card-actions>
         </md-card-area>
       </md-card-media-cover>
-    </md-card>
+    </div>
+    <div v-else>
+      <md-card-media-cover md-solid>
+        <md-card-media md-ratio="1:1">
+          <loading/>
+        </md-card-media>
+      </md-card-media-cover>
+
+    </div>
+  </md-card>
     
 </template>
 <style lang="scss" scoped>
@@ -33,15 +44,23 @@
     display: inline-block;
     vertical-align: top;
   }
+  .cover{
+    padding:0 0 140.0% 0;
+
+  }
 </style>
 
 <script>
+import {getAuth,signOut,auth,user_language} from "firebase/auth";
+import {get_text,languages,get_defaultlanguage} from "@/languages";
+import loading from "@/components/parts/loading";
 export default {
   name: 'MediaCover',
   props:["book_id"],
   data()
   {
       return{
+          dataReady:false,
           book_cover:"",
           book_title:"",
           book_author:"",
@@ -49,8 +68,34 @@ export default {
           book_language:"rs"
       }
   },
+  components:{
+    loading
+  },
   mounted()
   {
+
+  },
+  methods:
+  {
+    signedin()
+			{
+				return !(getAuth().currentUser==null);
+			},
+    open_book()
+    {
+      let l="";
+
+      if(this.signedin())
+      {
+        l=`/book/${this.book_id}`;
+      }
+      else
+      {
+        l=`/public/book/${this.book_id}`;
+      }
+      this.$router.push(l);
+
+    }
 
   }
 }

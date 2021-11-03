@@ -1,43 +1,38 @@
 <template>
 	<div v-if="dataReady" id="vue-js-index-container">
 		<md-app md-waterfall md-mode="fixed" :md-theme="userTheme">
-			<md-app-toolbar class="md-primary" md-elevation="5">
+			<md-app-toolbar class="md-primary" md-mode="reveal" md-elevation="5">
 				<md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
 					<md-icon>menu</md-icon>
 				</md-button>
+				<hide-at breakpoint="small">
 				<router-link class="router-link" to="/home">
 					<logo class="bar-logo" />
 					<span class="md-title">  {{gt("app-title")}}</span>
 				</router-link>
-
+				</hide-at>
+				<hide-at breakpoint="mediumAndBelow">
 				 <md-autocomplete
-					class="search"
+					v-if="signedin()"
+					class="desktop search"
 					v-model="seaching_text"
 					:md-options="searchedBooks"
 					@change="searching"
 					md-layout="box">
-					<label>{{gt("search")}}</label>
+					<label>{{gt("search_by_name")}}</label>
 					</md-autocomplete>
-
+				</hide-at>
 				<div class="md-toolbar-section-end">
-        			<md-field v-if="false">
-						<md-icon>notranslate</md-icon>
-						<label for="lang">{{gt("language")}}</label>
-						<md-select @change="lang_change" v-model="language">
-							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
-						</md-select>
-					</md-field>
-
-					<md-button v-if="signedin()" @click="$router.push('favorites')">❤️️ {{gt("favorites")}}</md-button>
+        			<md-button v-if="signedin()" class="desktop" @click="$router.push('favorites')">❤️️ {{gt("favorites")}}</md-button>
 					
-					<md-avatar v-if="signedin()"  @click="toggleSidepanel" style="z-index:999" >
+					<md-button v-if="signedin()" class="desktop profile" @click="$router.push('user')">
+					<md-avatar style="z-index:999" >
 						<img  :src="profile_picture_url" alt="Avatar">
 					</md-avatar>
+					</md-button>
 					
-						<router-link v-else  class="router-link" to="/account/login">
-							<md-icon class="md-icon">login</md-icon>
-							<span class="md-title">{{gt("login")}}</span>
-						</router-link>
+						<md-button v-else class="desktop" @click="$router.push('/account/login')">️{{gt("login")}} <md-icon class="md-icon">login</md-icon> </md-button>
+						
 					
 
      		 	</div>
@@ -69,9 +64,10 @@
 								<md-icon class="md-icon">settings_brightness</md-icon>
 								<span class="md-list-item-text">{{gt("ctheme")}}</span>
 					</md-list-item>
-					
-					<md-list-item v-if="signedin()" @click="change_language">
-								<md-icon class="md-icon">notranslate</md-icon>
+					<show-at breakpoint="mediumAndAbove">
+					</show-at>
+					<md-list-item v-if="signedin()" @click="$router.push('user')">
+								<md-icon class="md-icon">translate</md-icon>
 								<span class="md-list-item-text">{{gt("language")}}</span>
 					</md-list-item>
 					<md-divider></md-divider>
@@ -128,9 +124,11 @@
 						:md-cancel-text="gt('disagree')"
 						@md-cancel="logout"
 						@md-confirm="accept_terms" />
+					
+					
 
-
-				<router-view  v-if="!loading_screen"/>
+				<undermaintenance v-if="undermaintenance_flag" />
+				<router-view  v-else-if="!loading_screen"/>
 				<loading v-else />
 			</md-app-content>
 
@@ -144,14 +142,19 @@ import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,  } from "firebase/firestore";
+import {showAt, hideAt} from 'vue-breakpoints';
 import loading from "@/components/parts/loading";
+import undermaintenance from "@/components/parts/undermaintenance";
 import logo from "@/assets/logo";
 
 
 	export default {
 		components: {
 		logo,
-		loading
+		loading,
+		hideAt, 
+		showAt,
+		undermaintenance 
 		},
 		name: 'Index',
 		title:"",
@@ -161,6 +164,7 @@ import logo from "@/assets/logo";
 			profile_name:"",
 			admin:true,
 			dateFormat:"",
+			user:{},
 			seaching_text:"",
 			terms_text:{
 				title:"",
@@ -170,9 +174,12 @@ import logo from "@/assets/logo";
 			searchedBooks:[],
 			language:get_defaultlanguage(),
 			dataReady: false,
+			undermaintenance_flag:false,
 			email_verified:true,
+			language_chooser_dialog:false,
 			showSidepanel:false,
 			terms:false,
+			signed_in:false,
 			menuVisible: false,
 			userTheme: "default",
 			loading_screen:false,
@@ -184,6 +191,8 @@ import logo from "@/assets/logo";
 				}]
 		}),
 		async mounted() {
+
+			this.signed_in= !(await getAuth().currentUser==null);
 			
 			this.$router.beforeEach((to,from,next)=>{
 				
@@ -196,41 +205,19 @@ import logo from "@/assets/logo";
 			});
 			
 			try{
-			//localStorage.user= FirebaseAuth._currentUser;
-			console.log()
+			this.user=await FirebaseAuth.currentUser;
 			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
 			this.profile_name=await FirebaseAuth.displayName;
 			this.email_verified=await getAuth().currentUser.emailVerified;
 			this.language=localStorage.getItem("language");
 			this.admin=await this.is_admin();
+
+			let get_under= await getDoc(doc(firestore,"properties","global_flags"));
+			
+			this.undermaintenance_flag= get_under.data().undermaintenance;
+			console.log(this.undermaintenance_flag);
 			//this.language=await getAuth().languageCode;
 			let theme="light";
-			/*await getDoc(firestore,"users",FirebaseAuth.uid)
-			.then((a)=>
-			{	
-				if(a.exists())
-				{
-				theme=a.data().theme;
-				this.admin=a.data().admin;
-				localStorage.userTheme=theme;
-				}
-				else
-				{
-					console.log("err")
-				}
-			});*/
-/*
-			getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid,"admin"))
-			.then((a)=>
-			{
-				
-				this.admin=a.exists();
-				//console.log(`Admin ${this.admin?"true":"false"}`)
-
-			});*/
-			
-			//console.log(FirebaseAuth.currentUser);
-			
 			console.log("Index");
 			}
 			catch (e)
@@ -249,20 +236,20 @@ import logo from "@/assets/logo";
 				{
 					icon: 'home',
 					title: this.gt("Home"),
-					link: '/home',
+					link: this.add_public('/home'),
 					auth: true,
 				},
 				{
 					icon: 'auto_stories',
 					title: this.gt("Books"),
-					link: '/books',
+					link: this.add_public('/books'),
 					auth: true,
 				},
 				
 				{
 					icon: 'contact_support',
 					title: this.gt("support"),
-					link: '/support',
+					link: this.add_public('/support'),
 					auth: true,
 				},
 				
@@ -323,6 +310,18 @@ import logo from "@/assets/logo";
 				if (localStorage.userTheme === "dark") this.userTheme = "dark";
 				else this.userTheme = "default";
 			},
+			add_public(k)
+			{	let l="";
+				if(this.signedin())
+				{
+					l=`${k}`;
+				}
+				else
+				{
+					l=`/public${k}`;
+				}
+				return l;
+			},
 			send_email()
 			{
 				
@@ -331,8 +330,7 @@ import logo from "@/assets/logo";
 			{
 				let a=[];
 				if(!this.seaching_text.length>3) return [];
-				let coll = collection(firestore,"books");
-				let q=query(coll,where("keywords","array-contains-any",[this.seaching_text]),limit(10));
+				let q=query(collection(firestore,"books"),where("keywords","array-contains-any",[this.seaching_text]),limit(10));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				a.push({
@@ -342,27 +340,25 @@ import logo from "@/assets/logo";
 				})
 				
 				});
-
-				//let query=query(collection,)
-				//return  a;
 				this.searchedBooks=a;
 			},
 			lang_change()
 			{
 				localStorage.setItem("language",this.language);
-				//getAuth().languageCode=this.language;
 			},
 			async is_admin()
 			{ 
-				let coll=doc(collection(firestore,"users"),getAuth().currentUser.uid)
-				let k=await getDoc(coll);
-				console.log(k.data())
+				
+				let k=await getDoc(doc(firestore,"users",this.user.uid,"admin"));
+				console.log(k.data().admin)
 				return false;
 				//return k.data().admin==null?false:true;
 			},
+			
 			signedin()
 			{
-				return !(getAuth().currentUser==null);
+				return this.signed_in;
+				//return !(getAuth().currentUser==null);
 			},
 			changeTheme: function () {
 				console.log("Change theme");
@@ -376,8 +372,8 @@ import logo from "@/assets/logo";
 				},
 				async check_terms()
 				{
-					let coll=collection(firestore,"users").doc(getAuth().currentUser.uid)
-					let k= await getDoc(coll);
+					
+					let k= await getDoc(firestore,"users",this.user.uid,"terms");
 					let terms=false;
 					if(k.exists())
 					{
@@ -390,25 +386,23 @@ import logo from "@/assets/logo";
 
 					if(!terms)
 					{
-						let p=collection(firestore,"properties").doc("terms");
-						let terms_p=await getDoc(p);
+						
+						let terms_p=await getDoc(firestore,"properties","terms");
 						console.log(terms_p);
 						if(terms_p.exists())
 						{
 							this.terms_text.text=terms_p.data().terms_text;
 							this.terms_text.title=terms_p.data().terms_title;
-							console.log(terms_p.data());
+							//console.log(terms_p.data());
 						}
 						
 
 					}
 					return terms;
-
-
-				},
+},
 				async accept_terms()
 				{
-				let ref=doc(collection(firestore,"users"),FirebaseAuth.currentUser.uid);
+				let ref=doc(firestore,"users",FirebaseAuth.currentUser.uid);
 				//console.log(ref);
 				setDoc(ref,{terms:true},{merge:true});
 
@@ -503,14 +497,19 @@ import logo from "@/assets/logo";
  		 }
 		  
 	}
-	.search {
-	margin: auto;
-	min-width: 230px;
-    max-width: 500px;
-  }
-  @media only screen and (max-width: 1026px) { 
+	
+  
   .search {
-	display:none
+	min-width: 130px;
+    max-width: 300px;
+  }
+  .desktop {
+	display:block;
+  }
+
+  @media only screen and (max-width: 600px) { 
+  .desktop {
+	display:none;
   }
 }
 

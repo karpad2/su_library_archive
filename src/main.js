@@ -3,7 +3,7 @@ import router from './router';
 import ForkeMeOnGithub from 'fork-me-on-github-vue';
 import {IconsPlugin } from 'bootstrap-vue';
 import VueQuillEditor from 'vue-quill-editor';
-
+import "./serviceWorker/registersw";
 import BootstrapVue from "bootstrap-vue";
 import VueNoty from 'vuejs-noty';
 import VCalendar from 'v-calendar';
@@ -17,8 +17,8 @@ import CountryFlag from 'vue-country-flag'
 import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
 
-Vue.component('country-flag', CountryFlag)
-Vue.use(Vuetify)
+Vue.component('country-flag', CountryFlag);
+Vue.use(Vuetify);
 Vue.use(VueMeta);
 Vue.use(VueMaterial);
 

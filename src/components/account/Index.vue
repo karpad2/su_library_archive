@@ -2,7 +2,7 @@
 	<div v-if="dataReady" id="account-index-container">
 		<md-app md-waterfall md-mode="fixed" :md-theme="userTheme">
 			<md-app-toolbar class="md-primary" md-elevation="5">
-				<router-link class="router-link" to="/home">
+				<router-link class="router-link" to="/public/home">
 					<logo class="bar-logo" />
 					<span class="md-title">{{gt("app-title")}}</span>
 				</router-link>

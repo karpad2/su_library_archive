@@ -20,11 +20,15 @@ import AdminBlog from "../components/admin/ad_blog";
 
 
 import Home from "../components/Home";
+import PublicIndex from "../components/Index";
+import PublicSupport from "../components/Public/Support";
+
 import Info from "../components/Info";
 import Books from "../components/Books";
 import Book from "../components/Book";
 import Favorites from "../components/Favorites";
 import Page from "../components/Page";
+import User from "../components/User";
 
 import Support from "@/components/Support";
 
@@ -33,16 +37,32 @@ const router = new VueRouter ({
 	base: '/',
 	routes: [
 		
-		{
-			path: '/home',
-			name: 'home',
-			component: Index,
-		},
+		
 		{
 			path: '/',
 			name: 'unloggined',
-			component: Index,
+			component: PublicIndex,
 		},
+		{
+			path: '/public',
+			component: PublicIndex,
+			children: [
+		{
+			path: 'home',
+			name: 'homewithoutloginned',
+			component: Home
+		},
+		{
+			path: 'books',
+			name: 'bookswithoutlogin',
+			component: Books
+		},
+		{
+			path: 'book/:b_id',
+			name: 'bookwithoutlogin',
+			component: Book
+		}]
+	},
 		{
 			path: '/',
 			component: Index,
@@ -55,11 +75,11 @@ const router = new VueRouter ({
 					meta: {requiresAuth: false}
 				},
 				{
-					path: 'home',
+					path: '/home',
 					name: 'home',
-					component: Home,
-					meta: {requiresAuth: false}
+					component: Home
 				},
+				
 				
 				{
 					path: 'info',
@@ -98,6 +118,11 @@ const router = new VueRouter ({
 					path: 'support',
 					name: 'support',
 					component: Support,
+				},
+				{
+					path: 'user',
+					name: 'user',
+					component: User,
 				},
 				{
 					path: 'admin/users',

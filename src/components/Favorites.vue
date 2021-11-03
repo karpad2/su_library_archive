@@ -1,6 +1,17 @@
 <template>
 	<div v-if="dataReady">
-		<h1>{{gt("favorites")}}</h1>
+		<h3> </h3>
+
+		<md-card>
+		<md-card-header>
+        <md-card-header-text>
+          <div class="md-title">{{displayname()}} ❤️ {{gt("favorites")}}</div>
+		   </md-card-header-text>
+		   </md-card-header>
+		    <md-card-content>
+          <bookcard />
+        </md-card-content>
+	</md-card>
 		
 		
 	</div>
@@ -8,17 +19,18 @@
 </template>
 
 <script>
-import {signOut} from "firebase/auth";
+import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
 import {ref, set ,onValue,get, child} from "firebase/database";
+import {get_text,languages,get_defaultlanguage} from "@/languages";
 
 
 	export default {
 		components: {
 	
 		},
-		name: 'Index',
+		name: 'Favorite',
 		data: () => ({
 			book_title:"",
 			book_author:"",
@@ -29,7 +41,7 @@ import {ref, set ,onValue,get, child} from "firebase/database";
 			
 		}),
 		mounted() {
-			const book_id=this.$router.params.book_id;
+			
 			//let update_number=(await getDoc(collection(firestore,"books"),book_id)).data().favorites;
 			//collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
 		
@@ -37,74 +49,25 @@ import {ref, set ,onValue,get, child} from "firebase/database";
 			this.dataReady=true;
 		},
 		methods: {
-			
+			remove_from_favorite()
+			{
+
+			},
+			displayname()
+			{
+				return getAuth().currentUser.displayName;
+			},
+			gt(a)
+				{
+					return get_text(a);
+				},
 		}
 	}
 	
 </script>
 
 <style lang="scss">
-	@import "../../src/style/variables.scss";
+	
 
-	#vue-js-index-container {
-		.md-app {
-			height: 100vh;
-
-			.router-link {
-				display: flex;
-				align-items: center;
-			}
-
-
-			.bar-logo {
-				width: 35px !important;
-				
-			}
-
-			.md-app-drawer {
-				max-width: 300px !important;
-			}
-			.md-primary
-			{
-				height: 45pt;
-			}
-			.md-button
-			{
-				height: 30pt;
-			}
-			.md-list-item {
-
-				&:hover {
-					.md-icon {
-						color: $accent;
-						opacity: 0.8;
-					}
-
-					.md-list-item-text {
-						color: $accent;
-						transition: color .4s cubic-bezier(.4,0,.2,1);
-						opacity: 0.8;
-					}
-				}
-
-				&.active {
-					.md-icon {
-						color: $accent;
-					}
-
-					.md-list-item-text {
-						color: $accent;
-					}
-				}
-
-				.md-list-item-text {
-					font-weight: bold;
-				}
-			}
-		}
-		 .md-drawer {
-		width: 230px;
-		max-width: calc(100vw - 125px);
- 		 }
-	}
+	
 </style>

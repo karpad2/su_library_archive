@@ -1,14 +1,28 @@
 <template>
 	<div>
 <div class="section">
-	<h4>{{gt("popular_ones")}}</h4>
-	<div>
-		<bookcard />
-	</div>
+	<md-card>
+		<md-card-header>
+        <md-card-header-text>
+          <div class="md-title"><md-icon class="md-icon icon-color">local_fire_department</md-icon> {{gt("popular_ones")}}</div>
+		   </md-card-header-text>
+		   </md-card-header>
+		    <md-card-content>
+          <bookcard />
+        </md-card-content>
+	</md-card>	
 </div>
 <div class="section">
-	<h4>{{gt("newest_ones")}}</h4>
-		<bookcard />
+	<md-card>
+		<md-card-header>
+        <md-card-header-text>
+          <div class="md-title"><md-icon class="md-icon icon-color">library_add</md-icon> {{gt("recent_uploads")}}</div>
+		   </md-card-header-text>
+		   </md-card-header>
+		    <md-card-content>
+          <bookcard />
+        </md-card-content>
+	</md-card>
 	</div>
 	</div>
 	
@@ -23,7 +37,7 @@ import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/
 import { orderByValue } from '@firebase/database';
 
 	export default {
-		name: "Home",
+		name: "Home_Page",
 		data: () => ({
 			selectedMovies: [],
 			selectedDate: null,
@@ -133,16 +147,9 @@ import { orderByValue } from '@firebase/database';
 	}
 </script>
 
-<style scoped>
-.md-card {
-    width: 320px;
-    margin: 15px;
-	padding: 15px;
-    display: inline-block;
-    vertical-align: top;
-  }
-  .profile{
-	  font-weight: bold;
-  }
-
+<style lang="scss">
+.icon-color
+{
+	color:#ed2553;
+}
 </style>

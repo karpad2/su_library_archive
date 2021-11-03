@@ -28,7 +28,7 @@
     "account":"Account",
     "cookie_text":"This website uses cookies to ensure you get the best experience on our website.",
     "search_for_books":"Search for books",
-    "search":"search",
+    "search":"Search...",
     "search_by_name":"Search by name...",
     "users_cant_found":"No users found",
     "no_user_cant_be_found":"No user found for this",
@@ -67,7 +67,12 @@
     "favorites":"Favorites",
     "agree":"Agree",
     "disagree":"Disagree",
-    "admin_users":"Admin Users"
+    "cancel":"cancel",
+    "admin_users":"Admin Users",
+    "joined":"Joined",
+    "User":"User",
+    "under_construction":"Under Construction",
+    "wewillbeback":"We will be back"
 
 
 

@@ -1,0 +1,141 @@
+<template>
+	<div v-if="dataReady">
+		<div class="section">
+	<md-card>
+		<md-card-header>
+        <md-card-header-text>
+          <div class="md-title"> {{gt("User")}}</div>
+		   </md-card-header-text>
+		   </md-card-header>
+		    <md-card-content>
+				<div class="user-container">
+				<div class="bigavatar">
+				<img  :src="user.photoURL" alt="Avatar">
+				</div>
+				<div class="user-info">
+			
+	
+      	<h3>{{user.displayName}}</h3>
+		<md-field>
+		<label for="useremail">{{gt('user_email')}}</label>
+      		<md-input id="useremail" v-model="user.email" disabled></md-input>
+    	</md-field>
+
+		<md-field>
+		<label for="language">{{gt('language')}}</label>
+						<md-select @change="lang_change" id="language" name="language" v-model="language">
+							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
+						</md-select>
+    	</md-field>
+
+
+	
+		<p>{{gt('joined')}} : {{joined}}</p>
+
+		<p>{{gt('valid_until')}} : {{valid_until}}</p>
+      		 
+    	
+	
+		</div>
+		</div>
+        </md-card-content>
+	</md-card>
+	</div>
+		<h1></h1>
+
+		
+		
+
+		
+	</div>
+
+</template>
+
+<script>
+import {signOut,getAuth} from "firebase/auth";
+import moment from "moment";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
+import {get_text,languages,get_defaultlanguage} from "@/languages";
+
+
+	export default {
+		components: {
+	
+		},
+		name: 'Index',
+		data: () => ({
+			languages:languages,
+			language:"",
+			valid_until:"",
+			user:{
+				displayname:"",
+				photoURL:"",
+				email:""
+			},
+			dataReady: false,
+			
+		}),
+		async mounted() {
+			this.user= await getAuth().currentUser;
+			//let update_number=(await getDoc(collection(firestore,"books"),book_id)).data().favorites;
+			//collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
+			this.language=get_defaultlanguage();
+			console.log(this.user);
+
+			const valid_u = doc(firestore, "users", this.user.uid, "valid_until");
+			let query= await getDoc(valid_u);
+			console.log(query.data());
+			let date=new Date(Number(0));
+			this.valid_until= moment(date).format('MMMM Do YYYY, h:mm:ss a');
+			this.dataReady=true;
+		},
+		computed:{
+			joined()
+			{
+				let date=new Date(Number(this.user.metadata.createdAt));
+				console.log(date);
+				return moment(date).format('MMMM Do YYYY, h:mm:ss a');
+			}
+		},
+		methods: {
+			gt(a)
+			{
+				return get_text(a)
+			},
+			displayname()
+			{
+				return getAuth().currentUser.displayName;
+			},
+			lang_change()
+			{
+				localStorage.setItem("language",this.language);
+				//getAuth().languageCode=this.language;
+			},
+		}
+	}
+	
+</script>
+
+<style lang="scss">
+	
+.bigavatar{
+	float: left;
+    margin: 2 em;
+
+}
+.bigavatar img{
+	width: 120px;
+    height: 120px;
+
+}
+.user-info{
+	float:left;
+	 margin: 50px;
+}
+.user-container
+{
+	overflow: auto;
+}
+	
+</style>
