@@ -21,7 +21,7 @@ const analytics = getAnalytics();
 logEvent(analytics, 'notification_received');
 
 const appCheck = initializeAppCheck(app, {
-	provider: new ReCaptchaV3Provider('6LckM_IcAAAAAJjv3sIzeQP535EjkBl-so0aCuPH'),
+	provider: new ReCaptchaV3Provider(firebaseCredentials.recatchpa_code),
   
 	// Optional argument. If true, the SDK automatically refreshes App Check
 	// tokens as needed.

@@ -355,8 +355,10 @@ import logo from "@/assets/logo";
 			async is_admin()
 			{ 
 				let coll=doc(collection(firestore,"users"),getAuth().currentUser.uid)
-				let k=await getDoc(coll)
-				return k.data().admin==null?false:true;
+				let k=await getDoc(coll);
+				console.log(k.data())
+				return false;
+				//return k.data().admin==null?false:true;
 			},
 			signedin()
 			{
