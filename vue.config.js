@@ -1,7 +1,7 @@
 module.exports = {
     // ...other vue-cli plugin options...
     pwa: {
-      name: 'Gradska-Biblioteka-Subotica',
+      name: 'Gradska Biblioteka Subotica',
       themeColor: '#4DBA87',
       msTileColor: '#000000',
       appleMobileWebAppCapable: 'yes',
@@ -12,7 +12,7 @@ module.exports = {
       workboxPluginMode: 'InjectManifest',
       workboxOptions: {
         // swSrc is required in InjectManifest mode.
-        swSrc: 'src/sw.js',
+        swSrc: 'src/serviceWorker/sw.js',
         // ...other Workbox options...
       }
     }

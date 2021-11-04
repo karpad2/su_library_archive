@@ -76,6 +76,7 @@ document.addEventListener('keydown',(event)=>
 });*/
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {get_text,languages,get_defaultlanguage} from "@/languages";
 const auth = getAuth();
 onAuthStateChanged(auth, (user) => {
 	if (!app) {
@@ -87,3 +88,7 @@ onAuthStateChanged(auth, (user) => {
 		app.$mount('#app');
 	}
 });
+
+const gt=(a)=>{
+	return get_text(a);
+};
