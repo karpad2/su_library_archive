@@ -140,7 +140,7 @@ const router = new VueRouter ({
 					component: AdminBooks,
 				},
 				{
-					path: 'admin/book/:b_id',
+					path: 'admin/book/:bid',
 					name: 'admin-book',
 					component: AdminBook,
 					
@@ -150,6 +150,11 @@ const router = new VueRouter ({
 					path: 'admin/blogs',
 					name: 'admin-blogs',
 					component: AdminBlogs,
+				},
+				{
+					path: 'admin/dashboard',
+					name: 'admin-dashboard',
+					component: Admin_Dashboard,
 				},
 				{
 					path: 'admin/blog/:b_id',

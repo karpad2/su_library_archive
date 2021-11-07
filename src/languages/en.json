@@ -72,7 +72,19 @@
     "joined":"Joined",
     "User":"User",
     "under_construction":"Under Construction",
-    "wewillbeback":"We will be back"
+    "wewillbeback":"We will be back",
+    "edituser":"Edit User",
+    "admin_books":"Admin Books",
+    "admin_dashboard":"Admin Dashboard",
+    "promotion_over_text":"Promotion time is over",
+    "promotion":"Promotion",
+    "promotion_text":"Promotion text",
+    "promotion_has_ended":"Promotion has ended",
+    "promotion_text_get_membership":"Promotion has ended, get membership your at library",
+    "member":"Member",
+    "admin_user":"Admin user"
+
+
 
 
 

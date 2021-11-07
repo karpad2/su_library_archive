@@ -23,9 +23,9 @@
 					</md-autocomplete>
 				</hide-at>
 				<div class="md-toolbar-section-end">
-        			<md-button v-if="signedin()" class="desktop" @click="$router.push('favorites')">❤️️ {{gt("favorites")}}</md-button>
+        			<md-button v-if="signedin()" class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
 					
-					<md-button v-if="signedin()" class="desktop profile" @click="$router.push('user')">
+					<md-button v-if="signedin()" class="desktop profile" @click="$router.push('/user')">
 					<md-avatar style="z-index:999" >
 						<img  :src="profile_picture_url" alt="Avatar">
 					</md-avatar>
@@ -66,7 +66,7 @@
 					</md-list-item>
 					<show-at breakpoint="mediumAndAbove">
 					</show-at>
-					<md-list-item v-if="signedin()" @click="$router.push('user')">
+					<md-list-item v-if="signedin()" @click="$router.push('/user')">
 								<md-icon class="md-icon">translate</md-icon>
 								<span class="md-list-item-text">{{gt("language")}}</span>
 					</md-list-item>
@@ -116,6 +116,9 @@
 			<md-app-content>
 				    <b-alert v-if="signedin() && !email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
+					<b-alert v-if="promotion" variant="success" show>{{gt("promotion_text")}}</b-alert>
+					<b-alert v-if="!promotion && !member" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
+
 					 <md-dialog-confirm
 						:md-active.sync="terms"
 						:md-title="terms_text.title"
@@ -127,7 +130,7 @@
 					
 					
 
-				<undermaintenance v-if="undermaintenance_flag" />
+				<undermaintenance v-if="undermaintenance_flag && !admin" />
 				<router-view  v-else-if="!loading_screen"/>
 				<loading v-else />
 			</md-app-content>
@@ -163,6 +166,8 @@ import logo from "@/assets/logo";
 			profile_picture_url:"",
 			profile_name:"",
 			admin:true,
+			member:true,
+			valid_until:new Date(),
 			dateFormat:"",
 			user:{},
 			seaching_text:"",
@@ -179,6 +184,7 @@ import logo from "@/assets/logo";
 			language_chooser_dialog:false,
 			showSidepanel:false,
 			terms:false,
+			promotion:false,
 			signed_in:false,
 			menuVisible: false,
 			userTheme: "default",
@@ -209,12 +215,14 @@ import logo from "@/assets/logo";
 			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
 			this.profile_name=await FirebaseAuth.displayName;
 			this.email_verified=await getAuth().currentUser.emailVerified;
-			this.language=localStorage.getItem("language");
+			this.language= await this.get_user_language();
 			this.admin=await this.is_admin();
+			this.member=await this.is_member();
 
 			let get_under= await getDoc(doc(firestore,"properties","global_flags"));
 			
 			this.undermaintenance_flag= get_under.data().undermaintenance;
+			this.promotion=get_under.data().promotion;
 			console.log(this.undermaintenance_flag);
 			//this.language=await getAuth().languageCode;
 			let theme="light";
@@ -230,6 +238,10 @@ import logo from "@/assets/logo";
 			if (this.$route.fullPath === '/') {
 				this.$router.replace('/home').catch(() => {
 				});
+			}
+
+			if (String(this.$route.fullPath).indexOf("/admin/") >=0 && !this.admin) {
+				this.$router.push("/home");
 			}
 
 			this.menuTab= [
@@ -259,6 +271,16 @@ import logo from "@/assets/logo";
 			];
 			if(this.admin && this.signedin())
 			{
+
+				this.menuTab.push({
+						
+					icon: 'dashboard',
+					title: this.gt("admin_dashboard"),
+					link: '/admin/dashboard',
+					auth: true,
+					admin:true
+				
+					});
 				this.menuTab.push({
 						
 					icon: 'people',
@@ -268,6 +290,16 @@ import logo from "@/assets/logo";
 					admin:true
 				
 					});
+
+				this.menuTab.push({
+						
+					icon: 'library_add',
+					title: this.gt("admin_books"),
+					link: '/admin/books',
+					auth: true,
+					admin:true
+				
+					});	
 			}
 			this.dataReady=true;
 		},
@@ -349,12 +381,38 @@ import logo from "@/assets/logo";
 			async is_admin()
 			{ 
 				
-				let k=await getDoc(doc(firestore,"users",this.user.uid,"admin"));
-				console.log(k.data().admin)
-				return false;
+				let k=await getDoc(doc(firestore,"users",this.user.uid));
+				if(k.data().admin==null) return false;
+				return k.data().admin;
+				//return k.data().admin==null?false:true;
+			},
+
+			async is_member()
+			{ 
+				
+				let k=await getDoc(doc(firestore,"users",this.user.uid));
+				if(k.data().member==null) return false;
+				return k.data().member;
+				//return k.data().admin==null?false:true;
+			},
+
+			async get_user_language()
+			{ 
+				
+				let k=await getDoc(doc(firestore,"users",this.user.uid));
+				if(k.data().language==null) return get_defaultlanguage();
+				return k.data().language;
 				//return k.data().admin==null?false:true;
 			},
 			
+			async is_valid_until()
+			{ 
+				
+				let k=await getDoc(doc(firestore,"users",this.user.uid));
+				if(k.data().valid_until==null) return false;
+				return k.data().valid_until;
+				//return k.data().admin==null?false:true;
+			},
 			signedin()
 			{
 				return this.signed_in;

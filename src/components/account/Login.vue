@@ -50,8 +50,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 			onAuthStateChanged(auth,(user) => {
 				if (user && this.email === "") this.$router.replace('/account').catch(() => {
 				localStorage.user=this.user;
-				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid,"data_of_user"),
-				{name:user.displayName});
+				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName,email:user.email,phone:user.phoneNumber},{merge:true});
 				
 				}); // User already logged
 			});

@@ -22,11 +22,9 @@
     	</md-field>
 
 		<md-field>
-		<label for="language">{{gt('language')}}</label>
-						<md-select @change="lang_change" id="language" name="language" v-model="language">
-							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
-						</md-select>
+		 <b-form-select @change="lang_change" v-model="language" :options="options"></b-form-select>
     	</md-field>
+		
 
 
 	
@@ -55,7 +53,7 @@
 import {signOut,getAuth} from "firebase/auth";
 import moment from "moment";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc  } from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 
 
@@ -65,9 +63,10 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 		},
 		name: 'Index',
 		data: () => ({
-			languages:languages,
-			language:"",
+			langs:languages,
+			language:[],
 			valid_until:"",
+			options:[],
 			user:{
 				displayname:"",
 				photoURL:"",
@@ -81,9 +80,14 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 			//let update_number=(await getDoc(collection(firestore,"books"),book_id)).data().favorites;
 			//collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
 			this.language=get_defaultlanguage();
-			console.log(this.user);
 
-			const valid_u = doc(firestore, "users", this.user.uid, "valid_until");
+			//console.log(this.language);
+			this.langs.foreach((a)=>
+			{
+				this.options.push({value:a.code,text:a.name});
+			});
+
+			const valid_u = doc(firestore, "users", this.user.uid);
 			let query= await getDoc(valid_u);
 			console.log(query.data());
 			let date=new Date(Number(0));
@@ -109,7 +113,9 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 			},
 			lang_change()
 			{
+				console.log(this.language);
 				localStorage.setItem("language",this.language);
+				updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{language:this.language},{merge:true});
 				//getAuth().languageCode=this.language;
 			},
 		}
@@ -138,4 +144,10 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 	overflow: auto;
 }
 	
+	/*
+
+		<md-select @change="lang_change" id="language" name="language" v-model="language">
+							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
+						</md-select>
+	*/
 </style>

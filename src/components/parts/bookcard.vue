@@ -53,6 +53,9 @@
 <script>
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc } from "firebase/firestore";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import loading from "@/components/parts/loading";
 export default {
   name: 'MediaCover',
@@ -64,16 +67,21 @@ export default {
           book_cover:"",
           book_title:"",
           book_author:"",
-          book_keywords:"",
+          book_keywords:[],
           book_language:"rs"
       }
   },
   components:{
     loading
   },
-  mounted()
+  async mounted()
   {
-
+    let book=await getDoc(doc(firestore,"books",this.book_id));
+    this.book_title=book.data().book_title;
+    this.book_author=book.data().author_name;
+    this.book_language=book.data().language;
+    this.book_cover=ref(storage,`books/${this.book_id}/thumbnail.png`);
+    this.dataReady=true;
   },
   methods:
   {

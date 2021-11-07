@@ -1,3 +1,8 @@
+/*const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 module.exports = {
-    "plugins": ["remove-comments"]
+  optimization: {
+    minimizer: [new UglifyJsPlugin({
+      extractComments: true,
+    })],
   }
+  }*/

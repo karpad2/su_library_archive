@@ -1,7 +1,8 @@
 <template>
     
     <div class="center">
-        <maintenance />
+        
+        
         <h1>{{gt("promotion_has_ended")}}</h1>
         <h3>{{gt("promotion_text_get_membership")}}</h3>
     </div>
@@ -10,10 +11,10 @@
 
 <script>
 import {get_text,languages,get_defaultlanguage} from "@/languages";
-import maintenance from "@/assets/maintenance";
+
 export default {
     components:{
-        maintenance
+        
     },
     setup() {
         

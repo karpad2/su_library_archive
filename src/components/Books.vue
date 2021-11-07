@@ -1,35 +1,41 @@
 <template>
 	<div>
-
+	<div class="section">
 		{{gt("search_for_books")}}
+		<label>{{gt("search")}}</label>
 		 <md-autocomplete
-					class="search"
+					class="search float"
 					v-model="seaching_text"
 					:md-options="searchedBooks"
 					@change="searching"
 					md-layout="box">
-					<label>{{gt("search")}}</label>
-					</md-autocomplete>
-					<md-button class="md-raised md-primary" @click="search">{{gt("search")}}</md-button>
+					
+					</md-autocomplete><md-button class="md-raised md-primary float" @click="search">{{gt("search")}}</md-button>
 		{{gt("genres")}}
-		
-
-
+		</div>
+		<div class="section" v-if="dataReady">
+		<bookcard />
+		</div>
 
 	</div>
 </template>
 
 <script>
 import {signOut} from "firebase/auth";
+import {get_text,languages,get_defaultlanguage} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
 import {ref, set ,onValue,get, child} from "firebase/database";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
 import loading from "@/components/parts/loading";
+import bookcard from "@/components/parts/bookcard";
+
 import logo from "@/assets/logo";
+import Bookcard from './parts/bookcard.vue';
 
 	export default {
 		components: {
-		
+		bookcard
+
 		},
 		name: 'Index',
 		data: () => ({
@@ -41,6 +47,7 @@ import logo from "@/assets/logo";
 			searchedBooks:[],
 			userTheme: "default",
 			loading_screen:false,
+			dataReady:true
 			
 		}),
 		mounted() {
@@ -49,6 +56,7 @@ import logo from "@/assets/logo";
 		methods: {
 			async searching()
 			{
+				this.dataReady=false;
 				let a=[];
 				if(!this.seaching_text.length>3) return [];
 				let coll = collection(firestore,"books");
@@ -66,7 +74,12 @@ import logo from "@/assets/logo";
 				//let query=query(collection,)
 				//return  a;
 				this.searchedBooks=a;
+				this.dataReady=true;
 			},
+			gt(a)
+				{
+					return get_text(a);
+				},
 		},
 		computed:
 		{
@@ -78,5 +91,8 @@ import logo from "@/assets/logo";
 </script>
 
 <style lang="scss">
-	
+	.float
+	{
+		float: left;
+	}
 </style>

@@ -18,13 +18,13 @@
             <md-table-empty-state
                 :md-label="gt('users_cant_found')"
                 :md-description="`${gt('no_user_cant_be_found')} '${search}'.`">
-                <md-button class="md-primary md-raised" @click="newBook">{{gt('add_new_book')}}</md-button>
+                <md-button class="md-primary md-raised" @click="$router.push(`/admin/book/new`)">{{gt('add_new_book')}}</md-button>
             </md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
                 <md-table-cell :md-label="gt('bookname')" md-sort-by="bookname">{{ item.data.book_name }}</md-table-cell>
-                <md-table-cell :md-label="gt('Author')" md-sort-by="author">{{ item.data.author }}</md-table-cell>
+                <md-table-cell :md-label="gt('Author')" md-sort-by="author">{{ item.data.author_name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="releaser">{{ item.data.publisher }}</md-table-cell>
                 <md-table-cell :md-label="gt('language')" md-sort-by="language"><country-flag :country="item.data.language" size='normal'/></md-table-cell>
                 <md-table-cell :md-label="gt('keywords')" md-sort-by="keywords">{{ item.data.keywords }}</md-table-cell>
@@ -32,7 +32,7 @@
         </md-table>
         </div>
 
-        <md-button @click="$router.push(`/admin/`)">{{gt("upload")}}</md-button>
+        <md-button @click="$router.push(`/admin/book/new`)">{{gt("upload")}}</md-button>
         </div>
 
 
@@ -51,7 +51,6 @@ const toLower = text => {
     if (term) {
       return items.filter(item => toLower(item.name).includes(toLower(term)))
     }
-
     return items
   }
 
@@ -61,29 +60,32 @@ export default {
     ({
         search: null,
         searched: [],
+        books:[],
        
     }),
+    async mounted()
+    {
+         const q = query(collection(firestore, "books"),limit(20));
+            const querySnapshot = await getDocs(q);
+            let b=[];
+            querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            b.push({id:doc.id,data:doc.data()});
+            });  
+            this.books=b;
+    },
     methods:{
         gt(a)
         {
             return get_text(a);
         },
+       
         searchOnTable () {
         this.searched = searchByName(this.books, this.search)
       }
     },
     computed:
     {
-books(){
-const q = query(collection(firestore, "books"),limit(20));
-const querySnapshot = getDocs(q);
-let b=[];
-querySnapshot.forEach((doc) => {
-  // doc.data() is never undefined for query doc snapshots
-  b.push({key:doc.id,data:doc.data()});
-});  
-    return b;
-        }
     }
 }
 </script>
