@@ -63,8 +63,8 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 		},
 		name: 'Index',
 		data: () => ({
-			langs:languages,
-			language:[],
+			langs:[],
+			language:"",
 			valid_until:"",
 			options:[],
 			user:{
@@ -76,13 +76,15 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 			
 		}),
 		async mounted() {
+			//this.langs=;
 			this.user= await getAuth().currentUser;
 			//let update_number=(await getDoc(collection(firestore,"books"),book_id)).data().favorites;
 			//collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
 			this.language=get_defaultlanguage();
 
 			//console.log(this.language);
-			this.langs.foreach((a)=>
+			console.log(languages());
+			languages().foreach((a)=>
 			{
 				this.options.push({value:a.code,text:a.name});
 			});

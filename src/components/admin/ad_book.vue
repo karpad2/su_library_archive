@@ -11,6 +11,10 @@
       <md-input @change="change" v-model="book.author_name" md-counter="100"></md-input>
     </md-field>
     <md-field>
+      <label>{{gt('publisher')}}</label>
+      <md-input @change="change" v-model="book.publisher" md-counter="100"></md-input>
+    </md-field>
+    <md-field>
       <label>{{gt('language_chooser')}}</label>
      <md-select @change="change" v-model="book.language">
 							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
@@ -61,7 +65,7 @@ import { quillEditor } from 'vue-quill-editor';
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc } from "firebase/firestore";
 export default {
     
     data(){
@@ -74,6 +78,7 @@ export default {
         description:"",
         language:"",
         favorites:0,
+        book_ref:null,
         uploading_date:"",
         visible:true},
         book_id:null,
@@ -111,7 +116,7 @@ export default {
     },
     async mounted()
     {
-      if(this.$router.params.bid=="new")
+      if(this.$route.params.bid=="new")
       {
       
       this.languages.forEach((el,i)=>{
@@ -121,7 +126,7 @@ export default {
       }
       else
       {
-        this.book_id=this.$router.params.bid;
+        this.book_id=this.$route.params.bid;
       }
       
       
@@ -139,15 +144,15 @@ export default {
     },
     async change()
     {
-      let book_ref=null;
-       if(this.$router.params.bid=="new" && this.book_id==null)
+      
+       if(this.$route.params.bid=="new" && this.book_id==null)
       {
-      book_ref=await addDoc(doc(firestore,"books"),this.book,{merge:true});
-      this.book_id=book_ref.id;
+      this.book_ref=await addDoc(doc(firestore,"books"),this.book,{merge:true});
+      this.book_id=this.book_ref.id;
       }
       else
       {
-        book_ref=await setDoc(doc(firestore,"books",this.$router.params.bid),this.book,{merge:true});
+        this.book_ref=await setDoc(doc(firestore,"books",this.book_id),this.book,{merge:true});
       }
 
     },
@@ -160,11 +165,15 @@ export default {
       const metadata = {contentType: 'image/png'};
       let uploadTask = await uploadBytes(firststorageRef, this.first_page, metadata);
       let storageRef=null;
+      this.page_number=0;
       this.pages.forEach(async(element,index)=>
       {
          storageRef= ref(storage,`books/${this.book_id}/pages/${index+1}.png`);
          uploadTask = await uploadBytes(storageRef, element, metadata);
-      })
+         this.page_number++;
+      });
+      updateDoc(doc(firestore,"books",this.book_id),{page_number:this.page_number},{merge:true});
+
       
 
     }

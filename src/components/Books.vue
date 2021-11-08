@@ -2,7 +2,8 @@
 	<div>
 	<div class="section">
 		{{gt("search_for_books")}}
-		<label>{{gt("search")}}</label>
+		
+		<div class="center">
 		 <md-autocomplete
 					class="search float"
 					v-model="seaching_text"
@@ -11,6 +12,7 @@
 					md-layout="box">
 					
 					</md-autocomplete><md-button class="md-raised md-primary float" @click="search">{{gt("search")}}</md-button>
+		</div>
 		{{gt("genres")}}
 		</div>
 		<div class="section" v-if="dataReady">

@@ -68,6 +68,7 @@
     "agree":"Agree",
     "disagree":"Disagree",
     "cancel":"cancel",
+    "Publisher":"Publisher",
     "admin_users":"Admin Users",
     "joined":"Joined",
     "User":"User",
@@ -80,9 +81,11 @@
     "promotion":"Promotion",
     "promotion_text":"Promotion text",
     "promotion_has_ended":"Promotion has ended",
-    "promotion_text_get_membership":"Promotion has ended, get membership your at library",
+    "promotion_text_get_membership":"Promotion has ended,if you want to use service please make membership your at library",
     "member":"Member",
-    "admin_user":"Admin user"
+    "admin_user":"Admin user",
+    "books_cant_found":"Book cant found"
+    
 
 
 

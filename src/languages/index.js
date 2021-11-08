@@ -1,5 +1,7 @@
 import {FirebaseAuth} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,  } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { firestore } from "firebase-admin";
 
 const english= require("./en.json");
 const hungarian= require("./hu.json");
@@ -8,13 +10,24 @@ const serbian= require("./rs.json");
 function get_text(indicator)
 {   let text="";
     let code="en";
-    const auth=getAuth();
+    let signed_in=!(getAuth().currentUser==null);
+
     code=localStorage.getItem("language");
-    if(code==null)
+    if(code==null&&signed_in)
+    {
+        
+        let user=getAuth().currentUser;
+        let query_language=getDoc(doc(firestore,"users",user.uid));
+        query_language.then((a)=>{
+            localStorage.setItem("language",a.data().language);
+        })
+        
+        
+    }
+    else if(code==null &&!signed_in)
     {
         code="sr-SR";
-        localStorage.setItem("sr-SR",code);
-        
+        localStorage.setItem("language",code);
     }
     //console.log(code);
     switch(code)
@@ -38,7 +51,9 @@ function contains_the_array(array,word)
 
 }
 
-const languages=[
+function languages()
+{ 
+    return [
     {
         code:"sr-SR",
         name:"Srpski"
@@ -51,8 +66,9 @@ const languages=[
     {
         code:"en",
         name:"English"
-    },
-];
+    }];
+}
+
 function get_defaultlanguage()
 {
     return languages[0].code;

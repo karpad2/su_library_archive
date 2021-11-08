@@ -5,13 +5,13 @@
 				<md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
 					<md-icon>menu</md-icon>
 				</md-button>
-				<hide-at breakpoint="small">
+				<hide-at  breakpoint="small">
 				<router-link class="router-link" to="/home">
 					<logo class="bar-logo" />
 					<span class="md-title">  {{gt("app-title")}}</span>
 				</router-link>
 				</hide-at>
-				<hide-at breakpoint="mediumAndBelow">
+				<hide-at v-if="!admin_page" breakpoint="mediumAndBelow">
 				 <md-autocomplete
 					v-if="signedin()"
 					class="desktop search"
@@ -116,7 +116,7 @@
 			<md-app-content>
 				    <b-alert v-if="signedin() && !email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
-					<b-alert v-if="promotion" variant="success" show>{{gt("promotion_text")}}</b-alert>
+					<b-alert v-if="promotion &&(!member||!admin)" variant="success" show>{{gt("promotion_text")}}</b-alert>
 					<b-alert v-if="!promotion && !member" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
 
 					 <md-dialog-confirm
@@ -184,6 +184,7 @@ import logo from "@/assets/logo";
 			language_chooser_dialog:false,
 			showSidepanel:false,
 			terms:false,
+			admin_page:false,
 			promotion:false,
 			signed_in:false,
 			menuVisible: false,
@@ -215,7 +216,7 @@ import logo from "@/assets/logo";
 			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
 			this.profile_name=await FirebaseAuth.displayName;
 			this.email_verified=await getAuth().currentUser.emailVerified;
-			this.language= await this.get_user_language();
+			//this.language= await this.get_user_language();
 			this.admin=await this.is_admin();
 			this.member=await this.is_member();
 
@@ -239,6 +240,11 @@ import logo from "@/assets/logo";
 				this.$router.replace('/home').catch(() => {
 				});
 			}
+			if (String(this.$route.fullPath).indexOf("/admin/") >=0)
+			{
+				this.admin_page=true;
+			}
+			else this.admin_page=false;
 
 			if (String(this.$route.fullPath).indexOf("/admin/") >=0 && !this.admin) {
 				this.$router.push("/home");
@@ -374,10 +380,8 @@ import logo from "@/assets/logo";
 				});
 				this.searchedBooks=a;
 			},
-			lang_change()
-			{
-				localStorage.setItem("language",this.language);
-			},
+			
+			
 			async is_admin()
 			{ 
 				
@@ -386,7 +390,6 @@ import logo from "@/assets/logo";
 				return k.data().admin;
 				//return k.data().admin==null?false:true;
 			},
-
 			async is_member()
 			{ 
 				

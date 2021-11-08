@@ -1,57 +1,55 @@
 <template>
 	<div v-if="dataReady">
-		<h1>{{book_title}}</h1>
+		<h1>{{book.name}}</h1>
 		{{gt("author")}}
-		<img src="" alt="book_cover"/>
-		<md-chips v-model="book_keywords" md-static></md-chips>
+		<img :src="book_thumbnail" alt="book_cover"/>
+		<md-chips v-model="book.keywords" md-static></md-chips>
 		<div>
-			{{book_description}}
+			{{book.description}}
 		</div>
 		<div>
 			{{gt("information")}}
-
+			<p>{{gt("upload_date")}}:{{book.upload_date}}</p>
 		</div>
 
 
-		<md-field>
-			<label for="">{{gt("page_number")}}</label>
+		<div>
+			{{gt("page_number")}}:{{book.page_number}}
 			
-		</md-field>
-	<md-field>
-		<md-datepicker v-model="upload_date" md-disabled/>
-	</md-field>
+		</div>
+	<div v-if="signed_in">
+		<Pages :bid="book_id"/>
+	</div>
 	</div>
 
 </template>
 
 <script>
-import {signOut} from "firebase/auth";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
-import {ref, set ,onValue,get, child} from "firebase/database";
+import {signOut,getAuth} from "firebase/auth";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
-
+import { getStorage, ref, listAll,get } from "firebase/storage";
+import Pages from "@/components/parts/Pages";
 
 	export default {
 		components: {
-	
+		Pages
 		},
 		name: 'Index',
 		data: () => ({
-			book_title:"",
-			book_author:"",
-			book_year:"",
-			upload_date:"",
-			book_keywords:[],
-			book_description:"",
+			book:{},
 			dataReady: false,
+			signed_in:false,
+			book_thumbnail:""
 			
 		}),
 		async mounted() {
-			const book_id=this.$route.params.book_id;
-			let update_number=await getDoc(collection("books").doc(book_id).doc("popularity"))
-			collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
-
+			this.book_id=this.$route.params.book_id;
+			this.book=await getDoc(doc(firestore,"books",this.book_id));
+			updateDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1});
+			this.signed_in=!(await getAuth().currentUser==null);
+			this.book_thumbnail=ref(storage,`books/${this.book_id}/thumbnail.png`);
 			this.dataReady=true;
 		},
 		methods: {

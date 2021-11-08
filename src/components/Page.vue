@@ -1,25 +1,28 @@
 <template>
-<div>
+<div v-if="dataReady">
 	
 <md-toolbar class="md-primary">
-<md-button @click="$router('/book/bid/b_name')"><md-icon>reply</md-icon></md-button>
+<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
 
-<md-button @click="$router('/book/bid/b_name')"><md-icon>reply</md-icon></md-button>
-<md-button @click="$router('/book/bid/b_name')"><md-icon>reply</md-icon></md-button>
+<md-button @click="last_page"><md-icon>navigate_prev</md-icon></md-button>
+<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
 
-<md-button @click="$router('/book/bid/b_name')"><md-icon>reply</md-icon></md-button>
-<md-button @click="$router('/book/bid/b_name')"><md-icon>reply</md-icon></md-button>
-
-
+<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+<md-button @click="next_page"><md-icon>navigate_next</md-icon></md-button>
 </md-toolbar> 
+<div class="section">
+	<img  :src="image" :alt="page"/>
+	<link rel="preload" as="image" :href="preimage.url" :v-for="preimage in image_pre" :key="preimage.id"/>
+</div>
 
 </div>
 </template>
 
 <script>
 import {signOut} from "firebase/auth";
-import {FireDb,FirebaseAuth,change_Theme_Fb} from "@/firebase";
-import {ref, set ,onValue,get, child} from "firebase/database";
+import {FireDb,FirebaseAuth,change_Theme_Fb,storage,firestore} from "@/firebase";
+import { getStorage, ref, listAll,get } from "firebase/storage";
+import {getDoc,doc} from "firebase/firestore";
 import loading from "@/components/parts/loading";
 import logo from "@/assets/logo";
 
@@ -27,64 +30,56 @@ import logo from "@/assets/logo";
 		components: {
 		
 		},
-		name: 'Index',
-		data: () => ({}),
-		mounted() {
-			
-			this.$router.beforeEach((to,from,next)=>{
-				
-				this.loading_screen=true;
-				next();
-			});
-			
-			this.$router.afterEach(()=>{
-				setTimeout(()=>{this.loading_screen=false},300);
-			});
-			
-			try{
-			//localStorage.user= FirebaseAuth._currentUser;
-			
-			this.profile_picture_url=FirebaseAuth.currentUser.photoURL;
-			this.profile_name=FirebaseAuth.displayName;
-			
-			
-			//console.log(FirebaseAuth.currentUser);
-			get(child(FireDb.once, `users/${FirebaseAuth.currentUser.uid}/user_profile_color`)).then((snapshot) => {
-        if (snapshot.exists()) {
-            //this.rooms=snapshot;
-			localStorage.userTheme=snapshot.val().user_profile_color;
-		}
-		else 
-		{
-			set(ref(FireDb,`users/${FirebaseAuth.currentUser.uid}/user_profile_color`),"light");
-		}});
-
-			console.log("Index");
-			}
-			catch (e)
-			{
-				console.warn(e);
-			}
-			if (localStorage.userTheme === "dark") {
-				this.userTheme = "dark";
-				}
-			if (this.$route.fullPath === '/') {
-				this.$router.replace('/home').catch(() => {
-				});
+		props:["book_id","page"],
+		name: 'Page',
+		data () {
+			return{
+				book:{},
+				dataReady:false,
+				image:"",
+				image_pre:[],
+				preloading_page_number:3
 			}
 		},
+		async mounted() {
+			 this.image = ref(storage, `books/${this.book_id}/pages/${this.page}`);
+			 this.book=await getDoc(doc(firestore,"books",this.book_id)).data();
+			for(let i=this.page;i<this.page+this.preloading_page_number;i++)
+			{
+				this.add_page_to_load(i);
+			}
+			
+			
+
+			 this.dataReady=true;
+		},
 		methods: {
+			add_page_to_load(lo)
+			{
+				if ( !( lo in this.image_pre ) ) {
+    				this.image_pre[lo] = {
+						id:lo,
+						url:ref(storage, `/books/${this.book_id}/pages/${lo}`)
+					};
+				}
+			},
 			next_page()
 			{
-
+				this.$router.push(`/book/${this.book_id}/`)
 			},
 			last_page()
 			{
-
+			this.$router.push(`/book/${this.book_id}/${this.book.book_name}/page/${this.book.page_count}`);
 			},
 			back_one_page()
 			{
-
+			if(this.page==1) return;
+			this.$router.push(`/book/${this.book_id}/${this.book.book_name}/page/${this.page-1}`);
+			},
+			back_to_home()
+			{
+				this.$router.push(`/book/${this.book_id}/${this.book.book_name}`);
+				
 			},
 			zoom_in()
 			{

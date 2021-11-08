@@ -7,7 +7,7 @@
         <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
-                <h1 class="md-title">{{gt("books")}}</h1>
+                <h1 class="md-title">{{gt("Books")}}</h1>
                 </div>
 
                 <md-field md-clearable class="md-toolbar-section-end">
@@ -16,8 +16,8 @@
             </md-table-toolbar>
 
             <md-table-empty-state
-                :md-label="gt('users_cant_found')"
-                :md-description="`${gt('no_user_cant_be_found')} '${search}'.`">
+                :md-label="gt('books_cant_found')"
+                :md-description="`${gt('no_book_cant_be_found')} '${search}'.`">
                 <md-button class="md-primary md-raised" @click="$router.push(`/admin/book/new`)">{{gt('add_new_book')}}</md-button>
             </md-table-empty-state>
 
@@ -32,7 +32,7 @@
         </md-table>
         </div>
 
-        <md-button @click="$router.push(`/admin/book/new`)">{{gt("upload")}}</md-button>
+        <md-button @click="$router.push(`/admin/book/new`)">{{gt("add_new_book")}}</md-button>
         </div>
 
 
