@@ -15,7 +15,8 @@
 
 		<div>
 			{{gt("page_number")}}:{{book.page_number}}
-			
+			<md-button v-if="signed_in"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
+					
 		</div>
 	<div v-if="signed_in">
 		<Pages :bid="book_id"/>
@@ -50,6 +51,7 @@ import Pages from "@/components/parts/Pages";
 			updateDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1});
 			this.signed_in=!(await getAuth().currentUser==null);
 			this.book_thumbnail=ref(storage,`books/${this.book_id}/thumbnail.png`);
+			if(this.book.hided) this.$router.push("/home");
 			this.dataReady=true;
 		},
 		methods: {
@@ -57,6 +59,13 @@ import Pages from "@/components/parts/Pages";
 				{
 					return get_text(a);
 				},
+			async add_favorite()
+			{
+			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
+			setDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:[... this.book_id]},{merge:true})
+			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
+			updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
+			}	
 		}
 	}
 	
