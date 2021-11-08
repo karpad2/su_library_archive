@@ -84,7 +84,9 @@
     "promotion_text_get_membership":"Promotion has ended,if you want to use service please make membership your at library",
     "member":"Member",
     "admin_user":"Admin user",
-    "books_cant_found":"Book cant found"
+    "books_cant_found":"Book cant found",
+    "editbook":"Edit Book",
+    "book_author":"Book Author"
     
 
 

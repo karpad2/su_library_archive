@@ -83,8 +83,8 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 			this.language=get_defaultlanguage();
 
 			//console.log(this.language);
-			console.log(languages());
-			languages().foreach((a)=>
+			const lang=languages;
+			lang.forEach((a)=>
 			{
 				this.options.push({value:a.code,text:a.name});
 			});
@@ -115,6 +115,7 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 			},
 			lang_change()
 			{
+				console.log(this.$parent.$data);
 				console.log(this.language);
 				localStorage.setItem("language",this.language);
 				updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{language:this.language},{merge:true});
