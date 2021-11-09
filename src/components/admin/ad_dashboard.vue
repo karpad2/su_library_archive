@@ -8,6 +8,7 @@
     <md-card-content>
       <md-switch @change="change" v-model="properties.undermaintenance"><small>{{gt("under_construction")}}</small></md-switch>
      <md-switch @change="change" v-model="properties.promotion"> <small>{{gt("promotion")}}</small></md-switch>
+     <md-switch @change="change" v-model="properties.promotion_hide"> <small>{{gt("promotion_hide")}}</small></md-switch>
     </md-card-content>
   
     </md-card>

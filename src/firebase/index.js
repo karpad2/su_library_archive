@@ -7,6 +7,7 @@ import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 import Vue from 'vue';
+import { getFunctions, httpsCallable } from "firebase/functions";
 import {enableIndexedDbPersistence, getFirestore,doc,getDoc,collection,updateDoc,update,setDoc,getDocFromServer,CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 import firebaseCredentials from './credentials';
 
@@ -16,6 +17,7 @@ const perf = getPerformance(app);
 const storage = getStorage(app);
 const firestore = getFirestore(app);
 const analytics = getAnalytics();
+const functions = getFunctions(app);
 logEvent(analytics, 'notification_received');
 
 const appCheck = initializeAppCheck(app, {
@@ -117,6 +119,7 @@ export {
 	userId,
 	get_user_language,
 	isAdmin,
+	functions,
 	user_is_admin,
 	user_email_verified,
 }

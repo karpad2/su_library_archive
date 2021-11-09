@@ -60,6 +60,10 @@
 						</router-link>
 					</div>
 					<md-divider></md-divider>
+					<md-list-item v-if="!member" @click="enter_code=1">
+								<md-icon class="md-icon">vpn_key</md-icon>
+								<span class="md-list-item-text">{{gt("enter_code")}}</span>
+					</md-list-item>
 					<md-list-item v-if="signedin()" @click="changeTheme">
 								<md-icon class="md-icon">settings_brightness</md-icon>
 								<span class="md-list-item-text">{{gt("ctheme")}}</span>
@@ -116,8 +120,8 @@
 			<md-app-content>
 				    <b-alert v-if="signedin() && !email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
-					<b-alert v-if="promotion &&(!member||!admin)" variant="success" show>{{gt("promotion_text")}}</b-alert>
-					<b-alert v-if="!promotion && !member" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
+					<b-alert v-if="promotion && !promotion_hide &&(!member||!admin)" variant="success" show>{{gt("promotion_text")}}</b-alert>
+					<b-alert v-if="!promotion && !promotion_hide && (!member||!admin)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
 
 					 <md-dialog-confirm
 						:md-active.sync="terms"
@@ -127,6 +131,18 @@
 						:md-cancel-text="gt('disagree')"
 						@md-cancel="logout"
 						@md-confirm="accept_terms" />
+
+					 
+
+						<md-dialog-prompt
+						:md-active.sync="enter_code"
+						v-model="code"
+						:md-title="gt('enter_code')"
+						md-input-maxlength="32"
+						:md-input-placeholder="gt('type_code_pls')"
+						:md-confirm-text="gt('ok')"
+						:md-cancel-text="gt('cancel')"
+						@md-confirm="check_code" />
 					
 					
 
@@ -143,9 +159,10 @@
 <script>
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified} from "@/firebase";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,functions} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,  } from "firebase/firestore";
 import {showAt, hideAt} from 'vue-breakpoints';
+import { getFunctions, httpsCallable } from "firebase/functions";
 import loading from "@/components/parts/loading";
 import undermaintenance from "@/components/parts/undermaintenance";
 import logo from "@/assets/logo";
@@ -175,6 +192,8 @@ import logo from "@/assets/logo";
 				title:"",
 				text:""
 			},
+			code:"",
+			enter_code:false,
 			languages:languages,
 			searchedBooks:[],
 			language:get_defaultlanguage(),
@@ -186,6 +205,7 @@ import logo from "@/assets/logo";
 			terms:false,
 			admin_page:false,
 			promotion:false,
+			promtoion_disabled:false,
 			signed_in:false,
 			menuVisible: false,
 			userTheme: "default",
@@ -238,6 +258,7 @@ import logo from "@/assets/logo";
 			
 			this.undermaintenance_flag= get_under.data().undermaintenance;
 			this.promotion=get_under.data().promotion;
+			this.promotion_hide=get_under.data().promotion_hide;
 			console.log(this.undermaintenance_flag);
 			//this.language=await getAuth().languageCode;
 			let theme="light";
@@ -476,14 +497,20 @@ import logo from "@/assets/logo";
 },
 				async accept_terms()
 				{
-				let ref=doc(firestore,"users",FirebaseAuth.currentUser.uid);
 				//console.log(ref);
-				setDoc(ref,{terms:true},{merge:true});
+				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{terms:true},{merge:true});
 
 				},
-				change_language()
+				async check_code()
 				{
-
+					const checkCode=httpsCallable(functions,"checkCode");
+					checkCode({ text: this.code })
+					.then((result) => {
+						// Read result of the Cloud Function.
+						/** @type {any} */
+						const data = result.data;
+						const sanitizedMessage = data.text;
+					});
 				},
 			logout() {
 				this.loading = true;

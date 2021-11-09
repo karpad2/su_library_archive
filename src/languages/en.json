@@ -77,6 +77,7 @@
     "edituser":"Edit User",
     "admin_books":"Admin Books",
     "admin_dashboard":"Admin Dashboard",
+    "dashboard":"Dashboard",
     "promotion_over_text":"Promotion time is over",
     "promotion":"Promotion",
     "promotion_text":"Promotion text",
@@ -86,7 +87,10 @@
     "admin_user":"Admin user",
     "books_cant_found":"Book cant found",
     "editbook":"Edit Book",
-    "book_author":"Book Author"
+    "book_author":"Book Author",
+    "enter_code":"Enter code",
+    "type_code_pls":"Type code here...",
+    "promotion_hide":"Promotion hide"
     
 
 
