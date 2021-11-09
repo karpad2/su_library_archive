@@ -4,6 +4,7 @@
 <md-toolbar class="md-primary">
 <md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
 
+<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
 <md-button @click="last_page"><md-icon>navigate_prev</md-icon></md-button>
 <md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
 
@@ -14,6 +15,25 @@
 	<img  :src="image" :alt="page"/>
 	<link rel="preload" as="image" :href="preimage.url" :v-for="preimage in image_pre" :key="preimage.id"/>
 </div>
+<md-toolbar class="md-primary">
+<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
+
+<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
+<md-button @click="last_page"><md-icon>navigate_prev</md-icon></md-button>
+<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
+
+<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+<md-button @click="next_page"><md-icon>navigate_next</md-icon></md-button>
+</md-toolbar> 
+<md-dialog-prompt
+      :md-active.sync="mpagechooser"
+      v-model="choosed_pager"
+      md-title="What's your name?"
+      md-input-maxlength="30"
+      md-input-placeholder="Type your name..."
+      md-confirm-text="Done"
+	  md-confirm="" />
+
 
 </div>
 </template>
@@ -35,9 +55,11 @@ import logo from "@/assets/logo";
 		data () {
 			return{
 				book:{},
+				mpagechooser :false,
 				dataReady:false,
 				image:"",
 				image_pre:[],
+				choosed_pager:0,
 				preloading_page_number:3
 			}
 		},
@@ -89,6 +111,10 @@ import logo from "@/assets/logo";
 			{
 
 			},
+			go_to_page_modul()
+			{
+				this.$router.push(`/book/${this.book_id}/${this.book.book_name}/page/${this.choosed_pager}`);
+			}
 
 		}
 	}
