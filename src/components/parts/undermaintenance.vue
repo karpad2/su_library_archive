@@ -2,19 +2,22 @@
     
     <div class="center">
         <maintenance />
-        <h1>{{gt("promotion_has_ended")}}</h1>
-        <h3>{{gt("promotion_text_get_membership")}}</h3>
+        <h1>{{gt("under_construction")}}</h1>
+        <h3>{{gt("wewillbeback")}}</h3>
     </div>
 
 </template>
 
 <script>
-import {get_text,languages,get_defaultlanguage} from "@/languages";
+import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 import maintenance from "@/assets/maintenance";
 export default {
     components:{
         maintenance
     },
+    metaInfo:{
+			title:title_page("","under_constructions"),
+		},
     setup() {
         
     },

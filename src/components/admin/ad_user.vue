@@ -1,6 +1,6 @@
 <template>
 <div v-if="dataReady" >
-<h2>{{gt("user")}}</h2>
+<h2>{{gt("User")}}</h2>
 
 <md-field>
       <label>{{gt('user_name')}}</label>
@@ -10,11 +10,15 @@
       <label>{{gt('user_email')}}</label>
       <md-input v-model="user.email" md-counter="100"></md-input>
 </md-field>
-
+<md-field>
+      <label>{{gt('member_id')}}</label>
+      <md-input v-model="user.member_id" md-counter="100"></md-input>
+</md-field>
 
 
 <md-switch @change="change" v-model="user.member">{{gt("member")}}</md-switch>
 <md-switch @change="change" v-model="user.admin">{{gt("admin_user")}}</md-switch>
+<md-switch @change="change" v-model="user.h4cker">{{gt("blocked_access")}}</md-switch>
 
 </div>
 </template>

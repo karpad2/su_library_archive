@@ -247,12 +247,13 @@ import logo from "@/assets/logo";
 			this.member=(k.data().member==null?false:k.data().member);
 			if((k.data().h4cker==null?false:k.data().h4cker)){
 				this.logout();
-				this.$noty.success(":3", {
+				this.$noty.success(this.gt(":3"), {
 						killer: true,
 						timeout: 1500,
 					});
 
 			}
+			localStorage.setItem("language",k.data().language);
 
 			let get_under= await getDoc(doc(firestore,"properties","global_flags"));
 			
@@ -347,30 +348,6 @@ import logo from "@/assets/logo";
 		},
 		computed:{
 			
-			popular_ones()
-			{
-				let a=[];
-				let coll = collection(firestore,"books");
-				let q=query(coll,where("keywords","array-contains-any",this.seaching_text),limit(10));
-				let c=getDocs(q);
-				c.forEach(element => {
-				a.push({
-					book_name:element.book_name,
-					author:element.author,
-					photoURL:element.book_cover
-				})
-				
-				});
-				return  a;
-			},
-			newest_uploads()
-			{
-				let a=[];
-				let coll = collection(firestore,"books");
-				//let query=query(collection,)
-				return  a;
-			},
-			
 		},
 		methods: {
 			toggleMenu() {
@@ -400,24 +377,11 @@ import logo from "@/assets/logo";
 			{
 				
 			},
-			async searching()
+			searching()
 			{
-				let a=[];
-				if(!this.seaching_text.length>3) return [];
-				let q=query(collection(firestore,"books"),where("keywords","array-contains-any",[this.seaching_text]),limit(10));
-				let c=await getDocs(q);
-				c.forEach(element => {
-				a.push({
-					book_name:element.book_name,
-					author:element.author,
-					photoURL:element.book_cover
-				})
-				
-				});
-				this.searchedBooks=a;
+				this.$router.push(`/books/${this.seaching_text}`);
+			
 			},
-			
-			
 			async is_admin()
 			{ 
 				
@@ -500,6 +464,11 @@ import logo from "@/assets/logo";
 				//console.log(ref);
 				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{terms:true},{merge:true});
 
+				},
+				refresh_page()
+				{
+					this.dataReady=false;
+					this.dataReady=true;
 				},
 				async check_code()
 				{

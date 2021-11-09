@@ -51,7 +51,7 @@
     "upload_book":"Upload book",
     "upload_book_keywords":"Select keywords",
     "book_name":"Title of book",
-    "author_name":"Authors name",
+    "author_name":"Author name",
     "first_page_as_cover":"Use first page as cover?",
     
     "language":"Language",
@@ -90,8 +90,13 @@
     "book_author":"Book Author",
     "enter_code":"Enter code",
     "type_code_pls":"Type code here...",
-    "promotion_hide":"Promotion hide"
-    
+    "promotion_hide":"Promotion hide",
+    "hided":"Hidden",
+    "member_id":"Member ID",
+    ":3":"Blocked access",
+    "blocked_access":"Blocked access",
+    "Support":"Support",
+    "settings_of_users":"Settings of users"    
 
 
 

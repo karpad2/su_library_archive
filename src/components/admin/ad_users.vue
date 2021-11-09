@@ -1,10 +1,16 @@
 <template>
      <div v-if="dataReady">
-        <md-headline>{{gt("Users")}}</md-headline>
-        <div>{{gt("settings_of_users")}}
-        
+        <md-card>
+            <md-card-header>
+        <md-card-header-text>
+          <div class="md-title"> {{gt("settings_of_users")}}</div>
+		   </md-card-header-text>
+		   </md-card-header>
+       
+
+        <md-card-content>
         <div class="section" v-if="users.length>0">
-        <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+        <md-table  v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
                 <h1 class="md-title">{{gt("users")}}</h1>
@@ -15,10 +21,9 @@
                 </md-field>
             </md-table-toolbar>
 
-            <md-table-empty-state
+            <md-table-empty-state v-if="search!=''"
                 :md-label="gt('users_cant_found')"
                 :md-description="`${gt('no_user_cant_be_found')} '${search}'.`">
-                
             </md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
@@ -29,9 +34,9 @@
             </md-table-row>
         </md-table>
         </div>
-        </div>
-
-
+        
+        </md-card-content>
+        </md-card>
     </div>
 
 </template>

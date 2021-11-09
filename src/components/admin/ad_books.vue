@@ -15,7 +15,7 @@
                 </md-field>
             </md-table-toolbar>
 
-            <md-table-empty-state
+            <md-table-empty-state v-if="search!=''"
                 :md-label="gt('books_cant_found')"
                 :md-description="`${gt('no_book_cant_be_found')} '${search}'.`">
                 <md-button class="md-primary md-raised" @click="$router.push(`/admin/book/new`)">{{gt('add_new_book')}}</md-button>
@@ -50,7 +50,7 @@ const toLower = text => {
 
   const searchByName = (items, term) => {
     if (term) {
-      return items.filter(item => toLower(item.name).includes(toLower(term)))
+      return items.filter(item => toLower(item.data.name).includes(toLower(term)))
     }
     return items
   }
@@ -59,7 +59,7 @@ export default {
     
     data:()=>
     ({
-        search: null,
+        search: "",
         searched: [],
         books:[],
        
@@ -81,8 +81,19 @@ export default {
             return get_text(a);
         },
        
-        searchOnTable () {
-        this.searched = searchByName(this.books, this.search)
+        async searchOnTable () {
+        //this.searched = searchByName(this.books, this.search)
+        this.searched=[];
+        let k=this.search.toLowerCase();
+        const q = query(collection(firestore, "books"),where("keywords","array-contains",k),limit(20));
+            const querySnapshot = await getDocs(q);
+            let b=[];
+            querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            b.push({id:doc.id,data:doc.data()});
+            });  
+            this.searched=b;
+      
       }
     },
     computed:

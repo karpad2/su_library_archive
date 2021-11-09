@@ -52,6 +52,11 @@ function contains_the_array(array,word)
 
 }
 
+function title_page(a,type="")
+{
+    return `${a} ${get_text(type)==undefined?"":get_text(type)} » ${get_text("app-title")}`;
+}
+
 const languages =[
     {
         code:"sr-SR",
@@ -77,5 +82,6 @@ export
     get_text,
     get_title,
     languages,
+    title_page,
     get_defaultlanguage
 }

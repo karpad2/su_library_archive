@@ -1,26 +1,55 @@
 <template>
 	<div v-if="dataReady">
-		<h1>{{book.name}}</h1>
-		{{gt("author")}}
-		<img :src="book_thumbnail" alt="book_cover"/>
-		<md-chips v-model="book.keywords" md-static></md-chips>
+<md-card>
+		<md-card-header>
+        <md-card-header-text>
+          <div class="md-title"> <h1>{{book.book_name}}</h1></div>
+		   </md-card-header-text>
+		   </md-card-header>
+		    <md-card-content>
+				<div class="user-container">
+				<div class="bigavatar">
+				<img  @click="enter_read(1)" alt="book_cover" 
+				:src="book_thumbnail" />
+				</div>
+				<div class="user-info">
+		<p> {{gt("author_name")}}: {{book.author_name}}</p>
+		
+		<p>{{gt("keywords")}}: <md-chips v-model="book.keywords" md-static></md-chips> </p>
+    	
+		<div v-html="book.description">
+		</div>
 		<div>
-			{{book.description}}
+			{{gt("page_number")}}: <md-chip>{{book.page_number}}</md-chip>
+			<div v-if="signed_in">
+			<md-button v-if="favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
+			<md-button v-else >❤️️ {{gt("favorite")}}</md-button>
+			</div>	
 		</div>
 		<div>
 			{{gt("information")}}
 			<p>{{gt("upload_date")}}:{{book.upload_date}}</p>
 		</div>
-
-
-		<div>
-			{{gt("page_number")}}:{{book.page_number}}
-			<md-button v-if="signed_in"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
-					
+		<div >
+			
 		</div>
-	<div v-if="signed_in">
-		<Pages :bid="book_id"/>
-	</div>
+		</div>
+		</div>
+        </md-card-content>
+	</md-card>
+	<md-card v-if="signed_in">
+		 <md-card-content>
+			 <Pages :bid="book_id"/>
+		</md-card-content>	
+	</md-card>	
+	
+		
+	
+		
+
+
+		
+	
 	</div>
 
 </template>
@@ -28,8 +57,8 @@
 <script>
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc} from "firebase/firestore";
-import {get_text,languages,get_defaultlanguage} from "@/languages";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache} from "firebase/firestore";
+import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 import { getStorage, ref, listAll,get } from "firebase/storage";
 import Pages from "@/components/parts/Pages";
 
@@ -37,21 +66,41 @@ import Pages from "@/components/parts/Pages";
 		components: {
 		Pages
 		},
-		name: 'Index',
+		
+		name: 'Book',
 		data: () => ({
 			book:{},
 			dataReady: false,
 			signed_in:false,
-			book_thumbnail:""
+			book_thumbnail:"",
+			favorite:false,
+			title_side:"",
+			book_id:"",
+			user:{}
 			
 		}),
+		/*metaInfo:{
+			title:this.title_side
+		},*/
 		async mounted() {
-			this.book_id=this.$route.params.book_id;
-			this.book=await getDoc(doc(firestore,"books",this.book_id));
-			updateDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1});
+			this.book_id=this.$route.params.bid;
+			let book_ref=await getDoc(doc(firestore,"books",this.book_id));
+			this.book=book_ref.data();
+			updateDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
-			this.book_thumbnail=ref(storage,`books/${this.book_id}/thumbnail.png`);
+			this.book_thumbnail=ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
 			if(this.book.hided) this.$router.push("/home");
+			this.title_side=title_page(this.book.book_name);
+			if(this.signed_in)
+				{
+				let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
+				this.user=user_ref.data();
+				if(this.user.favorites==null){
+				setDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:["test"]},{merge:true});
+				}
+				this.favorite=(this.user.favorites.indexOf(this.book_id)>=0);
+				}
+
 			this.dataReady=true;
 		},
 		methods: {
@@ -62,9 +111,16 @@ import Pages from "@/components/parts/Pages";
 			async add_favorite()
 			{
 			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
-			setDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:[... this.book_id]},{merge:true})
+
+				if(this.is_favorite) return;
+      		this.user.favorites.push(this.book_id);
+			setDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:[ this.user.favorites]},{merge:true})
 			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
 			updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
+			},
+			enter_read(i)
+			{
+				this.$router.push(`/book/${this.book_id}/${this.book.book_name}/page/${i}`);
 			}	
 		}
 	}
@@ -72,67 +128,15 @@ import Pages from "@/components/parts/Pages";
 </script>
 
 <style lang="scss">
-	@import "../../src/style/variables.scss";
-
-	#vue-js-index-container {
-		.md-app {
-			height: 100vh;
-
-			.router-link {
-				display: flex;
-				align-items: center;
-			}
-
-
-			.bar-logo {
-				width: 35px !important;
-				
-			}
-
-			.md-app-drawer {
-				max-width: 300px !important;
-			}
-			.md-primary
-			{
-				height: 45pt;
-			}
-			.md-button
-			{
-				height: 30pt;
-			}
-			.md-list-item {
-
-				&:hover {
-					.md-icon {
-						color: $accent;
-						opacity: 0.8;
-					}
-
-					.md-list-item-text {
-						color: $accent;
-						transition: color .4s cubic-bezier(.4,0,.2,1);
-						opacity: 0.8;
-					}
-				}
-
-				&.active {
-					.md-icon {
-						color: $accent;
-					}
-
-					.md-list-item-text {
-						color: $accent;
-					}
-				}
-
-				.md-list-item-text {
-					font-weight: bold;
-				}
-			}
-		}
-		 .md-drawer {
-		width: 230px;
-		max-width: calc(100vw - 125px);
- 		 }
+	.book_cover{
+		width: 350px;
+		height: 494px;
+		aspect-ratio: auto 350/494;
+	}
+	.big_container
+	{
+		display: inline-block;
+		width: 48%;
+		vertical-align: top;
 	}
 </style>

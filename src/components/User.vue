@@ -30,7 +30,7 @@
 	
 		<p>{{gt('joined')}} : {{joined}}</p>
 
-		<p>{{gt('valid_until')}} : {{valid_until}}</p>
+		<p v-if="valid_until_flag">{{gt('valid_until')}} : {{valid_until}}</p>
       		 
     	
 	
@@ -53,18 +53,22 @@
 import {signOut,getAuth} from "firebase/auth";
 import moment from "moment";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc  } from "firebase/firestore";
-import {get_text,languages,get_defaultlanguage} from "@/languages";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,getDocFromCache  } from "firebase/firestore";
+import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 
 
 	export default {
 		components: {
 	
 		},
+		metaInfo:{
+			title:title_page("","User"),
+		},
 		name: 'Index',
 		data: () => ({
 			langs:[],
 			language:"",
+			valid_until_flag:false,
 			valid_until:"",
 			options:[],
 			user:{

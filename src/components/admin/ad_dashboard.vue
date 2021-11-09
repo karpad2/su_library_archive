@@ -16,7 +16,7 @@
     </div>
 </template>
 <script>
-import {get_text} from "@/languages";
+import {get_text,title_page} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,  } from "firebase/firestore";
 export default {
@@ -27,6 +27,9 @@ export default {
 
     this.dataReady=true;
   },
+  metaInfo:{
+			title:title_page("","dashboard"),
+		},
   data()
   {
     return{

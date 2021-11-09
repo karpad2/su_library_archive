@@ -1,18 +1,15 @@
 <template>
 	<div v-if="dataReady">
-		<h3> </h3>
-
 		<md-card>
 		<md-card-header>
         <md-card-header-text>
           <div class="md-title">{{displayname()}} ❤️ {{gt("favorites")}}</div>
 		   </md-card-header-text>
 		   </md-card-header>
-		    <md-card-content>
-          <bookcard />
+		<md-card-content>
+          <bookcard v-for="fav in user.favorites" :key="fav" :book_id="fav" />
         </md-card-content>
-	</md-card>
-		
+	</md-card>		
 		
 	</div>
 
@@ -20,15 +17,17 @@
 
 <script>
 import {signOut,getAuth} from "firebase/auth";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
-import {ref, set ,onValue,get, child} from "firebase/database";
-import {get_text,languages,get_defaultlanguage} from "@/languages";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,getDocFromCache} from "firebase/firestore";
+import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 
 
 	export default {
 		components: {
 	
+		},
+		metaInfo:{
+			title:title_page("","favorites"),
 		},
 		name: 'Favorite',
 		data: () => ({
@@ -38,17 +37,20 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 			upload_date:"",
 			book_keywords:[],
 			dataReady: false,
+			user:{}
 			
 		}),
-		mounted() {
+		async mounted() {
 			
 			//let update_number=(await getDoc(collection(firestore,"books"),book_id)).data().favorites;
 			//collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
-		
 
+			let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
+    		this.user=user_ref.data();
 			this.dataReady=true;
 		},
 		methods: {
+			 
 			remove_from_favorite()
 			{
 

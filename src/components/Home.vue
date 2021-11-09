@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-if="dataReady">
 <div class="section">
 	<md-card>
 		<md-card-header>
@@ -8,7 +8,7 @@
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-          <bookcard />
+          <bookcard v-for="p in  popular_one" :key="p.id" :book_id="p.id" />
         </md-card-content>
 	</md-card>	
 </div>
@@ -20,7 +20,7 @@
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-          <bookcard />
+          <bookcard v-for="p in  newest_one" :key="p.id" :book_id="p.id" />
         </md-card-content>
 	</md-card>
 	</div>
@@ -31,10 +31,10 @@
 <script>
 import {FireDb,FirebaseAuth,userId,firestore} from "@/firebase";
 import bookcard from "@/components/parts/bookcard";
-import {get_text,languages,get_defaultlanguage} from "@/languages";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
+import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy  } from "firebase/firestore";
 import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/get_data";
-import { orderByValue } from '@firebase/database';
+
 
 	export default {
 		name: "Home_Page",
@@ -42,14 +42,20 @@ import { orderByValue } from '@firebase/database';
 			selectedMovies: [],
 			selectedDate: null,
 			boolean: false,
+			dataReady:false,
 			profilexpire:"",
 			active:0,
 			inactive:0,
 			devices:{},
 			events:[],
+			popular_one:[],
+			newest_one:[],
 			date: new Date(),
 			
 		}),
+		metaInfo:{
+			title:title_page("","Home"),
+		},
 		components:{
 			bookcard
     		
@@ -62,39 +68,7 @@ import { orderByValue } from '@firebase/database';
 				set(val) {
 					this.$material.locale.firstDayOfAWeek = val;
 				},
-				popular_ones()
-			{
-				let a=[];
-				let coll = collection(firestore,"books");
-				let q=query(coll,orderByValue("popularity"),limit(5));
-				let c=getDocs(q);
-				c.forEach(element => {
-				a.push({
-					book_name:element.book_name,
-					author:element.author,
-					photoURL:element.book_cover
-				})
-				
-				});
-				return  a;
-			},
-			newest_books()
-			{
-				let a=[];
-				let coll = collection(firestore,"books");
-				let q=query(coll,orderByValue("uploading_date"),limit(10));
-				let c=getDocs(q);
-				c.forEach(element => {
-				a.push({
-					book_name:element.book_name,
-					author:element.author,
-					photoURL:element.book_cover
-				})
-				
-				});
-				return  a;
-			},
-				
+			
 				
 			},
 			dateFormat: {
@@ -121,12 +95,17 @@ import { orderByValue } from '@firebase/database';
 			}
 			
 		},
-		mounted()
+		async mounted()
 		{
 			console.log(FirebaseAuth.currentUser);
 			//this.get_name();
 			//this.events=get_data_from_allroomdb("events");
 			//console.log(this.$route)
+			this.popular_one=await this.popular_ones();
+			this.newest_one= await this.newest_books();
+			console.log(this.popular_one);
+				
+			this.dataReady=true;	
 		},
 		methods: {
 			gt(a)
@@ -141,7 +120,34 @@ import { orderByValue } from '@firebase/database';
 					killer: true,
 					timeout: 1500,
 				});
-			}
+			},
+			async popular_ones()
+			{
+				let a=[];
+				
+				let q=query(collection(firestore,"books"),orderBy("popularity"),limit(5));
+				let c= await getDocs(q);
+				c.forEach(element => {
+				a.push({
+					id:element.id
+				})
+				
+				});
+				return  a;
+			},
+			async newest_books()
+			{
+				let a=[];
+				let q=query(collection(firestore,"books"),orderBy("uploading_date"),limit(10));
+				let c=await getDocs(q);
+				c.forEach(element => {
+				a.push({
+					id:element.id
+				})
+				
+				});
+				return  a;
+			},
 		},
 		
 	}

@@ -114,5 +114,11 @@ user-select: none;
 	width: 230px;
 	max-width: calc(100vw - 125px);
 	  }
+	  img {
+		border-top-left-radius: .3em;
+		border-top-right-radius: .3em;
+		border-bottom-left-radius: .3em;
+		border-bottom-right-radius: .3em;
+	  }
 	  
 }

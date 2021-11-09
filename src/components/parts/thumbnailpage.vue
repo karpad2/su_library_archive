@@ -1,6 +1,6 @@
 <template>
     <div class="container" v-if="dataReady">
-        <img class="thumbcontainer" :src="image" alt="thumbnail"/>
+        <img class="thumbcontainer" v-lazy="image" alt="thumbnail"/>
     </div>
 </template>
 
@@ -18,7 +18,7 @@ export default {
     },
     async mounted()
     {
-        this.image = ref(storage, `books/${this.book_id}/pages/${this.page}`);
+        this.image = ref(storage, `/books/${this.book_id}/pages/${this.page}.jpg`);
 
     }
 }

@@ -14,13 +14,17 @@ import VueMaterial from 'vue-material'; // TODO: import only needed component, n
 import 'vue-material/dist/vue-material.min.css';
 import VueMeta from 'vue-meta';
 import CountryFlag from 'vue-country-flag'
+import VueSocialSharing from 'vue-social-sharing'
 import Vuetify from 'vuetify';
+import VueLazyload from 'vue-lazyload'
 import 'vuetify/dist/vuetify.min.css';
 
 Vue.component('country-flag', CountryFlag);
 Vue.use(Vuetify);
 Vue.use(VueMeta);
 Vue.use(VueMaterial);
+Vue.use(VueLazyload);
+
 
 
 import 'quill/dist/quill.core.css';
@@ -35,6 +39,7 @@ Vue.use(VueQuillEditor, /* { default global options } */);
  
 Vue.use(AudioRecorder);
 Vue.use(BootstrapVue);
+Vue.use(VueSocialSharing);
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 

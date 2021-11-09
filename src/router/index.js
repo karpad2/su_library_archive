@@ -23,7 +23,7 @@ import Home from "../components/Home";
 import PublicIndex from "../components/Index";
 import PublicSupport from "../components/Public/Support";
 
-import Info from "../components/Info";
+
 import Books from "../components/Books";
 import Book from "../components/Book";
 import Favorites from "../components/Favorites";
@@ -58,6 +58,11 @@ const router = new VueRouter ({
 			component: Books
 		},
 		{
+			path: 'books/:b_search',
+			name: 'bookswithoutlogin',
+			component: Books
+		},
+		{
 			path: 'book/:b_id',
 			name: 'bookwithoutlogin',
 			component: Book
@@ -79,37 +84,32 @@ const router = new VueRouter ({
 					name: 'home',
 					component: Home
 				},
-				
-				
-				{
-					path: 'info',
-					name: 'info',
-					component: Info,
-				},
 				{
 					path: 'favorites',
 					name: 'favorites',
 					component: Favorites,
 				},
-				{
-					path: 'logout',
-					name: 'logout',
-					component: Info,
-				},
+				
 				{
 					path: 'books',
-					name: 'books',
+					name: 'bookssearch',
 					component: Books,
 					meta: {requiresAuth: false}
 				},
 				{
-					path: 'book/:bid/:b_author/:b_name',
+					path: 'books/:b_search',
+					name: 'bookssearch',
+					component: Books,
+					meta: {requiresAuth: false}
+				},
+				{
+					path: 'book/:bid/:b_name',
 					name: 'book',
 					component: Book,
 					meta: {requiresAuth: false}
 				},
 				{
-					path: 'book/:bid/:b_author/:b_name/page/:pid',
+					path: 'book/:bid/:b_name/page/:pid',
 					name: 'bookpage',
 					component: Page,
 					
