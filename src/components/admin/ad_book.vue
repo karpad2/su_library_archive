@@ -1,7 +1,10 @@
 <template>
 <div v-if="dataReady">
-    <md-title>{{gt('add_new_book')}}</md-title>
-    
+  <md-card class="md-layout-item md-size-50 md-small-size-100">
+    <md-card-header>
+        <div class="md-title">{{gt('add_new_book')}}</div>
+    </md-card-header>
+     <md-card-content>
     <md-field>
       <label>{{gt('book_name')}}</label>
       <md-input @change="change" v-model="book.book_name" md-counter="100"></md-input>
@@ -14,13 +17,9 @@
       <label>{{gt('publisher')}}</label>
       <md-input @change="change" v-model="book.publisher" md-counter="100"></md-input>
     </md-field>
-    <md-field>
-      <label>{{gt('language_chooser')}}</label>
-     <md-select @change="change" v-model="book.language">
-							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
-						</md-select>
-    </md-field>
-    
+   
+      
+        <b-form-select @change="change" v-model="book.language" :options="languages"></b-form-select>     
     <quillEditor />
 
     <md-field>
@@ -55,8 +54,9 @@
     <md-field>
       <label>{{gt("upload_book")}}</label>
       <md-file v-model="placeholder" :placeholder="gt('upload_book')" />
-    </md-field>   
-
+    </md-field>
+     </md-card-content>   
+</md-card>
 </div>
 </template>
 <script>
@@ -95,16 +95,16 @@ export default {
         page_number:0,
         languages:[
           {
-            code:"rs",name:"serbian"
+            item:"sr-SR",name:"serbian"
           },
           {
-            code:"hu",name:"hungarian"
+            item:"hu-HU",name:"hungarian"
           },
           {
-            code:"en",name:"english"
+            item:"en-EN",name:"english"
           },
           {
-            code:"ge",name:"german"
+            item:"de-DE",name:"german"
           }
         ],
         use_first_page_as_cover:true,
@@ -118,10 +118,6 @@ export default {
     {
       if(this.$route.params.bid=="new")
       {
-      
-      this.languages.forEach((el,i)=>{
-       this.languages[i].name=this.gt(this.languages[i].name); 
-      });
       //console.log( this.$router.params.b_mode);
       }
       else

@@ -1,33 +1,35 @@
 <template>
 	<div>
-	<div class="section">
+	<md-card>	
+		<md-card-header>
 		{{gt("search_for_books")}}
-		
-		<div class="center">
-		 <md-autocomplete
-					class="search float"
+		<md-autocomplete
+					class="search a"
 					v-model="seaching_text"
 					:md-options="searchedBooks"
 					@change="searching"
-					md-layout="box">
-					
-					</md-autocomplete><md-button class="md-raised md-primary float" @click="search">{{gt("search")}}</md-button>
-		</div>
+					md-layout="box"></md-autocomplete><md-button class="md-raised md-primary a" @click="search">{{gt("search")}}</md-button>
+		
+		</md-card-header>
+
+		<md-card-content>
+		 
 		{{gt("genres")}}
-		</div>
-		<div class="section" v-if="dataReady">
+		
+		<div v-if="dataReady">
 		<bookcard />
 		</div>
-
+		</md-card-content>
+	</md-card>
 	</div>
 </template>
 
 <script>
 import {signOut} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
-import {ref, set ,onValue,get, child} from "firebase/database";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
+import { getStorage, ref, listAll,get } from "firebase/storage";
 import loading from "@/components/parts/loading";
 import bookcard from "@/components/parts/bookcard";
 
@@ -60,7 +62,7 @@ import Bookcard from './parts/bookcard.vue';
 			{
 				this.dataReady=false;
 				let a=[];
-				if(!this.seaching_text.length>3) return [];
+				if(!this.seaching_text.length>1) return [];
 				let coll = collection(firestore,"books");
 				let q=query(coll,where("keywords","array-contains-any",[this.seaching_text]),limit(10));
 				let c=await getDocs(q);
@@ -68,7 +70,7 @@ import Bookcard from './parts/bookcard.vue';
 				a.push({
 					book_name:element.book_name,
 					author:element.author,
-					photoURL:element.book_cover
+					photoURL:ref(storage,`/books/${element.id}/thumbnail.png`)
 				})
 				
 				});
@@ -93,8 +95,8 @@ import Bookcard from './parts/bookcard.vue';
 </script>
 
 <style lang="scss">
-	.float
+	.a
 	{
-		float: left;
+		margin: 3px;
 	}
 </style>

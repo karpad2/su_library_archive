@@ -28,6 +28,7 @@
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="releaser">{{ item.data.publisher }}</md-table-cell>
                 <md-table-cell :md-label="gt('language')" md-sort-by="language"><country-flag :country="item.data.language" size='normal'/></md-table-cell>
                 <md-table-cell :md-label="gt('keywords')" md-sort-by="keywords">{{ item.data.keywords }}</md-table-cell>
+                <md-table-cell :md-label="gt('editbook')" md-sort-by="editbook"><md-button @click="$router.push(`/admin/book/${item.id}`)">{{gt("editbook")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
         </div>

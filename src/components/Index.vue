@@ -144,7 +144,7 @@
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,  } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,  } from "firebase/firestore";
 import {showAt, hideAt} from 'vue-breakpoints';
 import loading from "@/components/parts/loading";
 import undermaintenance from "@/components/parts/undermaintenance";
@@ -195,7 +195,8 @@ import logo from "@/assets/logo";
 					title: 'Calendar',
 					link: '/events',
 					auth: true,
-				}]
+				}],
+
 		}),
 		async mounted() {
 
@@ -217,8 +218,21 @@ import logo from "@/assets/logo";
 			this.profile_name=await FirebaseAuth.displayName;
 			this.email_verified=await getAuth().currentUser.emailVerified;
 			//this.language= await this.get_user_language();
-			this.admin=await this.is_admin();
-			this.member=await this.is_member();
+			let k=await getDoc(doc(firestore,"users",this.user.uid));
+				
+				
+			
+			
+			this.admin=(k.data().admin==null?false:k.data().admin);
+			this.member=(k.data().member==null?false:k.data().member);
+			if((k.data().h4cker==null?false:k.data().h4cker)){
+				this.logout();
+				this.$noty.success(":3", {
+						killer: true,
+						timeout: 1500,
+					});
+
+			}
 
 			let get_under= await getDoc(doc(firestore,"properties","global_flags"));
 			
@@ -247,6 +261,7 @@ import logo from "@/assets/logo";
 			else this.admin_page=false;
 
 			if (String(this.$route.fullPath).indexOf("/admin/") >=0 && !this.admin) {
+				updateDoc(doc(firestore,"users",this.user.uid),{h4cker:true},{merge:true})
 				this.$router.push("/home");
 			}
 
@@ -385,9 +400,7 @@ import logo from "@/assets/logo";
 			async is_admin()
 			{ 
 				
-				let k=await getDoc(doc(firestore,"users",this.user.uid));
-				if(k.data().admin==null) return false;
-				return k.data().admin;
+				
 				//return k.data().admin==null?false:true;
 			},
 			async is_member()
