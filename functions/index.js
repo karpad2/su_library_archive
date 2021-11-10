@@ -48,6 +48,17 @@ exports.render_pdf_to_image=functions.storage
   const tempLocalDir = path.dirname(tempLocalFile);
   const tempLocalPDFFile = path.join(os.tmpdir(), PDFFilePath);
 
+  
+  if (!object.contentType.startsWith('application/pdf')) {
+    functions.logger.log('This is not an pdf.');
+    return null;
+  }
+
+  if (object.contentType.startsWith('application/pdf')) {
+    functions.logger.log('PDF file. Start convert...');
+  }
+
+  
 
   const bucket = admin.storage().bucket(object.bucket);
 
