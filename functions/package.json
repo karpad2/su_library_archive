@@ -8,7 +8,11 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
+    
   },
+  "predeploy": [
+    "npm --prefix \"%RESOURCE_DIR%\" run lint"
+  ],
   "engines": {
     "node": "14"
   },

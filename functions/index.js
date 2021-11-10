@@ -1,8 +1,11 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
-const PDFImage = require("pdf-image").PDFImage;
+const PDFImage= require("pdf-image").PDFImage;
+const fromPath =require("pdf2pic");
 const mkdirp = require('mkdirp');
+const { mkdirsSync } = require("fs-extra");
 const { Storage } = require('@google-cloud/storage');
+const rimraf = require("rimraf");
 admin.initializeApp();
 
 const path = require('path');
@@ -25,73 +28,90 @@ exports.add_role_admin = functions.firestore
     .document('/users/{userID}/admin').onWrite((change, context) => {
       // ... Your code here
       admin.auth().createCustomToken(context.params.userID,{admin:change.after.data()});
+      return null;
     });
     exports.add_role_member = functions.firestore
     .document('/users/{userID}/member').onWrite((change, context) => {
       // ... Your code here
       admin.auth().createCustomToken(context.params.userID,{member:change.after.data()});
+      return null;
     });
     
-   
+exports.renderpdftoimage=functions.storage
+.object().onFinalize((object) => {
 
-exports.render_pdf_to_image=functions.storage
-.object().onFinalize(async (object)=>{
-  const filePath = object.name;
-  //'/books/{bookID}/book.pdf'
-  const baseFileName = path.basename(filePath, path.extname(filePath));
-  const fileDir = path.dirname(filePath);
-  const JPGDIr = path.dirname (filePath+"/pages/");
-
-  const PDFFilePath = path.normalize(path.format({dir: fileDir, name: baseFileName, ext: PDF_EXTENSION}));
-  let JPGFilePath = path.normalize(path.format({dir: fileDir, name: baseFileName, ext: PDF_EXTENSION}));
-  const tempLocalFile = path.join(os.tmpdir(), filePath);
-  const tempLocalDir = path.dirname(tempLocalFile);
-  const tempLocalPDFFile = path.join(os.tmpdir(), PDFFilePath);
-
-  
   if (!object.contentType.startsWith('application/pdf')) {
-    functions.logger.log('This is not an pdf.');
+   // functions.logger.log('This is not an pdf.');
     return null;
   }
+  let filePath = object.name;
+  //'/books/{bookID}/book.pdf'
+  let baseFileName = path.basename(filePath, path.extname(filePath));
+  let fileDir = path.dirname(filePath);
+  let JPGDIr = path.dirname (filePath)+"/pages";
+  
+  let PDFFilePath = path.normalize(path.format({dir: fileDir, name: baseFileName, ext: PDF_EXTENSION}));
+  let JPGFilePath = path.normalize(path.format({dir: JPGDIr, name: baseFileName, ext: JPEG_EXTENSION}));
+
+  let tempLocalFile = path.join(os.tmpdir(), filePath);
+  let tempLocalDir = path.dirname(tempLocalFile);
+  let tempLocalPDFFile = path.join(os.tmpdir(), PDFFilePath);
+  let tempLocalJPGDir = path.join(os.tmpdir(), JPGDIr);
+  let RemoteJPGFilePath;
+
+  
+
 
   if (object.contentType.startsWith('application/pdf')) {
     functions.logger.log('PDF file. Start convert...');
   }
 
-  
+  //functions.logger.log('jpg directory.',tempLocalJPGDir);
 
-  const bucket = admin.storage().bucket(object.bucket);
+  let bucket = admin.storage().bucket(object.bucket);
 
-
-  await mkdirp(tempLocalDir);
+  rimraf.sync(tempLocalJPGDir);
+  mkdirsSync(tempLocalJPGDir);
+  mkdirp(tempLocalDir);
 
 
   await bucket.file(PDFFilePath).download({destination: tempLocalPDFFile,validation:false});
   functions.logger.log('The file has been downloaded to', tempLocalPDFFile);
 
+  let ik=new PDFImage(tempLocalPDFFile);
+  let page_number=(await ik.getInfo()).Pages;
+
+const options = {
+  density: 100,
+  savePath: tempLocalJPGDir,
+  saveFilename: "a",
+  format: "jpg",
+  width: 1280,
+  height: 1808
+};
+
+const storeAsImage =  fromPath.fromPath(tempLocalPDFFile, options);
 
 
-var pdfImage = new PDFImage(tempLocalPDFFile);
- pdfImage.convertFile().then((images)=>
- {
-    images.forEach(async (element,index)=>{
-      let i=index+1;
-      if(i==1)
+for(var i=1;i<=page_number;i++)
+{
+await storeAsImage(i);
+ RemoteJPGFilePath = path.normalize(path.format({dir: JPGDIr, name: `${i}`, ext: JPEG_EXTENSION}));
+ JPGFilePath = path.normalize(path.format({dir: tempLocalJPGDir, name:  `a.${i}`, ext: JPEG_EXTENSION}));
+ await bucket.upload(JPGFilePath, {destination: RemoteJPGFilePath,validation:false});
+
+ if(i==1)
       {
-
+        
+        RemoteJPGFilePath = path.normalize(path.format({dir: fileDir, name: `thumbnail`, ext: JPEG_EXTENSION}));
+        await bucket.upload(JPGFilePath, {destination: RemoteJPGFilePath,validation:false});
       }
-      JPGFilePath = path.normalize(path.format({dir: JPGDIr, name: `${i}`, ext: JPEG_EXTENSION}));
-      await bucket.upload(element, {destination: JPGFilePath});
-      if(i==1)
-      {
-        JPGFilePath = path.normalize(path.format({dir: fileDir, name: `thumbnail`, ext: JPEG_EXTENSION}));
-      }
-      functions.logger.log('JPEG image uploaded to Storage at', JPGFilePath);
-    })
- });
+      fs.unlinkSync(JPGFilePath);  
+}
+ functions.logger.log('~PDFImage finished');
 
-
- fs.unlinkSync(tempLocalJPEGFile);
- fs.unlinkSync(tempLocalFile);
- fs.unlinkSync(tempLocalDir);
+ //fs.unlinkSync(JPGDIr);
+ //fs.unlinkSync(tempLocalFile);
+ //fs.unlinkSync(tempLocalDir);
+ return null;
 });
