@@ -55,12 +55,12 @@ exports.render_pdf_to_image=functions.storage
   await mkdirp(tempLocalDir);
 
 
-  await bucket.file(filePath).download({destination: tempLocalFile});
-  functions.logger.log('The file has been downloaded to', tempLocalFile);
+  await bucket.file(filePath).download({destination: tempLocalPDFFile});
+  functions.logger.log('The file has been downloaded to', tempLocalPDFFile);
 
 
 
-var pdfImage = new PDFImage();
+var pdfImage = new PDFImage(tempLocalPDFFile);
  pdfImage.convertFile().then((images)=>
  {
     images.forEach(async (element,index)=>{
