@@ -13,3 +13,4 @@ node_modules
 package-lock.json
 src/firebase/credentials.js
 dist
+firestore-debug.log

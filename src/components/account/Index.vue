@@ -7,13 +7,9 @@
 					<span class="md-title">{{gt("app-title")}}</span>
 				</router-link>
 				<div class="md-toolbar-section-end">
+						
+						<b-form-select @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
 					
-        			<md-field>
-						<label for="lang">{{gt("language")}}</label>
-						<md-select v-model="language">
-							<md-option v-for="la in languages" :key="la.code"  :value="la.code">{{la.name}}</md-option>
-						</md-select>
-					</md-field>
 					</div>
 				
 			</md-app-toolbar>
@@ -41,13 +37,16 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 		name: "AccountIndex",
 		data: () => ({
 			userTheme: "default",
-			languages:languages,
+			languages:[{value:"sr-SR",text:"Srpski"},{value:"hu-HU",text:"Magyar"},{value:"en-EN",text:"English"}],
 			language:"",
 			dataReady:false
 		}),
 		mounted() {
 			this.themeChanged();
-			if(localStorage.getItem("language")!=undefined|| localStorage.getItem("language")!=undefined) localStorage.setItem("language",get_defaultlanguage());
+			if(localStorage.getItem("language")!=undefined|| localStorage.getItem("language")!=undefined)
+			{ localStorage.setItem("language",get_defaultlanguage());
+				this.language=get_defaultlanguage();
+			}
 			else this.language=localStorage.getItem("language");
 			this.dataReady=true;
 		},
@@ -106,6 +105,11 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 				height: 200px;
 			}
 		}
+	}
+	.language
+	{
+		max-width: 200pt;
+		min-width: 100pt;
 	}
 	/*.md-select{
 		max-width: 200pt;

@@ -13,7 +13,7 @@
 				</hide-at>
 				<hide-at v-if="!admin_page" breakpoint="mediumAndBelow">
 				 <md-autocomplete
-					v-if="signedin()"
+					v-if="signed_in"
 					class="desktop search"
 					v-model="seaching_text"
 					:md-options="searchedBooks"
@@ -23,9 +23,9 @@
 					</md-autocomplete>
 				</hide-at>
 				<div class="md-toolbar-section-end">
-        			<md-button v-if="signedin()" class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
+        			<md-button v-if="signed_in" class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
 					
-					<md-button v-if="signedin()" class="desktop profile" @click="$router.push('/user')">
+					<md-button v-if="signed_in" class="desktop profile" @click="$router.push('/user')">
 					<md-avatar style="z-index:999" >
 						<img  :src="profile_picture_url" alt="Avatar">
 					</md-avatar>
@@ -64,18 +64,18 @@
 								<md-icon class="md-icon">vpn_key</md-icon>
 								<span class="md-list-item-text">{{gt("enter_code")}}</span>
 					</md-list-item>
-					<md-list-item v-if="signedin()" @click="changeTheme">
+					<md-list-item v-if="signed_in" @click="changeTheme">
 								<md-icon class="md-icon">settings_brightness</md-icon>
 								<span class="md-list-item-text">{{gt("ctheme")}}</span>
 					</md-list-item>
 					<show-at breakpoint="mediumAndAbove">
 					</show-at>
-					<md-list-item v-if="signedin()" @click="$router.push('/user')">
+					<md-list-item v-if="signed_in" @click="$router.push('/user')">
 								<md-icon class="md-icon">translate</md-icon>
 								<span class="md-list-item-text">{{gt("language")}}</span>
 					</md-list-item>
 					<md-divider></md-divider>
-					<md-list-item v-if="signedin()" @click="logout">
+					<md-list-item v-if="signed_in" @click="logout">
 								<md-icon class="md-icon">logout</md-icon>
 								<span class="md-list-item-text">{{gt("logout")}}</span>
 					</md-list-item>
@@ -118,7 +118,7 @@
     </md-drawer>
 
 			<md-app-content>
-				    <b-alert v-if="signedin() && !email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
+				    <b-alert v-if="signed_in && !email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
 					<b-alert v-if="promotion && !promotion_hide &&(!member||!admin)" variant="success" show>{{gt("promotion_text")}}</b-alert>
 					<b-alert v-if="!promotion && !promotion_hide && (!member||!admin)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
@@ -160,7 +160,7 @@
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,functions} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,  } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,getDocFromCache  } from "firebase/firestore";
 import {showAt, hideAt} from 'vue-breakpoints';
 import { getFunctions, httpsCallable } from "firebase/functions";
 import loading from "@/components/parts/loading";
@@ -198,6 +198,7 @@ import logo from "@/assets/logo";
 			searchedBooks:[],
 			language:get_defaultlanguage(),
 			dataReady: false,
+			aterms:true,
 			undermaintenance_flag:false,
 			email_verified:true,
 			language_chooser_dialog:false,
@@ -205,7 +206,7 @@ import logo from "@/assets/logo";
 			terms:false,
 			admin_page:false,
 			promotion:false,
-			promtoion_disabled:false,
+			promotion_hide:false,
 			signed_in:false,
 			menuVisible: false,
 			userTheme: "default",
@@ -234,17 +235,18 @@ import logo from "@/assets/logo";
 			
 			try{
 			this.user=await FirebaseAuth.currentUser;
+			if(this.user!=null)
+			{
 			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
 			this.profile_name=await FirebaseAuth.displayName;
 			this.email_verified=await getAuth().currentUser.emailVerified;
 			//this.language= await this.get_user_language();
+			
 			let k=await getDoc(doc(firestore,"users",this.user.uid));
-				
-				
-			
-			
 			this.admin=(k.data().admin==null?false:k.data().admin);
 			this.member=(k.data().member==null?false:k.data().member);
+			this.aterms=(k.data().terms==null?false:k.data().terms);
+
 			if((k.data().h4cker==null?false:k.data().h4cker)){
 				this.logout();
 				this.$noty.success(this.gt(":3"), {
@@ -262,6 +264,7 @@ import logo from "@/assets/logo";
 			this.promotion_hide=get_under.data().promotion_hide;
 			console.log(this.undermaintenance_flag);
 			//this.language=await getAuth().languageCode;
+			}
 			let theme="light";
 			console.log("Index");
 			}
@@ -312,7 +315,7 @@ import logo from "@/assets/logo";
 				
 			
 			];
-			if(this.admin && this.signedin())
+			if(this.admin && this.signed_in)
 			{
 
 				this.menuTab.push({
@@ -363,7 +366,7 @@ import logo from "@/assets/logo";
 			},
 			add_public(k)
 			{	let l="";
-				if(this.signedin())
+				if(this.signed_in)
 				{
 					l=`${k}`;
 				}
@@ -379,47 +382,11 @@ import logo from "@/assets/logo";
 			},
 			searching()
 			{
-				this.$router.push(`/books/${this.seaching_text}`);
+				this.$router.push(`/books/search/${this.seaching_text}`);
 			
 			},
-			async is_admin()
-			{ 
-				
-				
-				//return k.data().admin==null?false:true;
-			},
-			async is_member()
-			{ 
-				
-				let k=await getDoc(doc(firestore,"users",this.user.uid));
-				if(k.data().member==null) return false;
-				return k.data().member;
-				//return k.data().admin==null?false:true;
-			},
-
-			async get_user_language()
-			{ 
-				
-				let k=await getDoc(doc(firestore,"users",this.user.uid));
-				if(k.data().language==null) return get_defaultlanguage();
-				return k.data().language;
-				//return k.data().admin==null?false:true;
-			},
 			
-			async is_valid_until()
-			{ 
-				
-				let k=await getDoc(doc(firestore,"users",this.user.uid));
-				if(k.data().valid_until==null) return false;
-				return k.data().valid_until;
-				//return k.data().admin==null?false:true;
-			},
-			signedin()
-			{
-				return this.signed_in;
-				//return !(getAuth().currentUser==null);
-			},
-			changeTheme: function () {
+			changeTheme() {
 				console.log("Change theme");
 				change_Theme_Fb("change");
 				this.themeChanged();
@@ -432,21 +399,12 @@ import logo from "@/assets/logo";
 				async check_terms()
 				{
 					
-					let k= await getDoc(firestore,"users",this.user.uid,"terms");
-					let terms=false;
-					if(k.exists())
-					{
-						terms=k.data().terms;
-					}
-					else
-					{
-						terms=false;
-					}
+					let terms=this.aterms;
 
 					if(!terms)
 					{
 						
-						let terms_p=await getDoc(firestore,"properties","terms");
+						let terms_p=await getDoc(doc(firestore,"properties","terms"));
 						console.log(terms_p);
 						if(terms_p.exists())
 						{
@@ -479,6 +437,8 @@ import logo from "@/assets/logo";
 						/** @type {any} */
 						const data = result.data;
 						const sanitizedMessage = data.text;
+						this.refresh_page();
+
 					});
 				},
 			logout() {

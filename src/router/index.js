@@ -58,15 +58,21 @@ const router = new VueRouter ({
 			component: Books
 		},
 		{
-			path: 'books/:b_search',
+			path: 'books/:b_mode/:b_search',
 			name: 'bookswithoutlogin',
 			component: Books
 		},
 		{
-			path: 'book/:b_id',
+			path: 'book/:b_id/:b_name',
 			name: 'bookwithoutlogin',
 			component: Book
-		}]
+		},
+		{
+			path: 'support',
+			name: 'support_public',
+			component: Support
+		}	
+	]
 	},
 		{
 			path: '/',
@@ -97,7 +103,7 @@ const router = new VueRouter ({
 					meta: {requiresAuth: false}
 				},
 				{
-					path: 'books/:b_search',
+					path: 'books/:b_mode/:b_search',
 					name: 'bookssearch',
 					component: Books,
 					meta: {requiresAuth: false}

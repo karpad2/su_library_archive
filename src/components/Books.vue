@@ -45,6 +45,7 @@ import Bookcard from './parts/bookcard.vue';
 		metaInfo:{
 			title:title_page("","Books"),
 		},
+		props:["b_mode","b_search"],
 		data: () => ({
 			profile_picture_url:"",
 			profile_name:"",

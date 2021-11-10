@@ -1,6 +1,6 @@
 <template>
 	<div id="account-login-container">
-		<div v-if="false">
+		<div v-if="enable_public_login">
 		<md-field>
 			<label>{{gt("email")}}</label>
 			<md-input id="email" v-model="email"></md-input>
@@ -42,7 +42,8 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 			return {
 				email: "",
 				password: "",
-				errorMessage: ""
+				errorMessage: "",
+				enable_public_login:false
 			}
 		},
 		mounted() {

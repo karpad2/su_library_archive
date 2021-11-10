@@ -112,7 +112,7 @@ import Pages from "@/components/parts/Pages";
 			{
 			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
 
-				if(this.is_favorite) return;
+			if(this.is_favorite|| !this.signed_in) return;
       		this.user.favorites.push(this.book_id);
 			setDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:[ this.user.favorites]},{merge:true})
 			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
