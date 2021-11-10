@@ -2,6 +2,7 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const PDFImage = require("pdf-image").PDFImage;
 const { Storage } = require('@google-cloud/storage');
+admin.initializeApp();
 
 const path = require('path');
 const os = require('os');
