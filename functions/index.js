@@ -38,7 +38,7 @@ exports.render_pdf_to_image=functions.storage
   //'/books/{bookID}/book.pdf'
   const baseFileName = path.basename(filePath, path.extname(filePath));
   const fileDir = path.dirname(filePath);
-
+  const JPGDIr = path.dirname (filePath+"/pages/");
 
   const PDFFilePath = path.normalize(path.format({dir: fileDir, name: baseFileName, ext: PDF_EXTENSION}));
   let JPGFilePath = path.normalize(path.format({dir: fileDir, name: baseFileName, ext: PDF_EXTENSION}));
@@ -62,8 +62,17 @@ var pdfImage = new PDFImage();
  pdfImage.convertFile().then((images)=>
  {
     images.forEach(async (element,index)=>{
-      JPGFilePath = path.normalize(path.format({dir: fileDir, name: `${index}`, ext: JPEG_EXTENSION}));
+      let i=index+1;
+      if(i==1)
+      {
+
+      }
+      JPGFilePath = path.normalize(path.format({dir: JPGDIr, name: `${i}`, ext: JPEG_EXTENSION}));
       await bucket.upload(element, {destination: JPGFilePath});
+      if(i==1)
+      {
+        JPGFilePath = path.normalize(path.format({dir: fileDir, name: `thumbnail`, ext: JPEG_EXTENSION}));
+      }
       functions.logger.log('JPEG image uploaded to Storage at', JPGFilePath);
     })
  });
