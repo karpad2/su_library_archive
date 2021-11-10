@@ -1,6 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const PDFImage = require("pdf-image").PDFImage;
+const mkdirp = require('mkdirp');
 const { Storage } = require('@google-cloud/storage');
 admin.initializeApp();
 
