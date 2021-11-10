@@ -66,7 +66,7 @@ exports.render_pdf_to_image=functions.storage
   await mkdirp(tempLocalDir);
 
 
-  await bucket.file(PDFFilePath).download({destination: tempLocalPDFFile});
+  await bucket.file(PDFFilePath).download({destination: tempLocalPDFFile,validation:false});
   functions.logger.log('The file has been downloaded to', tempLocalPDFFile);
 
 
