@@ -120,10 +120,10 @@ export default {
     async mounted()
     {
       this.abook=this.book;
-      console.log(this.$route.params.bid);
+      
       if(this.$route.params.bid=="new")
       {
-      //console.log( this.$router.params.b_mode);
+     
       this.book.language=this.languages[0].value;
       }
       else
@@ -166,11 +166,8 @@ export default {
       {
         this.book_ref=updateDoc(doc(firestore,"books",this.book_id),this.book,{merge:true});
       }
-
-
+           
       
-      
-      console.log(this.book.keywords);
     },
     async upload_book()
     {

@@ -262,15 +262,15 @@ import logo from "@/assets/logo";
 			this.undermaintenance_flag= get_under.data().undermaintenance;
 			this.promotion=get_under.data().promotion;
 			this.promotion_hide=get_under.data().promotion_hide;
-			console.log(this.undermaintenance_flag);
+			
 			//this.language=await getAuth().languageCode;
 			}
 			let theme="light";
-			console.log("Index");
+			
 			}
 			catch (e)
 			{
-				console.warn(e);
+				///error
 			}
 			if (localStorage.userTheme === "dark") {
 				this.userTheme = "dark";
@@ -387,7 +387,7 @@ import logo from "@/assets/logo";
 			},
 			
 			changeTheme() {
-				console.log("Change theme");
+				
 				change_Theme_Fb("change");
 				this.themeChanged();
 				
@@ -405,7 +405,7 @@ import logo from "@/assets/logo";
 					{
 						
 						let terms_p=await getDoc(doc(firestore,"properties","terms"));
-						console.log(terms_p);
+						
 						if(terms_p.exists())
 						{
 							this.terms_text.text=terms_p.data().terms_text;
@@ -453,7 +453,7 @@ import logo from "@/assets/logo";
 					});
 					this.$router.replace('/account/login').catch(() => {}); // User not logged
 				}).catch((error) => {
-					console.log("signOut()", error);
+					
 					_this.$noty.error(this.gt("logout_error_pls_refresh"));
 				});
 			}

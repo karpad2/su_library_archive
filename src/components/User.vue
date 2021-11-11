@@ -95,7 +95,7 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 
 			const valid_u = doc(firestore, "users", this.user.uid);
 			let query= await getDoc(valid_u);
-			console.log(query.data());
+			
 			let date=new Date(Number(0));
 			this.valid_until= moment(date).format('MMMM Do YYYY, h:mm:ss a');
 			this.dataReady=true;
@@ -104,7 +104,7 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 			joined()
 			{
 				let date=new Date(Number(this.user.metadata.createdAt));
-				console.log(date);
+				
 				return moment(date).format('MMMM Do YYYY, h:mm:ss a');
 			}
 		},
@@ -119,8 +119,8 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 			},
 			lang_change()
 			{
-				console.log(this.$parent.$data);
-				console.log(this.language);
+				
+				
 				localStorage.setItem("language",this.language);
 				updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{language:this.language},{merge:true});
 				//getAuth().languageCode=this.language;

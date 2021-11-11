@@ -88,7 +88,8 @@
       "strict": "off",
       "no-unused-vars": "off",
       "no-mixed-spaces-and-tabs": "off",
-      "vue/no-parsing-error": "off"
+      "vue/no-parsing-error": "off",
+      "no-console":"error"
     }
   },
   "browserslist": [

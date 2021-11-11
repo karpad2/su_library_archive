@@ -52,7 +52,7 @@
 						timeout: 1500,
 					});
 				}).catch((error) => {
-					console.log("signOut()", error);
+					
 					_this.$noty.error("Logout error, please refresh the page.");
 				});
 			}

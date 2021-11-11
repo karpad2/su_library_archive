@@ -59,7 +59,7 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 			{
 				this.dataReady=false;
 				//getAuth().languageCode=this.language;
-				console.log(this.language);
+				
 				localStorage.setItem("language",this.language);
 				this.dataReady=true;
 			},

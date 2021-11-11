@@ -15,9 +15,8 @@
 		components: { CookieLaw },
 		mounted()
 		{
-		console.log("App Start");
+		
 		if( localStorage.getItem("userTheme")===null) localStorage.userTheme = "light";
-		console.log(localStorage.userTheme);
 		},
 		data()
 		{

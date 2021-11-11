@@ -33,7 +33,6 @@ import {FireDb,FirebaseAuth,userId,firestore} from "@/firebase";
 import bookcard from "@/components/parts/bookcard";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy  } from "firebase/firestore";
-import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/get_data";
 
 
 	export default {
@@ -97,13 +96,13 @@ import {get_data_from_allroomdb,get_rooms,get_data_fromroomdb} from "@/mod_data/
 		},
 		async mounted()
 		{
-			console.log(FirebaseAuth.currentUser);
+			
 			//this.get_name();
 			//this.events=get_data_from_allroomdb("events");
-			//console.log(this.$route)
+			
 			this.popular_one=await this.popular_ones();
 			this.newest_one= await this.newest_books();
-			console.log(this.popular_one);
+			
 				
 			this.dataReady=true;	
 		},

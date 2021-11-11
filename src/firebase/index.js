@@ -61,7 +61,7 @@ const FirebaseAuth = getAuth();
 //setPersistence(FirebaseAuth,inMemoryPersistence);
 //const Firebase = firebase;
 const FireDb = getDatabase();
-console.log(`Language code: ${FirebaseAuth.useDeviceLanguage()}`);
+
 
 const presenceRef = ref(FireDb, "disconnectmessage");
 
@@ -71,10 +71,9 @@ onDisconnect(presenceRef).set("I disconnected!");
 const connectedRef = ref(FireDb, ".info/connected");
 onValue(connectedRef, (snap) => {
   if (snap.val() === true) {
-	
-    console.log("Connected to database");
+	///Connected
   } else {
-    console.log("Not connected");
+    ///Not connected
   }
 });
 

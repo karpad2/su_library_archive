@@ -80,7 +80,7 @@ import Bookcard from './parts/bookcard.vue';
 
 				//let query=query(collection,)
 				//return  a;
-				console.log(a);
+				
 				this.searchedBooks=a;
 				this.dataReady=true;
 			},
