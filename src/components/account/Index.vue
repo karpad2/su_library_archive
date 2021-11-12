@@ -17,7 +17,9 @@
 			<md-app-content>
 				<div class="middle-center">
 					
-					<logo class="logo" />
+					<logo  />
+					<img :src="image_logo" class="logo" />
+					
 					<div> <h4>{{gt("app-title")}}</h4></div>
 					<router-view @themeChanged="themeChanged"/>
 				</div>
@@ -29,6 +31,7 @@
 <script>
 import logo from '@/assets/logo';
 import {getAuth} from "firebase/auth";
+import imagelogo from "@/assets/icons/android-chrome-512x512";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 	export default {
 		components: {
@@ -39,7 +42,8 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 			userTheme: "default",
 			languages:[{value:"sr-SR",text:"Srpski"},{value:"hu-HU",text:"Magyar"},{value:"en-EN",text:"English"}],
 			language:"",
-			dataReady:false
+			dataReady:false,
+			image_logo:""
 		}),
 		mounted() {
 			this.themeChanged();
@@ -48,6 +52,7 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 				this.language=get_defaultlanguage();
 			}
 			else this.language=localStorage.getItem("language");
+			this.image_logo=imagelogo;
 			this.dataReady=true;
 		},
 		methods: {
