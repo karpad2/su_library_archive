@@ -64,7 +64,7 @@ Vue.config.productionTip = false;
 //console.log(this.webpackHotUpdate);
 if(!Vue.config.devtools)
 {
-	disableDevtool();
+	//disableDevtool();
 }
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
