@@ -19,7 +19,7 @@
     </md-field>
    
       <md-field>
-        <b-form-select @change="change" v-model="book.language" :options="languages"></b-form-select>     
+        <b-form-select @change="change" v-model="book.language" :options="languages"></b-form-select>   <flag :flag="book.language"/>  
       </md-field>
     <md-field>
     <quillEditor @change="change" v-model="book.description" />
@@ -62,6 +62,7 @@ import { getStorage, ref, uploadBytes } from "firebase/storage";
 import loading from "@/components/parts/loading";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc } from "firebase/firestore";
+import flag from "@/components/parts/flag";
 import { push } from '@firebase/database';
 export default {
     
@@ -72,6 +73,7 @@ export default {
         author_name:"",
         keywords:[],
         page:"",
+        
         description:"",
         language:"",
         favorites:0,
@@ -94,32 +96,34 @@ export default {
         first_page:null,
         page_number:0,
         abook:null,
-        languages:[
-          {
-            value:"sr-SR",text:"serbian"
-          },
-          {
-            value:"hu-HU",text:"hungarian"
-          },
-          {
-            value:"en-EN",text:"english"
-          },
-          {
-            value:"de-DE",text:"german"
-          }
-        ],
+        languages:[],
         use_first_page_as_cover:true,
         file:null
     }
     },
     components:{
         quillEditor,
-        loading
+        loading,
+        flag
     },
     async mounted()
     {
       this.abook=this.book;
       
+      this.languages=[
+          {
+            value:"rs-RS",text:this.gt("serbian")
+          },
+          {
+            value:"hu-HU",text:this.gt("hungarian")
+          },
+          {
+            value:"en-EN",text:this.gt("english")
+          },
+          {
+            value:"de-DE",text:this.gt("german")
+          }
+        ];
       if(this.$route.params.bid=="new")
       {
         this.book.language=this.languages[0].value;

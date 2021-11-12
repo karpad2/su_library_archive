@@ -18,9 +18,11 @@ import VueSocialSharing from 'vue-social-sharing'
 import Vuetify from 'vuetify';
 import VueLazyload from 'vue-lazyload'
 import 'vuetify/dist/vuetify.min.css';
+import flag from "./components/parts/flag";
 
 Vue.component('country-flag', CountryFlag);
 Vue.use(Vuetify);
+Vue.use(flag);
 Vue.use(VueMeta);
 Vue.use(VueMaterial);
 Vue.use(VueLazyload);

@@ -16,7 +16,7 @@
           </md-card-header>
 
           <md-card-actions>
-            <country-flag :country="book.language" size='normal'/>
+            <flag :flag="book.language"/>
             <md-button v-if="signedin" @click="add_favorite" class="md-icon-button">
               <md-icon v-if="is_favorite" style="background-color:red;">favorite</md-icon>
               <md-icon v-else>favorite</md-icon>
@@ -60,6 +60,7 @@ import { getStorage, ref, uploadBytes } from "firebase/storage";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,updateDoc } from "firebase/firestore";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import loading from "@/components/parts/loading";
+import flag from "@/components/parts/flag";
 export default {
   name: 'MediaCover',
   props:["book_id"],
@@ -71,11 +72,13 @@ export default {
           user:{},
           is_favorite:false,
           signedin:false,
-          sharepopup:false
+          sharepopup:false,
+          book_cover:""
       }
   },
   components:{
-    loading
+    loading,
+    flag
   },
   async mounted()
   {

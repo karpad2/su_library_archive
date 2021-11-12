@@ -9,8 +9,29 @@ module.exports = {
       start_url: "/",
       appleMobileWebAppCapable: 'yes',
       appleMobileWebAppStatusBarStyle: 'black',
-      gcm_sender_id: "BPyi0nrKJ6ukkJjmYSE8B39cXNpz-l5qP0b2soEYQQ2SLjdXU5ede5O3oz_1UaoGpyGinen9m2PCp-QA-zUzBqU",
-   
+      gcm_sender_id: "103953800507",
+      icons: [
+        {
+          src: "./src/assets/icons/android-chrome-192x192.png",
+          sizes: "192x192",
+          type: "image/png"
+        },
+        {
+          src: "./src/assets/icons/android-chrome-512x512.png",
+          sizes: "512x512",
+          type: "image/png"
+        },
+        {
+          src: "./src/assets/icons/favicon-32x32.png",
+          sizes: "32x32",
+          type: "image/png"
+        },
+        {
+          src: "./src/assets/icons/favicon-16x16.png",
+          sizes: "16x16",
+          type: "image/png"
+        }
+      ],
       // configure the workbox plugin
       workboxPluginMode: 'InjectManifest',
       workboxOptions: {

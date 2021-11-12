@@ -12,9 +12,9 @@
 				<img  @click="enter_read(1)" alt="book_cover" :src="book_thumbnail" />
 				</div>
 		<div class="user-info">
-			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" v-model="book.author_name" md-static></md-chip></p>
-			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static></md-chip> </p>
-    	
+			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" md-static>{{book.author_name}}</md-chip></p>
+			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
+			<p>{{gt("language")}}: <md-chip @click="keyword_link(book.language)" md-static><flag :flag="book.language" /></md-chip> </p>
 		<div v-html="book.description">
 		</div>
 		<div>
@@ -52,10 +52,12 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,ge
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 import { getStorage, ref, listAll,get } from "firebase/storage";
 import Pages from "@/components/parts/Pages";
+import flag from "@/components/parts/flag";
 
 	export default {
 		components: {
-		Pages
+		Pages,
+		flag
 		},
 		
 		name: 'Book',
