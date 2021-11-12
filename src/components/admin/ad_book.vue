@@ -1,5 +1,6 @@
 <template>
 <div >
+  <div class="middle-center">
   <md-card class="md-layout-item md-size-50 md-small-size-100" v-if="dataReady">
     <md-card-header>
         <div class="md-title">{{gt('add_new_book')}}</div>
@@ -22,7 +23,7 @@
         <b-form-select @change="change" v-model="book.language" :options="languages"></b-form-select>   <flag :flag="book.language"/>  
       </md-field>
     <md-field>
-    <quillEditor @change="change" v-model="book.description" />
+    <quillEditor class="ql-editor" @change="change" v-model="book.description" />
     </md-field>
     <md-field>
       
@@ -58,6 +59,7 @@
      </md-card-content>   
 </md-card>
 <loading v-else />
+</div>
 </div>
 </template>
 <script>
@@ -213,3 +215,8 @@ export default {
     }
 }
 </script>
+<style lang="scss">
+.ql-editor{
+    min-height:200px;
+}
+</style>

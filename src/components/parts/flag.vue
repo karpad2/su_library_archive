@@ -14,7 +14,6 @@ export default {
     {
         let l=String(this.flag).split('-');
         this.country_flag=l[0];
-        console.log(this.country_flag);
     }
 }
 </script>

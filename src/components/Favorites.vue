@@ -7,7 +7,7 @@
 		   </md-card-header-text>
 		   </md-card-header>
 		<md-card-content>
-          <bookcard v-for="fav in user.favorites" :key="fav" :book_id="fav" />
+          <bookcard v-for="fav in favorites" :key="fav" :book_id="fav" />
         </md-card-content>
 	</md-card>		
 		
@@ -37,7 +37,8 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 			upload_date:"",
 			book_keywords:[],
 			dataReady: false,
-			user:{}
+			user:{},
+			favorites:[]
 			
 		}),
 		async mounted() {
@@ -47,6 +48,13 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 
 			let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
     		this.user=user_ref.data();
+			this.user.favorites.forEach(element =>
+			{
+				if(element!="test")
+				{
+					this.favorites.push(element);
+				}
+			})
 			this.dataReady=true;
 		},
 		methods: {

@@ -21,8 +21,10 @@
 		   </md-card-header>
 		    <md-card-content>
           <bookcard v-for="p in  newest_one" :key="p.id" :book_id="p.id" />
-		  <md-button @click="loadmore">{{gt("load_more")}}</md-button>
-        </md-card-content>
+		  <div class="section">
+		  <div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
+		  </div>
+		</md-card-content>
 	</md-card>
 	</div>
 	</div>

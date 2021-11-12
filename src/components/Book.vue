@@ -21,8 +21,8 @@
 		<div>
 			{{gt("page_number")}}: <md-chip>{{book.page_number}}</md-chip>
 			<div v-if="signed_in">
-			<md-button v-if="favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
-			<md-button v-else >❤️️ {{gt("favorite")}}</md-button>
+			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
+			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
 			</div>	
 		</div>
 		<div>
@@ -50,7 +50,7 @@
 <script>
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache} from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import Pages from "@/components/parts/Pages";
@@ -70,7 +70,7 @@ import flag from "@/components/parts/flag";
 			dataReady: false,
 			signed_in:false,
 			book_thumbnail:"",
-			favorite:false,
+			is_favorite:false,
 			title_side:"",
 			book_id:"",
 			user:{}
@@ -96,7 +96,11 @@ import flag from "@/components/parts/flag";
 				if(this.user.favorites==null){
 				setDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:["test"]},{merge:true});
 				}
-				this.favorite=(this.user.favorites.indexOf(this.book_id)>=0);
+				else
+				{
+					this.is_favorite=this.user.favorites.includes(this.book_id);
+				}
+				//this.favorite=(this.user.favorites.indexOf(this.book_id)>=0);
 				}
 
 			this.dataReady=true;
@@ -108,13 +112,22 @@ import flag from "@/components/parts/flag";
 				},
 			async add_favorite()
 			{
+			this.is_favorite=!this.is_favorite;
 			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
-
-			if(this.is_favorite|| !this.signed_in) return;
-      		this.user.favorites.push(this.book_id);
-			setDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:[ this.user.favorites]},{merge:true})
+			if(!this.signed_in) return;
+			if(this.is_favorite) {
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.book_id)});
 			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
-			updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
+			await updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
+			}
+			else 
+			{
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.book_id)});	
+			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
+			await updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites-1},{merge:true}); 
+				
+			}
+			
 			},
 			enter_read(i)
 			{
