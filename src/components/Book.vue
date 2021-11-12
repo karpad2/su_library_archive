@@ -9,13 +9,11 @@
 		    <md-card-content>
 				<div class="user-container">
 				<div class="bigavatar">
-				<img  @click="enter_read(1)" alt="book_cover" 
-				:src="book_thumbnail" />
+				<img  @click="enter_read(1)" alt="book_cover" :src="book_thumbnail" />
 				</div>
-				<div class="user-info">
-		<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" v-model="book.author_name" md-static></md-chip></p>
-		
-		<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static></md-chip> </p>
+		<div class="user-info">
+			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" v-model="book.author_name" md-static></md-chip></p>
+			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static></md-chip> </p>
     	
 		<div v-html="book.description">
 		</div>

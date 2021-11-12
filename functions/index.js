@@ -6,26 +6,23 @@ const mkdirp = require('mkdirp');
 const { mkdirsSync } = require("fs-extra");
 const { Storage } = require('@google-cloud/storage');
 const rimraf = require('rimraf');
-var child_process = require('child_process');
+const child_process = require('child_process');
 
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
 
-admin.initializeApp(functions.config().firebase);
 
-exports.addroleadmin = functions.firestore
-    .document("/users/{userID}/admin").onUpdate((change, context) => {
+/*
+exports.addroleadmin = functions.firestore.document("/users/{userID}/admin").onCreate((change, context) => {
       admin.auth().createCustomToken(context.params.userID,{admin:change.after.data()});
       return null;
     });
-exports.addrolemember = functions.firestore
-.document("/users/{userID}/member")
-.onUpdate((change, context) => {
+exports.addrolemember = functions.firestore.document("/users/{userID}/member").onCreate((change, context) => {
       admin.auth().createCustomToken(context.params.userID,{member:change.after.data()});
       return null;
     });
-    
+*/    
 exports.renderpdftoimage=functions.runWith({
   // Ensure the function has enough memory and time
   // to process large files
@@ -58,7 +55,7 @@ const JPEG_EXTENSION = ".jpg";
   let RemoteJPGFilePath;
 
   
-
+  admin.initializeApp(functions.config().firebase);
 
   if (object.contentType.startsWith("application/pdf")) {
     functions.logger.log("PDF file. Start convert...");
@@ -125,10 +122,7 @@ functions.logger.log('~PDFImage finished');
 });
 
 exports.buildSitemap = functions.https.onRequest(async (req,res)=>  {
-
-  // Use firebase-admin to gather necessary data
-  // Build the sitemap file string
-  // and send it back
+  admin.initializeApp(functions.config().firebase);
   const address=`https://su-library-archive.web.app/`;
   const day=`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`;
 
@@ -169,7 +163,7 @@ exports.buildSitemap = functions.https.onRequest(async (req,res)=>  {
     {
       let book=b.data();
       
-      sitemap+=`<url><loc>${address}/book/${b.id}/${book.author_name}/${book.book_name}</loc><lastmod>${element.last_modifcations}</lastmod></url>`;
+      sitemap+=`<url><loc>${address}/book/${b.id}/${book.author_name}/${book.book_name}</loc><lastmod>${day}</lastmod></url>`;
 
     })
   });

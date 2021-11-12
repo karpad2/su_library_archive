@@ -9,7 +9,7 @@ module.exports = {
       start_url: "/",
       appleMobileWebAppCapable: 'yes',
       appleMobileWebAppStatusBarStyle: 'black',
-      gcm_sender_id: "BM6YzLuzrt6MiOzbKf7QFnEgxmGTofpknXrEyJR09BT8DDhSkI3KRmCGVIlSZIc6dMBj7gF6pYeN9UHmNfLRXtc",
+      gcm_sender_id: "BPyi0nrKJ6ukkJjmYSE8B39cXNpz-l5qP0b2soEYQQ2SLjdXU5ede5O3oz_1UaoGpyGinen9m2PCp-QA-zUzBqU",
    
       // configure the workbox plugin
       workboxPluginMode: 'InjectManifest',

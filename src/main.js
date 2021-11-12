@@ -64,21 +64,6 @@ if(!Vue.config.devtools)
 {
 	disableDevtool();
 }
-/*document.oncontextmenu = new Function("return false");
-
-document.addEventListener('keydown',(event)=>
-{
-	if(event.keyCode==123){
-        return false;
-    }
-    else if (event.ctrlKey && event.shiftKey && event.keyCode==73){        
-             return false;
-    }
-})
-}
-/*document.onkeydown(function(event){
-    
-});*/
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";

@@ -21,6 +21,7 @@
 		   </md-card-header>
 		    <md-card-content>
           <bookcard v-for="p in  newest_one" :key="p.id" :book_id="p.id" />
+		  <md-button @click="loadmore">{{gt("load_more")}}</md-button>
         </md-card-content>
 	</md-card>
 	</div>
@@ -46,6 +47,7 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy  } f
 			active:0,
 			inactive:0,
 			devices:{},
+			loading_values:10,
 			events:[],
 			popular_one:[],
 			newest_one:[],
@@ -137,7 +139,7 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy  } f
 			async newest_books()
 			{
 				let a=[];
-				let q=query(collection(firestore,"books"),orderBy("uploading_date"),limit(10));
+				let q=query(collection(firestore,"books"),orderBy("uploading_date"),limit(this.loading_values));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				a.push({
@@ -147,6 +149,11 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy  } f
 				});
 				return  a;
 			},
+			async loadmore()
+			{
+				this.loading_values+=10;
+				await this.newest_books();
+			}
 		},
 		
 	}
