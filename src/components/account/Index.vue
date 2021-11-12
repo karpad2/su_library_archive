@@ -17,7 +17,7 @@
 			<md-app-content>
 				<div class="middle-center">
 					
-					<logo  />
+					
 					<img :src="image_logo" class="logo" />
 					
 					<div> <h4>{{gt("app-title")}}</h4></div>
@@ -31,7 +31,7 @@
 <script>
 import logo from '@/assets/logo';
 import {getAuth} from "firebase/auth";
-import imagelogo from "@/assets/icons/android-chrome-512x512";
+import imagelogo from "@/assets/icons/android-chrome-512x512.png";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 	export default {
 		components: {

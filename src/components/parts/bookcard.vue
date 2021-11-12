@@ -3,14 +3,14 @@
 <md-card >
   <div v-if="dataReady">
       <md-card-media-cover md-solid>
-        <md-card-media @click="open_book" md-ratio="1:1">
+        <md-card-media @click="open_book" md-ratio="4:3">
           <img  class="cover" v-lazy="book_cover" alt="thumb_book_cover">
         </md-card-media>
 
         <md-card-area>
           <md-card-header>
-            <router-link v-if="signedin" :to="'/book/'+book_id+'/'+book.book_name"> <span  class="md-title">{{book.book_name}}</span> </router-link>
-            <router-link v-else :to="'/public/book/'+book_id+'/'+book.book_name"> <span class="md-title">{{book.book_name}}</span> </router-link>
+            <router-link  :to="get_link()"> <span  class="md-title">{{book.book_name}}</span> </router-link>
+            
             
             <span @click="open_book" class="md-subhead">{{book.author_name}}</span>
           </md-card-header>
@@ -48,15 +48,15 @@
     vertical-align: top;
   }
   .cover{
-    padding:0 0 140.0% 0;
+    padding:0 0 0% 10%;
 
   }
 </style>
 
 <script>
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
-import {get_text,languages,get_defaultlanguage} from "@/languages";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
+import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,updateDoc } from "firebase/firestore";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import loading from "@/components/parts/loading";
@@ -84,7 +84,9 @@ export default {
   {
     let bookref=await getDoc(doc(firestore,"books",this.book_id));
     this.book=bookref.data();
-    this.book_cover=ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
+    let ref_thumbnail=ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
+    this.book_cover=await getDownloadURL(ref_thumbnail);
+    //console.log(this.book_cover);
     this.signedin= !(getAuth().currentUser==null);
     if(this.signedin)
     {
@@ -113,11 +115,11 @@ export default {
 
       if(this.signedin())
       {
-        l=`/book/${this.book_id}`;
+        l=`/book/${this.book_id}/${replace_white(this.book.book_name)}`;
       }
       else
       {
-        l=`/public/book/${this.book_id}`;
+        l=`/public/book/${this.book_id}/${replace_white(this.book.book_name)}`;
       }
       this.$router.push(l);
 
@@ -125,8 +127,25 @@ export default {
     share()
     {
 
+    },
+    get_link()
+    {
+    let l="";
+
+      if(this.signedin)
+      {
+        l=`/book/${this.book_id}/${replace_white(this.book.book_name)}`;
+      }
+      else
+      {
+        l=`/public/book/${this.book_id}/${replace_white(this.book.book_name)}`;
+      }
+    return l;
     }
 
+  },
+  computed:{
+    
   }
 }
 </script>

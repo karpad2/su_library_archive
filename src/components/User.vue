@@ -130,7 +130,7 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 	
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
 	
 .bigavatar{
 	float: left;

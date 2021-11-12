@@ -1,5 +1,6 @@
 <template>
-	<div v-if="dataReady">
+	<div>
+	<div div v-if="dataReady">
 <md-card>
 		<md-card-header>
         <md-card-header-text>
@@ -7,11 +8,11 @@
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-				<div class="user-container">
-				<div class="bigavatar">
-				<img  @click="enter_read(1)" alt="book_cover" :src="book_thumbnail" />
+				<div class="book-container">
+				<div class="bookavatar">
+				<img  @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
 				</div>
-		<div class="user-info">
+		<div class="book-info">
 			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" md-static>{{book.author_name}}</md-chip></p>
 			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
 			<p>{{gt("language")}}: <md-chip @click="keyword_link(book.language)" md-static><flag :flag="book.language" /></md-chip> </p>
@@ -40,7 +41,8 @@
 			 <Pages :bid="book_id"/>
 		</md-card-content>	
 	</md-card>	
-	
+	</div>
+	 <loading v-else/>
 	</div>
 
 </template>
@@ -49,14 +51,16 @@
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache} from "firebase/firestore";
-import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
-import { getStorage, ref, listAll,get } from "firebase/storage";
+import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
+import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import Pages from "@/components/parts/Pages";
+import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
 
 	export default {
 		components: {
 		Pages,
+		loading,
 		flag
 		},
 		
@@ -81,7 +85,8 @@ import flag from "@/components/parts/flag";
 			this.book=book_ref.data();
 			setDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
-			this.book_thumbnail=ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
+			let ref_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
+			this.book_thumbnail= await getDownloadURL(ref_storage);
 			if(this.book.hided) this.$router.push("/home");
 			this.title_side=title_page(this.book.book_name);
 			if(this.signed_in)
@@ -113,8 +118,8 @@ import flag from "@/components/parts/flag";
 			},
 			enter_read(i)
 			{
-				this.$router.push(`/book/${this.book_id}/${this.book.book_name}/page/${i}`);
-			}	,
+				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.book_name)}/page/${i}`);
+			},
 			keyword_link(i)
 			{
 				this.$router.push(`/books/search/${i}`);
@@ -124,7 +129,7 @@ import flag from "@/components/parts/flag";
 	
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 	.book_cover{
 		width: 350px;
 		height: 494px;
@@ -136,4 +141,23 @@ import flag from "@/components/parts/flag";
 		width: 48%;
 		vertical-align: top;
 	}
+		
+.bookavatar{
+	float: left;
+    margin: 2 em;
+
+}
+.bookavatar img{
+	width: 320px;
+    
+
+}
+.book-info{
+	float:left;
+	 margin: 50px;
+}
+.book-container
+{
+	overflow: auto;
+}
 </style>

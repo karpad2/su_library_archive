@@ -1,31 +1,32 @@
 <template>
+<div>
 <div v-if="dataReady">
 	
 <md-toolbar class="md-primary">
-<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
+	<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
 
-<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
-<md-button v-if="page>1" @click="last_page"><md-icon>navigate_prev</md-icon></md-button>
-<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
+	<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
+	<md-button v-if="page>1" @click="last_page"><md-icon>navigate_prev</md-icon></md-button>
+	<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
 
-<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
-<md-button v-if="page<book.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
-<md-button @click="settings"><md-icon>settings</md-icon></md-button>
+	<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+	<md-button v-if="page<book.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
+	<md-button @click="settings"><md-icon>settings</md-icon></md-button>
 </md-toolbar> 
 <div class="section">
 	<InnerImageZoom   :src="image" class="img" :alt="page"/>
 	<link rel="preload" as="image" :href="preimage.url" :v-for="preimage in image_pre" :key="preimage.id"/>
 </div>
 <md-toolbar class="md-primary">
-<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
+	<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
 
-<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
-<md-button v-if="page>1" @click="last_page"><md-icon>navigate_prev</md-icon></md-button>
-<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
+	<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
+	<md-button v-if="page>1" @click="last_page"><md-icon>navigate_prev</md-icon></md-button>
+	<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
 
-<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
-<md-button v-if="page<book.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
-<md-button @click="settings"><md-icon>settings</md-icon></md-button>
+	<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+	<md-button v-if="page<book.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
+	<md-button @click="settings"><md-icon>settings</md-icon></md-button>
 </md-toolbar> 
 <md-dialog-prompt
       :md-active.sync="mpagechooser"
@@ -36,16 +37,18 @@
       md-confirm-text="Done"
 	  md-confirm="" />
 
-
+</div>
+<loading  v-else/>
 </div>
 </template>
 
 <script>
 import {signOut} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,storage,firestore} from "@/firebase";
-import { getStorage, ref, listAll,get } from "firebase/storage";
+import { getStorage, ref, listAll,get, getDownloadURL } from "firebase/storage";
 import InnerImageZoom from 'vue-inner-image-zoom';
-import {getDoc,doc} from "firebase/firestore";
+import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
+import {getDoc,doc, getDocFromCache} from "firebase/firestore";
 import loading from "@/components/parts/loading";
 import logo from "@/assets/logo";
 
@@ -53,7 +56,7 @@ import logo from "@/assets/logo";
 		components: {
 		InnerImageZoom
 		},
-		props:["book_id","page"],
+		
 		name: 'Page',
 		data () {
 			return{
@@ -61,32 +64,41 @@ import logo from "@/assets/logo";
 				mpagechooser :false,
 				dataReady:false,
 				image:"",
+				book_id:"",
+				page:"",
 				image_pre:[],
 				choosed_pager:0,
 				preloading_page_number:3
 			}
 		},
 		async mounted() {
-			 this.image = ref(storage, `books/${this.book_id}/pages/${this.page}.jpg`);
-			 this.book=await getDoc(doc(firestore,"books",this.book_id)).data();
-			for(let i=this.page;i<this.page+this.preloading_page_number;i++)
+			this.book_id= this.$route.params.bid;
+			this.page = Number(this.$route.params.pid);
+			 let image_ref = ref(storage, `/books/${this.book_id}/pages/${this.page}.jpg`);
+			 this.image= await getDownloadURL(image_ref);
+			 let book_ref=await getDocFromCache(doc(firestore,"books",this.book_id));
+			 this.book=book_ref.data();
+			for(let i=this.page;i<(this.page+this.preloading_page_number);i++)
 			{
-				this.add_page_to_load(i);
+				if(i<=Number(this.book.page_number)) this.add_page_to_load(i);
 			}
 			
-			if (this.page<=0 || this.page>this.page_count)
+			/*if (this.page<=0 || this.page>Number(this.book.page_number))
+			{
+				console.log("Back to home in mounted");
 				this.back_to_home();
-			
+			}	*/
 
 			 this.dataReady=true;
 		},
 		methods: {
-			add_page_to_load(lo)
+			async add_page_to_load(lo)
 			{
+				let prev= ref(storage, `/books/${this.book_id}/pages/${lo}.jpg`);
 				if ( !( lo in this.image_pre ) ) {
     				this.image_pre[lo] = {
 						id:lo,
-						url:ref(storage, `/books/${this.book_id}/pages/${lo}.jpg`)
+						url: await getDownloadURL(prev)
 					};
 				}
 			},
@@ -97,7 +109,7 @@ import logo from "@/assets/logo";
 			last_page()
 			{
 			
-			this.enter_read(this.book.page_count);
+			this.enter_read(this.book.page_number);
 			},
 			back_one_page()
 			{
@@ -106,7 +118,7 @@ import logo from "@/assets/logo";
 			},
 			back_to_home()
 			{
-				this.$router.push(`/book/${this.book_id}/${this.book.book_name}`);
+				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.book_name)}`);
 				
 			},
 			zoom_in()
@@ -124,7 +136,7 @@ import logo from "@/assets/logo";
 
 			enter_read(i)
 			{
-				this.$router.push(`/book/${this.book_id}/${this.book.book_name}/page/${i}`);
+				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.book_name)}/page/${i}`);
 			},
 			settings()
 			{
@@ -143,7 +155,7 @@ import logo from "@/assets/logo";
 	*/
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
 .img{
 	width: 1280px;
 	height: 1808px;

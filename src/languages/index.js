@@ -77,11 +77,16 @@ function get_defaultlanguage()
 {
     return languages[0].code;
 }
+function replace_white(i="")
+{
+    return i.replaceAll(' ','_');
+}
 export
 {
     get_text,
     get_title,
     languages,
     title_page,
-    get_defaultlanguage
+    get_defaultlanguage,
+    replace_white
 }

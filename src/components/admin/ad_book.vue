@@ -50,6 +50,11 @@
       <label>{{gt("upload_book")}}</label>
       <md-file md-change="upload_book" v-model="book_pdf" :placeholder="gt('upload_book')" />
     </md-field>
+
+    <md-field>
+      <label>{{gt('page_number')}}</label>
+      <md-input @change="change" v-model="book.page_number" md-counter="100"></md-input>
+    </md-field>
      </md-card-content>   
 </md-card>
 <loading v-else />
