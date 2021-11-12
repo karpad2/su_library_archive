@@ -13,9 +13,9 @@
 				:src="book_thumbnail" />
 				</div>
 				<div class="user-info">
-		<p> {{gt("author_name")}}: {{book.author_name}}</p>
+		<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" v-model="book.author_name" md-static></md-chip></p>
 		
-		<p>{{gt("keywords")}}: <md-chips v-model="book.keywords" md-static></md-chips> </p>
+		<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static></md-chip> </p>
     	
 		<div v-html="book.description">
 		</div>
@@ -42,13 +42,6 @@
 			 <Pages :bid="book_id"/>
 		</md-card-content>	
 	</md-card>	
-	
-		
-	
-		
-
-
-		
 	
 	</div>
 
@@ -86,7 +79,7 @@ import Pages from "@/components/parts/Pages";
 			this.book_id=this.$route.params.bid;
 			let book_ref=await getDoc(doc(firestore,"books",this.book_id));
 			this.book=book_ref.data();
-			updateDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
+			setDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
 			this.book_thumbnail=ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
 			if(this.book.hided) this.$router.push("/home");
@@ -121,7 +114,11 @@ import Pages from "@/components/parts/Pages";
 			enter_read(i)
 			{
 				this.$router.push(`/book/${this.book_id}/${this.book.book_name}/page/${i}`);
-			}	
+			}	,
+			keyword_link(i)
+			{
+				this.$router.push(`/books/search/${i}`);
+			}
 		}
 	}
 	

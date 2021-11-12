@@ -29,6 +29,7 @@
     "lzma": "^2.3.2",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
+    "pdf-image": "^2.0.0",
     "pdf2pic": "^2.1.4",
     "pdfjs": "^2.4.6",
     "register-service-worker": "^1.7.2",
@@ -89,7 +90,7 @@
       "no-unused-vars": "off",
       "no-mixed-spaces-and-tabs": "off",
       "vue/no-parsing-error": "off",
-      "no-console":"error"
+      "no-console": "warn"
     }
   },
   "browserslist": [

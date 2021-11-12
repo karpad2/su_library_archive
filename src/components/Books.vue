@@ -3,21 +3,17 @@
 	<md-card>	
 		<md-card-header>
 		{{gt("search_for_books")}}
-		<md-autocomplete
-					class="search a"
-					v-model="seaching_text"
-					:md-options="searchedBooks"
-					@change="searching"
-					md-layout="box"></md-autocomplete><md-button class="md-raised md-primary a" @click="searching">{{gt("search")}}</md-button>
-		
+		<md-field>
+			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
+		</md-field>
 		</md-card-header>
 
 		<md-card-content>
 		 
 		{{gt("genres")}}
 		
-		<div v-if="dataReady">
-		<bookcard v-for="book in  searchedBooks" :key="book.id" :book_id="book.id"/>
+		<div class="section">
+			<bookcard v-for="book in searchedBooks" :key="book.id" :book_id="book.id"/>
 		</div>
 		</md-card-content>
 	</md-card>
@@ -45,49 +41,69 @@ import Bookcard from './parts/bookcard.vue';
 		metaInfo:{
 			title:title_page("","Books"),
 		},
-		props:["b_mode","b_search"],
+		
 		data: () => ({
 			profile_picture_url:"",
 			profile_name:"",
 			seaching_text:"",
-
 			showSidepanel:false,
 			menuVisible: false,
 			searchedBooks:[],
 			userTheme: "default",
 			loading_screen:false,
-			dataReady:true
+			dataReady:false
 			
 		}),
-		mounted() {
+		async mounted() {
+			if(this.$route.params.b_search!=undefined)
+			{
+			this.seaching_text=this.$route.params.b_search;
+			await this.searching();
+			}
+			else 
+			{
+				let q=query(collection(firestore,"books"),limit(10));
+				let c=await getDocs(q);
+				c.forEach(element => {
+				this.check_element_exist({id:element.id});
+				});
+			}
 
+			this.dataReady=true;
 		},
 		methods: {
 			async searching()
 			{
 				this.dataReady=false;
-				let a=[];
+				this.searchedBooks=[];
 				if(!(String(this.seaching_text).length>0)) return [];
-				
-				let q=query(collection(firestore,"books"),where("keywords","in",[this.seaching_text.toLowerCase()]),limit(10));
+				let q=query(collection(firestore,"books"),where("keywords","array-contains",[this.seaching_text]),limit(10));
 				let c=await getDocs(q);
 				c.forEach(element => {
-				a.push({
-					id:element.id
-				})
-				
+				this.check_element_exist({id:element.id});
+				});
+				 q=query(collection(firestore,"books"),where("author_name","<=",this.seaching_text),where("author_name",">=",this.seaching_text),limit(10));
+				c=await getDocs(q);
+				c.forEach(element => {
+				this.check_element_exist({id:element.id});
 				});
 
-				//let query=query(collection,)
-				//return  a;
+				q=query(collection(firestore,"books"),where("book_name","<=",this.seaching_text),where("book_name",">=",this.seaching_text),limit(10));
+				c=await getDocs(q);
+				c.forEach(element => {
+				this.check_element_exist({id:element.id});
+				});
+
 				
-				this.searchedBooks=a;
 				this.dataReady=true;
+				console.log(this.searchedBooks);
 			},
-			gt(a)
-				{
+			gt(a){
 					return get_text(a);
 				},
+			check_element_exist(b){
+			 if(!this.searchedBooks.includes(b)) this.searchedBooks.push(b);
+			 }
 		},
 		computed:
 		{

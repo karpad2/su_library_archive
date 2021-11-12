@@ -1,6 +1,6 @@
 <template>
-<div v-if="dataReady">
-  <md-card class="md-layout-item md-size-50 md-small-size-100">
+<div >
+  <md-card class="md-layout-item md-size-50 md-small-size-100" v-if="dataReady">
     <md-card-header>
         <div class="md-title">{{gt('add_new_book')}}</div>
     </md-card-header>
@@ -26,10 +26,7 @@
     </md-field>
     <md-field>
       
-      <md-chips @change="change" v-model="book.keywords" :md-placeholder="gt('add_keywords')">
-
-      
-    </md-chips>
+      <md-chips @change="change" v-model="book.keywords" :md-placeholder="gt('add_keywords')"></md-chips>
     </md-field>
 
 
@@ -46,22 +43,23 @@
 
     <md-field v-if="!first_page_as_cover">
       <label>{{gt("upload_book_cover")}}</label>
-      <md-file v-model="book_cover" :placeholder="gt('upload_book_cover')" />
+      <md-file md-change="upload_book_cover" v-model="book_cover" :placeholder="gt('upload_book_cover')" />
     </md-field>
 
     <md-field>
       <label>{{gt("upload_book")}}</label>
-      <md-file v-model="book_pdf" :placeholder="gt('upload_book')" />
+      <md-file md-change="upload_book" v-model="book_pdf" :placeholder="gt('upload_book')" />
     </md-field>
      </md-card-content>   
 </md-card>
+<loading v-else />
 </div>
 </template>
 <script>
 import {get_text} from "@/languages";
 import { quillEditor } from 'vue-quill-editor';
 import { getStorage, ref, uploadBytes } from "firebase/storage";
-
+import loading from "@/components/parts/loading";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc } from "firebase/firestore";
 import { push } from '@firebase/database';
@@ -115,7 +113,8 @@ export default {
     }
     },
     components:{
-        quillEditor
+        quillEditor,
+        loading
     },
     async mounted()
     {
@@ -123,8 +122,7 @@ export default {
       
       if(this.$route.params.bid=="new")
       {
-     
-      this.book.language=this.languages[0].value;
+        this.book.language=this.languages[0].value;
       }
       else
       {
@@ -169,24 +167,21 @@ export default {
            
       
     },
-    async upload_book()
+    async upload_book_cover()
     {
-     
-     
 
       const firststorageRef = ref(storage,`books/${this.book_id}/thumbnail.jpg`);
       const metadata = {contentType: 'image/jpeg'};
       let uploadTask = await uploadBytes(firststorageRef, this.first_page, metadata);
-      let storageRef=null;
-      this.page_number=0;
-      this.pages.forEach(async(element,index)=>
-      {
-         storageRef= ref(storage,`books/${this.book_id}/pages/${index+1}.jpg`);
-         uploadTask = await uploadBytes(storageRef, element, metadata);
-         this.page_number++;
-      });
-      updateDoc(doc(firestore,"books",this.book_id),{page_number:this.page_number},{merge:true});
+    },
 
+    async upload_book()
+    {
+      const firststorageRef = ref(storage,`books/${this.book_id}/thumbnail.jpg`);
+      const metadata = {contentType: 'application/pdf'};
+      this.dataReady=false;
+      let uploadTask = await uploadBytes(firststorageRef, this.pdf_file, metadata);
+      this.dataReady=true;
       
 
     },

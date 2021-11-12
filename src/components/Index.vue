@@ -12,15 +12,10 @@
 				</router-link>
 				</hide-at>
 				<hide-at v-if="!admin_page" breakpoint="mediumAndBelow">
-				 <md-autocomplete
-					v-if="signed_in"
-					class="desktop search"
-					v-model="seaching_text"
-					:md-options="searchedBooks"
-					@change="searching"
-					md-layout="box">
-					<label>{{gt("search_by_name")}}</label>
-					</md-autocomplete>
+				 <md-field style="margin-left: 25px" v-if="signed_in">
+						<label>{{gt("search_by_name")}}</label>
+						<md-input  md-layout="box" @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
+				</md-field>
 				</hide-at>
 				<div class="md-toolbar-section-end">
         			<md-button v-if="signed_in" class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
@@ -382,7 +377,9 @@ import logo from "@/assets/logo";
 			},
 			searching()
 			{
-				this.$router.push(`/books/search/${this.seaching_text}`);
+				let k=this.seaching_text;
+				this.seaching_text="";
+				this.$router.push(`/books/search/${k}`);
 			
 			},
 			
