@@ -4,43 +4,29 @@
 <md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title"> <h1>{{book.book_name}}</h1></div>
+          <div class="md-title"> <h1>{{blogs.blog_name}}</h1></div>
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
 				<div class="book-container">
 				<div class="bookavatar">
-				<img  @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
+				<img class="book_cover" alt="book_cover" :src="blog_thumbnail" />
 				</div>
 		<div class="book-info">
-			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" md-static>{{book.author_name}}</md-chip></p>
-			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
-			<p>{{gt("language")}}: <md-chip @click="keyword_link(book.language)" md-static><flag :flag="book.language" /></md-chip> </p>
+			<div>
+			{{gt("information")}}
+			<p>{{gt("upload_date")}}:{{blogs.upload_date}}</p>
+		</div>
 		<div v-html="book.description">
 		</div>
-		<div>
-			{{gt("page_number")}}: <md-chip>{{book.page_number}}</md-chip>
-			<div v-if="signed_in">
-			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
-			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
-			</div>	
-		</div>
-		<div>
-			{{gt("information")}}
-			<p>{{gt("upload_date")}}:{{book.upload_date}}</p>
-		</div>
-		<div >
+	
 			
 		</div>
-		</div>
+		
 		</div>
         </md-card-content>
-	</md-card>
-	<md-card v-if="signed_in">
-		 <md-card-content>
-			 <Pages :bid="book_id"/>
-		</md-card-content>	
-	</md-card>	
+</md-card>
+	
 	</div>
 	 <loading v-else/>
 	</div>
@@ -51,44 +37,40 @@
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
-import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
+import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
-import Pages from "@/components/parts/Pages";
+
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
 
 	export default {
 		components: {
-		Pages,
-		loading,
-		flag
+			loading,
 		},
 		
-		name: 'Book',
+		name: 'Blog',
 		data: () => ({
-			book:{},
+			blog:{},
 			dataReady: false,
 			signed_in:false,
-			book_thumbnail:"",
+			blog_thumbnail:"",
 			is_favorite:false,
-			title_side:title_page(),
-			book_id:"",
+			title_side:"",
+			blog_id:"",
 			user:{}
 			
 		}),
-		metaInfo(){
-			return{
+		/*metaInfo:{
 			title:this.title_side
-			}
-		},
+		},*/
 		async mounted() {
 			this.book_id=this.$route.params.bid;
-			let book_ref=await getDoc(doc(firestore,"books",this.book_id));
+			let book_ref=await getDoc(doc(firestore,"blogs",this.book_id));
 			this.book=book_ref.data();
-			setDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
+			setDoc(doc(firestore,"books",this.book_id),{popularity:this.blog.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
 			let ref_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
-			this.book_thumbnail= await getDownloadURL(ref_storage);
+			this.blog_thumbnail= await getDownloadURL(ref_storage);
 			if(this.book.hided) this.$router.push("/home");
 			this.title_side=title_page(this.book.book_name);
 			if(this.signed_in)

@@ -53,8 +53,9 @@ function contains_the_array(array,word)
 }
 
 function title_page(a,type="")
-{
-    return `${a} ${get_text(type)==undefined?"":get_text(type)} » ${get_text("app-title")}`;
+{   let b=a;
+    if(a=="undefined"||a==undefined) b="";
+    return `${b} ${get_text(type)==undefined?"":get_text(type)} » ${get_text("app-title")}`;
 }
 
 const languages =[
@@ -81,6 +82,10 @@ function replace_white(i="")
 {
     return i.replaceAll(' ','_');
 }
+function replace_under(i="")
+{
+    return i.replaceAll('_',' ');
+}
 export
 {
     get_text,
@@ -88,5 +93,6 @@ export
     languages,
     title_page,
     get_defaultlanguage,
-    replace_white
+    replace_white,
+    replace_under
 }

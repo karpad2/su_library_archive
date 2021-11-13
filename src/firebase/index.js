@@ -21,11 +21,11 @@ const functions = getFunctions(app);
 logEvent(analytics, 'notification_received');
 
 const appCheck = initializeAppCheck(app, {
-	provider: new ReCaptchaV3Provider((Vue.config.devtools)?firebaseCredentials.recatchpa_code:firebaseCredentials.recatchpadeploy),
+	provider: new ReCaptchaV3Provider((Vue.config.devtools)?firebaseCredentials.recatchpa_code:firebaseCredentials.recatchpa_deploy),
   
 	// Optional argument. If true, the SDK automatically refreshes App Check
 	// tokens as needed.
-	//isTokenAutoRefreshEnabled: true
+	isTokenAutoRefreshEnabled: true
   });
 
 // key for recatchpa3 

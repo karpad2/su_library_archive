@@ -67,6 +67,7 @@ import logo from "@/assets/logo";
 				book_id:"",
 				page:"",
 				image_pre:[],
+				title_side:"",
 				choosed_pager:0,
 				preloading_page_number:3
 			}
@@ -78,6 +79,9 @@ import logo from "@/assets/logo";
 			 this.image= await getDownloadURL(image_ref);
 			 let book_ref=await getDocFromCache(doc(firestore,"books",this.book_id));
 			 this.book=book_ref.data();
+
+			 this.title_side=title_page(`${this.book.book_name}`);
+
 			for(let i=this.page;i<(this.page+this.preloading_page_number);i++)
 			{
 				if(i<=Number(this.book.page_number)) this.add_page_to_load(i);

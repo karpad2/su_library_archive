@@ -26,6 +26,7 @@ import PublicSupport from "../components/Public/Support";
 
 import Books from "../components/Books";
 import Book from "../components/Book";
+import Blog from "../components/Blog";
 import Favorites from "../components/Favorites";
 import Page from "../components/Page";
 import User from "../components/User";
@@ -113,6 +114,12 @@ const router = new VueRouter ({
 					name: 'book',
 					component: Book,
 					meta: {requiresAuth: false}
+				},
+				{
+					path: 'blog/:bid/:b_name',
+					name: 'blog',
+					component: Blog,
+					
 				},
 				{
 					path: 'book/:bid/:b_name/page/:pid',

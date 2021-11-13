@@ -1,6 +1,6 @@
 <template>
     <div>
-        <md-headline>{{gt("upload_a_title_book")}}</md-headline>
+        <h3>{{gt("upload_a_title_book")}}</h3>
         <div>{{gt("upload_a_book")}}
         
         <div class="section" v-if="books.length>0">
