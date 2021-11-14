@@ -3,7 +3,7 @@
 <md-card >
   <div v-if="dataReady">
       <md-card-media-cover md-solid>
-        <md-card-media @click="open_book" md-ratio="4:3">
+        <md-card-media @click="open_book" md-ratio="9:16">
           <img  class="cover" v-lazy="book_cover" alt="thumb_book_cover">
         </md-card-media>
 
@@ -43,9 +43,10 @@
 <style lang="scss" scoped>
   .md-card {
     width: 320px;
-    height:350px;
+    height:480px;
     margin: 4px;
     display: inline-block;
+    //padding-top: 10px;
     vertical-align: top;
   }
   .cover{

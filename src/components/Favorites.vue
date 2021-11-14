@@ -20,11 +20,12 @@ import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,getDocFromCache} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
+import bookcard from "@/components/parts/bookcard";
 
 
 	export default {
 		components: {
-	
+			 bookcard
 		},
 		metaInfo:{
 			title:title_page("","favorites"),
@@ -46,7 +47,14 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 			//let update_number=(await getDoc(collection(firestore,"books"),book_id)).data().favorites;
 			//collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
 
-			let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
+			let user_ref;
+			try{
+			user_ref= await getDocFromCache(doc(firestore,"users",getAuth().currentUser.uid));
+			}
+			catch(e)
+			{
+				user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
+			}
     		this.user=user_ref.data();
 			this.user.favorites.forEach(element =>
 			{
@@ -54,7 +62,8 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 				{
 					this.favorites.push(element);
 				}
-			})
+			});
+			console.log(this.favorites);
 			this.dataReady=true;
 		},
 		methods: {

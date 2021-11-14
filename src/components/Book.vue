@@ -83,7 +83,17 @@ import flag from "@/components/parts/flag";
 		},
 		async mounted() {
 			this.book_id=this.$route.params.bid;
-			let book_ref=await getDoc(doc(firestore,"books",this.book_id));
+			let book_ref;
+
+			try{
+        book_ref=await getDocFromCache(doc(firestore,"books",this.book_id));
+        this.book=book_ref.data();
+        }
+        catch(e)
+        {
+           book_ref=await getDoc(doc(firestore,"books",this.book_id));
+           this.book=book_ref.data(); 
+        }
 			this.book=book_ref.data();
 			setDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
@@ -163,7 +173,9 @@ import flag from "@/components/parts/flag";
 
 }
 .bookavatar img{
-	width: 320px;
+	width: 350px;
+	height:494px;
+	aspect-ratio: auto 350/494; 
     
 
 }
@@ -174,5 +186,7 @@ import flag from "@/components/parts/flag";
 .book-container
 {
 	overflow: auto;
+	margin-bottom: 25px;
+	padding: 30px 20px;
 }
 </style>

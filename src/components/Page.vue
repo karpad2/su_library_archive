@@ -60,6 +60,11 @@ import logo from "@/assets/logo";
 		'inner-image-zoom': InnerImageZoom,
 		loading
 		},
+		metaInfo(){
+			return{
+			title:this.title_side
+			}
+		},
 		
 		name: 'Page',
 		data () {
@@ -94,7 +99,7 @@ import logo from "@/assets/logo";
 			 }
 			 this.book=book_ref.data();
 
-			 this.title_side=title_page(`${this.book.book_name} - ${this.gt("Page")} ${this.page}`);
+			 this.title_side=title_page(`${this.book.book_name} - ${this.gt("page")} ${this.page}`);
 
 			for(let i=this.page;i<(this.page+this.preloading_page_number);i++)
 			{
@@ -142,11 +147,13 @@ import logo from "@/assets/logo";
 			},
 			zoom_in()
 			{
+				if(this.zooming>=10) return;
 				this.zooming++;
 				this.zoom_scale=1+this.zooming/10;
 			},
 			zoom_out()
 			{
+				if(this.zooming<=-8) return;
 				this.zooming--;
 				this.zoom_scale=1+this.zooming/10;
 			},
@@ -184,6 +191,14 @@ import logo from "@/assets/logo";
 				if(event.key=="a"||event.key=="ArrowLeft")
 				{
 					this.back_one_page();
+				}
+				if(event.key=="+")
+				{
+					this.zoom_in();
+				}
+				if(event.key=="-")
+				{
+					this.zoom_out();
 				}
 			}
 

@@ -246,7 +246,18 @@ import firebaseui from 'firebaseui'
 			this.email_verified=await getAuth().currentUser.emailVerified;
 			//this.language= await this.get_user_language();
 			
-			let k=await getDoc(doc(firestore,"users",this.user.uid));
+			//let k=await getDoc(doc(firestore,"users",this.user.uid));
+			let k;
+			try{
+        k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+        
+        }
+        catch(e)
+        {
+           k=await getDoc(doc(firestore,"users",this.user.uid)); 
+        }
+
+
 			this.admin=(k.data().admin==null?false:k.data().admin);
 			this.member=(k.data().member==null?false:k.data().member);
 			this.aterms=(k.data().terms==null?false:k.data().terms);
@@ -261,8 +272,19 @@ import firebaseui from 'firebaseui'
 			}
 			localStorage.setItem("language",k.data().language);
 
-			let get_under= await getDoc(doc(firestore,"properties","global_flags"));
+			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
 			
+				try{
+        get_under=await getDocFromCache(doc(firestore,"properties","global_flags"));
+        
+        }
+        catch(e)
+        {
+           get_under=await getDoc(doc(firestore,"properties","global_flags"));
+           
+        }
+
+
 			this.undermaintenance_flag= get_under.data().undermaintenance;
 			this.promotion=get_under.data().promotion;
 			this.promotion_hide=get_under.data().promotion_hide;

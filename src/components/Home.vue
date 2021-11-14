@@ -35,7 +35,7 @@
 import {FireDb,FirebaseAuth,userId,firestore} from "@/firebase";
 import bookcard from "@/components/parts/bookcard";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy  } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getDocsFromCache  } from "firebase/firestore";
 
 
 	export default {
@@ -129,7 +129,19 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy  } f
 				let a=[];
 				
 				let q=query(collection(firestore,"books"),orderBy("popularity"),limit(5));
-				let c= await getDocs(q);
+				let c;
+				try
+				{
+					c=await getDocsFromCache(q);
+				}
+				catch(e)
+				{
+					c= await getDocs(q);
+				}
+				if(c.empty)
+				{
+					c= await getDocs(q);	
+				}
 				c.forEach(element => {
 				a.push({
 					id:element.id
@@ -142,7 +154,19 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy  } f
 			{
 				let a=[];
 				let q=query(collection(firestore,"books"),orderBy("uploading_date"),limit(this.loading_values));
-				let c=await getDocs(q);
+				let c;
+				try
+				{
+					c=await getDocsFromCache(q);
+				}
+				catch(e)
+				{
+					c= await getDocs(q);
+				}
+				if(c.empty)
+				{
+					c= await getDocs(q);	
+				}
 				c.forEach(element => {
 				a.push({
 					id:element.id

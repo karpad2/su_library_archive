@@ -71,6 +71,7 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 			valid_until_flag:false,
 			valid_until:"",
 			options:[],
+			users_data:{},
 			user:{
 				displayname:"",
 				photoURL:"",
@@ -93,8 +94,17 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 				this.options.push({value:a.code,text:a.name});
 			});
 
-			const valid_u = doc(firestore, "users", this.user.uid);
-			let query= await getDoc(valid_u);
+			let valid_u;
+
+			try{
+        valid_u=await getDocFromCache( doc(firestore, "users", this.user.uid));
+        this.users_data=valid_u.data();
+        }
+        catch(e)
+        {
+           valid_u=await getDoc(doc(firestore, "users", this.user.uid));
+           this.users_data=valid_u.data(); 
+        }
 			
 			let date=new Date(Number(0));
 			this.valid_until= moment(date).format('MMMM Do YYYY, h:mm:ss a');
