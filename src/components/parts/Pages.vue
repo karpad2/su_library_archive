@@ -1,7 +1,11 @@
 <template>
 	<div id="pages" v-if="dataReady&&signed_in">
-		<thumbnailpage :book_id="book_id" v-for="page in pages" :key="page" :page="page" />
-
+		<md-card>
+			<thumbnailpage :book_id="book_id" v-for="page in pages" :key="page" :page="page" />
+			<div class="middle-center">
+				<md-button @click="addmore">{{gt("load_more")}}</md-button>
+			</div>
+		</md-card>
 
 	</div>
 </template>
@@ -10,7 +14,9 @@
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import { getStorage, ref, listAll,get } from "firebase/storage";
+import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
 import loading from "@/components/parts/loading";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
 import thumbnailpage from "@/components/parts/thumbnailpage";
 import logo from "@/assets/logo";
 
@@ -19,7 +25,6 @@ import logo from "@/assets/logo";
 	export default {
 		components: {
 		thumbnailpage
-
 		},
 		props:["bid"],
 		name: 'Pages',
@@ -27,26 +32,41 @@ import logo from "@/assets/logo";
 			signed_in:false,
 			dataReady:false,
 			book_id:"",
-			pages:[]
+			pages:[],
+			page_count:10,
+			load_more:0
 		}),
 		async mounted() {
 			this.book_id=this.bid;
 			this.signed_in= !(await getAuth().currentUser==null);
-			const listRef = ref(storage, `books/${this.book_id}/pages`);
+			let book_ref=await getDoc(doc(firestore,"books",this.book_id));
+			this.book=book_ref.data();
+			if(this.page_count>this.book.page_number) {this.page_count=this.book.page_number}
+			for (var i=1;i<=Number(this.page_count);i++)
+			{
+				this.pages.push(i);
+			}
 
-			// Find all the prefixes and items.
-			listAll(listRef)
-			.then((res) => {
-				res.prefixes.forEach((folderRef) => {
-				// All the prefixes under listRef.
-				// You may call listAll() recursively on them.
-				});
-				res.items.forEach((itemRef) => {
-				// All the items under listRef.
-				});
-			}).catch((error) => {
-				// Uh-oh, an error occurred!
-			});
+			this.dataReady=true;
+		},
+		methods:
+		{
+			addmore()
+			{
+				this.page_count+=10;
+				if(this.page_count>this.book.page_number) {this.page_count=this.book.page_number}
+				this.pages=[];
+
+				for (var i=1;i<=Number(this.page_count);i++)
+				{
+				this.pages.push(i);
+				}
+
+			},
+			gt(a)
+			{
+				return get_text(a);
+			}
 		}
 	}
 </script>

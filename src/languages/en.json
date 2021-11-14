@@ -99,7 +99,16 @@
     "settings_of_users":"Settings of users",
     "no_book_cant_be_found":"Searched query cant be found",
     "load_more":"Load More",
-    
+    "reader_settings":"Reader Settings",
+    "image_preloading":"Image Preloading",
+    "zooming_scale":"Image scale",
+    "Keyboard_shortcut":"Keyboard Shortcuts",
+    "scroll_up":"Scroll up",
+    "scroll_down":"Scroll down",
+    "next_page":"Forward one page",
+    "back_page":"Back one page",
+    "skip_page":"Skip, pages",
+    "Zoom":"Zoom",
     "upload_a_blog":"Admin blogs"
 
 

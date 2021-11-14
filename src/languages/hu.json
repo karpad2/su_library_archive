@@ -93,7 +93,19 @@
     "enter_code":"Kód beírása",
     "type_code_pls":"Kódot írja ide...",
     "promotion_hide":"Promóció elrejtése",
-    "member_id":"Tagsági kód"
+    "member_id":"Tagsági kód",
+
+    "load_more":"Load More",
+    "reader_settings":"Reader Settings",
+    "image_preloading":"Image Preloading",
+    "zooming_scale":"Image scale",
+    "Keyboard_shortcut":"Keyboard Shortcuts",
+    "scroll_up":"Scroll up",
+    "scroll_down":"Scroll down",
+    "next_page":"Forward one page",
+    "back_page":"Back one page",
+    "skip_page":"Skip, pages",
+    "Zoom":"Zoom"
     
 
 

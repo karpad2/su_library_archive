@@ -33,7 +33,7 @@
      		 	</div>
 				</md-app-toolbar>
 	
-
+			<div id="firebaseui-auth-container"></div>
 			<md-app-drawer :md-active.sync="menuVisible" md-persistent="mini">
 				<md-toolbar class="md-transparent" md-elevation="3">
 					<span>Navigation</span>
@@ -153,6 +153,7 @@
 
 <script>
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
+import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider } from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,functions} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,getDocFromCache  } from "firebase/firestore";
@@ -161,6 +162,8 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import loading from "@/components/parts/loading";
 import undermaintenance from "@/components/parts/undermaintenance";
 import logo from "@/assets/logo";
+import firebaseui from 'firebaseui'
+
 
 
 	export default {
@@ -212,6 +215,12 @@ import logo from "@/assets/logo";
 					link: '/events',
 					auth: true,
 				}],
+	 uiConfig : {
+      signInSuccessUrl: '/home',
+      signInOptions: [
+        GoogleAuthProvider
+        ]
+      }	
 
 		}),
 		async mounted() {
@@ -259,6 +268,11 @@ import logo from "@/assets/logo";
 			this.promotion_hide=get_under.data().promotion_hide;
 			
 			//this.language=await getAuth().languageCode;
+			}
+			else 
+			{
+				var ui = new firebaseui.auth.AuthUI(getAuth());
+    			ui.start('#firebaseui-auth-container', this.uiConfig);
 			}
 			let theme="light";
 			

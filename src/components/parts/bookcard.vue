@@ -43,12 +43,13 @@
 <style lang="scss" scoped>
   .md-card {
     width: 320px;
+    height:350px;
     margin: 4px;
     display: inline-block;
     vertical-align: top;
   }
   .cover{
-    padding:0 0 0% 10%;
+    //padding:0 0 0% 10%;
 
   }
 </style>

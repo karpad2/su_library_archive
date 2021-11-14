@@ -59,12 +59,12 @@ const router = new VueRouter ({
 			component: Books
 		},
 		{
-			path: 'books/:b_mode/:b_search',
+			path: 'books/:bmode/:bsearch',
 			name: 'bookswithoutlogin',
 			component: Books
 		},
 		{
-			path: 'book/:b_id/:b_name',
+			path: 'book/:bid/:bname',
 			name: 'bookwithoutlogin',
 			component: Book
 		},
@@ -104,25 +104,25 @@ const router = new VueRouter ({
 					meta: {requiresAuth: false}
 				},
 				{
-					path: 'books/:b_mode/:b_search',
+					path: 'books/:bmode/:bsearch',
 					name: 'bookssearch',
 					component: Books,
 					meta: {requiresAuth: false}
 				},
 				{
-					path: 'book/:bid/:b_name',
+					path: 'book/:bid/:bname',
 					name: 'book',
 					component: Book,
 					meta: {requiresAuth: false}
 				},
 				{
-					path: 'blog/:bid/:b_name',
+					path: 'blog/:bid/:bname',
 					name: 'blog',
 					component: Blog,
 					
 				},
 				{
-					path: 'book/:bid/:b_name/page/:pid',
+					path: 'book/:bid/:bname/page/:pid',
 					name: 'bookpage',
 					component: Page,
 					
@@ -170,7 +170,7 @@ const router = new VueRouter ({
 					component: Admin_Dashboard,
 				},
 				{
-					path: 'admin/blog/:b_id',
+					path: 'admin/blog/:bid',
 					name: 'admin-blog',
 					component: AdminBlog,
 				},

@@ -166,4 +166,7 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy  } f
 {
 	color:#ed2553;
 }
+.md-card{
+	min-width: 320px;
+}
 </style>

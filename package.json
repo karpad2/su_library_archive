@@ -25,6 +25,7 @@
     "firebase-auth": "^0.1.2",
     "firebase-cli": "^1.2.0",
     "firebase-tools": "^9.16.5",
+    "firebaseui": "^6.0.0",
     "fork-me-on-github-vue": "^1.0.7",
     "lzma": "^2.3.2",
     "moment": "^2.29.1",

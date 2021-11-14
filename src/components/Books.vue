@@ -55,9 +55,9 @@ import Bookcard from './parts/bookcard.vue';
 			
 		}),
 		async mounted() {
-			if(this.$route.params.b_search!=undefined)
+			if(this.$route.params.bsearch!=undefined)
 			{
-			this.seaching_text=this.$route.params.b_search;
+			this.seaching_text=this.$route.params.bsearch;
 			await this.searching();
 			}
 			else 

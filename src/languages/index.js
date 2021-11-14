@@ -80,7 +80,9 @@ function get_defaultlanguage()
 }
 function replace_white(i="")
 {
-    return i.replaceAll(' ','_');
+    let k=i.replaceAll(' ','_');
+    k=k.replaceAll('#','[sharp]');
+    return k;
 }
 function replace_under(i="")
 {
