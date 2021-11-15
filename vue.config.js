@@ -2,7 +2,7 @@ module.exports = {
     // ...other vue-cli plugin options...
     pwa: {
       name: 'Gradska Biblioteka Subotica',
-      themeColor: '#4DBA87',
+      themeColor: '#ebaa6e',
       msTileColor: '#000000',
       display: "standalone",
       scope: "/",

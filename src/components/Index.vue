@@ -2,9 +2,12 @@
 	<div v-if="dataReady" id="vue-js-index-container">
 		<md-app md-waterfall md-mode="fixed" :md-theme="userTheme">
 			<md-app-toolbar class="md-primary" md-mode="reveal" md-elevation="5">
-				<md-button class="md-icon-button" @click="toggleMenu" v-if="!menuVisible">
+				
+				<md-button class="md-icon-button" @click="menuVisible1=!menuVisible1" v-if="!menuVisible1">
 					<md-icon>menu</md-icon>
 				</md-button>
+				
+				
 				<hide-at  breakpoint="small">
 				<router-link class="router-link" to="/home">
 					<logo class="bar-logo" />
@@ -32,54 +35,57 @@
 
      		 	</div>
 				</md-app-toolbar>
-	
-			<div id="firebaseui-auth-container"></div>
-			<md-app-drawer :md-active.sync="menuVisible" md-persistent="mini">
-				<md-toolbar class="md-transparent" md-elevation="3">
-					<span>Navigation</span>
-					<div class="md-toolbar-section-end">
-						<md-button class="md-icon-button md-dense" @click="toggleMenu">
-							<md-icon>keyboard_arrow_left</md-icon>
-						</md-button>
-					</div>
-				</md-toolbar>
+				
+				
+				<md-app-drawer :md-active.sync="menuVisible1" md-persistent="mini">
+							<md-toolbar class="md-transparent" md-elevation="3">
+								<span>Navigation</span>
+								<div class="md-toolbar-section-end">
+									<md-button class="md-icon-button md-dense" @click="menuVisible1=!menuVisible1">
+										<md-icon>keyboard_arrow_left</md-icon>
+									</md-button>
+								</div>
+							</md-toolbar>
 
-				<md-list>
-					<div v-for="tab in menuTab" :key="tab.title">
-						<router-link :to="tab.link">
-							<md-list-item v-if="tab.auth" :class="{'active': $route.fullPath.includes(tab.link)}">
-								<md-icon class="md-icon">{{tab.icon}}</md-icon>
-								<span class="md-list-item-text">{{tab.title}}</span>
-							</md-list-item>
-							
-						</router-link>
-					</div>
-					<md-divider></md-divider>
-					<md-list-item v-if="!member" @click="enter_code=1">
-								<md-icon class="md-icon">vpn_key</md-icon>
-								<span class="md-list-item-text">{{gt("enter_code")}}</span>
-					</md-list-item>
-					<md-list-item v-if="signed_in" @click="changeTheme">
-								<md-icon class="md-icon">settings_brightness</md-icon>
-								<span class="md-list-item-text">{{gt("ctheme")}}</span>
-					</md-list-item>
-					<show-at breakpoint="mediumAndAbove">
-					</show-at>
-					<md-list-item v-if="signed_in" @click="$router.push('/user')">
-								<md-icon class="md-icon">translate</md-icon>
-								<span class="md-list-item-text">{{gt("language")}}</span>
-					</md-list-item>
-					<md-divider></md-divider>
-					<md-list-item v-if="signed_in" @click="logout">
-								<md-icon class="md-icon">logout</md-icon>
-								<span class="md-list-item-text">{{gt("logout")}}</span>
-					</md-list-item>
+							<md-list>
+								<div v-for="tab in menuTab" :key="tab.title">
+									<router-link :to="tab.link">
+										<md-list-item v-if="tab.auth" :class="{'active': $route.fullPath.includes(tab.link)}">
+											<md-icon class="md-icon">{{tab.icon}}</md-icon>
+											<span class="md-list-item-text">{{tab.title}}</span>
+										</md-list-item>
+										
+									</router-link>
+								</div>
+								<md-divider></md-divider>
+								<md-list-item v-if="!member" @click="enter_code=1">
+											<md-icon class="md-icon">vpn_key</md-icon>
+											<span class="md-list-item-text">{{gt("enter_code")}}</span>
+								</md-list-item>
+								<md-list-item v-if="signed_in" @click="changeTheme">
+											<md-icon class="md-icon">settings_brightness</md-icon>
+											<span class="md-list-item-text">{{gt("ctheme")}}</span>
+								</md-list-item>
+								<show-at breakpoint="mediumAndAbove">
+								</show-at>
+								<md-list-item v-if="signed_in" @click="$router.push('/user')">
+											<md-icon class="md-icon">translate</md-icon>
+											<span class="md-list-item-text">{{gt("language")}}</span>
+								</md-list-item>
+								<md-divider></md-divider>
+								<md-list-item v-if="signed_in" @click="logout">
+											<md-icon class="md-icon">logout</md-icon>
+											<span class="md-list-item-text">{{gt("logout")}}</span>
+								</md-list-item>
 
-					
-					
-				</md-list>
-			</md-app-drawer>
-
+								
+								
+							</md-list>
+				</md-app-drawer>
+				
+				
+		
+		
 	<md-drawer class="md-right" :md-active.sync="showSidepanel">
       <md-toolbar class="md-transparent" md-elevation="0">
         <span class="md-title">{{gt("account")}}</span>
@@ -206,7 +212,8 @@ import firebaseui from 'firebaseui'
 			promotion:false,
 			promotion_hide:false,
 			signed_in:false,
-			menuVisible: false,
+			menuVisible1: false,
+			menuVisible2: false,
 			userTheme: "default",
 			loading_screen:false,
 			menuTab:[{
@@ -497,7 +504,58 @@ import firebaseui from 'firebaseui'
 
 <style lang="scss">
 	@import "../../src/style/variables.scss";
+ 
 
+ /*
+
+ <show-at breakpoint="mediumAndBelow" >
+				<md-app-drawer :md-active.sync="menuVisible2">
+							<md-toolbar class="md-transparent" md-elevation="3">
+								<span>Navigation</span>
+								<div class="md-toolbar-section-end">
+									<md-button class="md-icon-button md-dense" @click="toggleMenu">
+										<md-icon>keyboard_arrow_left</md-icon>
+									</md-button>
+								</div>
+							</md-toolbar>
+
+							<md-list>
+								<div v-for="tab in menuTab" :key="tab.title">
+									<router-link :to="tab.link">
+										<md-list-item v-if="tab.auth" :class="{'active': $route.fullPath.includes(tab.link)}">
+											<md-icon class="md-icon">{{tab.icon}}</md-icon>
+											<span class="md-list-item-text">{{tab.title}}</span>
+										</md-list-item>
+										
+									</router-link>
+								</div>
+								<md-divider></md-divider>
+								<md-list-item v-if="!member" @click="enter_code=1">
+											<md-icon class="md-icon">vpn_key</md-icon>
+											<span class="md-list-item-text">{{gt("enter_code")}}</span>
+								</md-list-item>
+								<md-list-item v-if="signed_in" @click="changeTheme">
+											<md-icon class="md-icon">settings_brightness</md-icon>
+											<span class="md-list-item-text">{{gt("ctheme")}}</span>
+								</md-list-item>
+								<show-at breakpoint="mediumAndAbove">
+								</show-at>
+								<md-list-item v-if="signed_in" @click="$router.push('/user')">
+											<md-icon class="md-icon">translate</md-icon>
+											<span class="md-list-item-text">{{gt("language")}}</span>
+								</md-list-item>
+								<md-divider></md-divider>
+								<md-list-item v-if="signed_in" @click="logout">
+											<md-icon class="md-icon">logout</md-icon>
+											<span class="md-list-item-text">{{gt("logout")}}</span>
+								</md-list-item>
+
+								
+								
+							</md-list>
+				</md-app-drawer>
+		</show-at>
+ */
 	#vue-js-index-container {
 		.md-app {
 			height: 100vh;

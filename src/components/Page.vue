@@ -8,11 +8,17 @@
 	<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
 	
 	<div class="md-toolbar-section-end">
-	<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
-	<md-button>{{zooming_percent}}%</md-button>
-	<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+	<hide-at breakpoint="small"> 
+		<div>
+		<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
+		<md-button>{{zooming_percent}}%</md-button>
+		<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+		</div>
+	</hide-at>
 	<md-button v-if="page<book.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
-	<md-button @click="settings"><md-icon>settings</md-icon></md-button>
+	<hide-at breakpoint="small"> 
+		<md-button @click="settings"><md-icon>settings</md-icon></md-button>
+	</hide-at>
 	</div>
 </md-toolbar> 
 <div class="section">
@@ -25,11 +31,18 @@
 	<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
 	
 	<div class="md-toolbar-section-end">
-	<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
-	<md-button>{{zooming_percent}}%</md-button>
-	<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+	<hide-at breakpoint="small"> 
+		<div>
+		<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
+		<md-button>{{zooming_percent}}%</md-button>
+		<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+		</div>
+	</hide-at>
+	
 	<md-button v-if="page<book.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
-	<md-button @click="settings"><md-icon>settings</md-icon></md-button>
+	<hide-at breakpoint="small"> 
+		<md-button @click="settings"><md-icon>settings</md-icon></md-button>
+	</hide-at>
 	</div>
 </md-toolbar> 
 
@@ -53,11 +66,13 @@ import 'vue-inner-image-zoom/lib/vue-inner-image-zoom.css';
 import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
 import {getDoc,doc, getDocFromCache} from "firebase/firestore";
 import loading from "@/components/parts/loading";
+import {showAt, hideAt} from 'vue-breakpoints';
 import logo from "@/assets/logo";
 
 	export default {
 		components: {
 		'inner-image-zoom': InnerImageZoom,
+		 hideAt,
 		loading
 		},
 		metaInfo(){

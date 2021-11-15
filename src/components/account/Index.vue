@@ -7,9 +7,9 @@
 					<span class="md-title">{{gt("app-title")}}</span>
 				</router-link>
 				<div class="md-toolbar-section-end">
-						
+					<show-at  breakpoint="mediumAndAbove">	
 						<b-form-select @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
-					
+					</show-at>	
 					</div>
 				
 			</md-app-toolbar>
@@ -22,6 +22,10 @@
 					
 					<div> <h4>{{gt("app-title")}}</h4></div>
 					<router-view @themeChanged="themeChanged"/>
+					
+					<hide-at  breakpoint="mediumAndAbove">	
+					 	<b-form-select @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
+					</hide-at>
 				</div>
 			</md-app-content>
 		</md-app>
@@ -32,10 +36,12 @@
 import logo from '@/assets/logo';
 import {getAuth} from "firebase/auth";
 import imagelogo from "@/assets/icons/android-chrome-512x512.png";
+import {showAt, hideAt} from 'vue-breakpoints';
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 	export default {
 		components: {
-		logo
+		logo,
+		showAt, hideAt
 		},
 		name: "AccountIndex",
 		data: () => ({
@@ -43,6 +49,7 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 			languages:[{value:"sr-SR",text:"Srpski"},{value:"hu-HU",text:"Magyar"},{value:"en-EN",text:"English"}],
 			language:"",
 			dataReady:false,
+
 			image_logo:""
 		}),
 		mounted() {

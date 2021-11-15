@@ -73,12 +73,14 @@ import flag from "@/components/parts/flag";
 			is_favorite:false,
 			title_side:title_page(),
 			book_id:"",
+			generated_keywords:"",
 			user:{}
 			
 		}),
 		metaInfo(){
 			return{
-			title:this.title_side
+			title:this.title_side,
+			keywords:this.generated_keywords
 			}
 		},
 		async mounted() {
@@ -95,6 +97,12 @@ import flag from "@/components/parts/flag";
            this.book=book_ref.data(); 
         }
 			this.book=book_ref.data();
+
+			this.generated_keywords+=`${this.book.book_name},${this.book.author_name},`;
+			this.book.keywords.forEach(e=>
+			{
+				this.generated_keywords+=`${e},`;
+			});
 			setDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
 			let ref_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
