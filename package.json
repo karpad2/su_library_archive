@@ -1,6 +1,7 @@
 {
   "name": "su-library-archive",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha-prerelease",
+  "author": "karpad2",
   "private": true,
   "main": "main.js",
   "scripts": {

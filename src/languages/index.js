@@ -45,8 +45,11 @@ function get_title()
 }
 function contains_the_array(array,word)
 {
+
     if(array[word]==undefined)
-        return english[word];
+      { console.log(word);
+           return english[word];
+      }
     else 
         return array[word];
 

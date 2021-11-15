@@ -23,7 +23,12 @@
 	</div>
 </md-toolbar> 
 <div class="section">
+	<hide-at breakpoint="small">
 	<inner-image-zoom  :width="1280*zoom_scale+'px'" :src="image" class="img" :zoomScale="zoom_scale" :alt="page"/>
+	</hide-at>
+	<hide-at breakpoint="mediumAndAbove">
+		<img :src="image" class="img" />
+	</hide-at>
 	<link rel="preload" as="image" :href="preimage.url" v-for="preimage in image_pre" :key="preimage.id"/>
 </div>
 <md-toolbar class="md-primary">

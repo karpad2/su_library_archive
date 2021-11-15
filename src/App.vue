@@ -21,7 +21,7 @@
 		data()
 		{
 			return{
-				cookie_text:get_text(" "),
+				cookie_text:get_text("cookie_text"),
 				cookie_ok:get_text("ok")
 			/*	<Ribbon v-bind="ribbonOptions"></Ribbon>
 		ribbonOptions: {
