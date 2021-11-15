@@ -3,9 +3,9 @@
 <div v-if="dataReady">
 	
 <md-toolbar class="md-primary">
-	<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
+	<md-button @click="back_to_home" class="small"><md-icon>reply</md-icon></md-button>
 	<md-button v-if="page>1" @click="last_page"><md-icon>navigate_before</md-icon></md-button>
-	<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
+	<md-button @click="mpagechooser=true" class="pages">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
 	
 	<div class="md-toolbar-section-end">
 	<hide-at breakpoint="small"> 
@@ -15,8 +15,8 @@
 		<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
 		</div>
 	</hide-at>
-	<md-button @click="fullscreen_toggle"><md-icon>fullscreen</md-icon></md-button>
-	<md-button v-if="page<book.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
+	<md-button @click="fullscreen_toggle" class="small"><md-icon>fullscreen</md-icon></md-button>
+	<md-button v-if="page<book.page_number" class="small" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
 	<hide-at breakpoint="small"> 
 		<md-button @click="settings"><md-icon>settings</md-icon></md-button>
 	</hide-at>
@@ -271,5 +271,10 @@ import logo from "@/assets/logo";
 	aspect-ratio: auto 1280 / 1808;
 	text-align: center;
 	max-width: 100%;
+}
+.md-button .md-ripple
+{
+	
+	padding:5px
 }
 </style>

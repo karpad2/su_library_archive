@@ -82,6 +82,7 @@ function replace_white(i="")
 {
     let k=i.replaceAll(' ','_');
     k=k.replaceAll('#','[sharp]');
+    k=k.replaceAll('/','[slash]');
     return k;
 }
 function replace_under(i="")
