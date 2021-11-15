@@ -5,8 +5,12 @@
 <md-toolbar class="md-primary">
 	<md-button @click="back_to_home" class="small"><md-icon>reply</md-icon></md-button>
 	<md-button v-if="page>1" @click="last_page"><md-icon>navigate_before</md-icon></md-button>
-	<md-button @click="mpagechooser=true" class="pages">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
 	
+	
+	
+	<hide-at breakpoint="small"> 
+	<md-button @click="mpagechooser=true" class="pages">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
+	</hide-at>
 	<div class="md-toolbar-section-end">
 	<hide-at breakpoint="small"> 
 		<div>
@@ -34,8 +38,9 @@
 <md-toolbar class="md-primary">
 	<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
 	<md-button v-if="page>1" @click="last_page"><md-icon>navigate_before</md-icon></md-button>
-	<md-button @click="mpagechooser=true">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
-	
+	<hide-at breakpoint="small"> 
+	<md-button @click="mpagechooser=true" class="pages">{{gt("pages")}} {{this.page}} / {{this.book.page_number}}</md-button>
+	</hide-at>
 	<div class="md-toolbar-section-end">
 	<hide-at breakpoint="small"> 
 		<div>
@@ -281,5 +286,8 @@ import logo from "@/assets/logo";
 {
 	
 	padding:5px
+}
+@media screen  {
+	
 }
 </style>

@@ -192,5 +192,6 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getD
 }
 .md-card{
 	min-width: 320px;
+	padding:5px;
 }
 </style>
