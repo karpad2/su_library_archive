@@ -15,6 +15,7 @@
 		<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
 		</div>
 	</hide-at>
+	<md-button @click="fullscreen_toggle"><md-icon>fullscreen</md-icon></md-button>
 	<md-button v-if="page<book.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
 	<hide-at breakpoint="small"> 
 		<md-button @click="settings"><md-icon>settings</md-icon></md-button>
@@ -38,6 +39,8 @@
 		<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
 		</div>
 	</hide-at>
+	<md-button @click="fullscreen_toggle"><md-icon>fullscreen</md-icon></md-button>
+	
 	
 	<md-button v-if="page<book.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
 	<hide-at breakpoint="small"> 
@@ -90,6 +93,7 @@ import logo from "@/assets/logo";
 				image:"",
 				book_id:"",
 				zoom_scale:1,
+				fullscreen:false,
 				zooming:0,
 				page:1,
 				image_pre:[],
@@ -104,6 +108,8 @@ import logo from "@/assets/logo";
 			this.page = Number(this.$route.params.pid);
 			 let image_ref = ref(storage, `/books/${this.book_id}/pages/${this.page}.jpg`);
 			 this.image= await getDownloadURL(image_ref);
+
+			 //this.$emit('fullscreen',true);
 			 let book_ref;
 			 try{
 			 book_ref=await getDocFromCache(doc(firestore,"books",this.book_id));
@@ -215,6 +221,12 @@ import logo from "@/assets/logo";
 				{
 					this.zoom_out();
 				}
+			},
+			fullscreen_toggle()
+			{
+				this.fullscreen=!this.fullscreen;
+				localStorage.setItem("fullscreen",this.fullscreen);
+
 			}
 
 

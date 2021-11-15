@@ -1,7 +1,7 @@
 <template>
 	<div v-if="dataReady" id="vue-js-index-container">
-		<md-app md-waterfall md-mode="fixed" :md-theme="userTheme">
-			<md-app-toolbar class="md-primary" md-mode="reveal" md-elevation="5">
+		<md-app  md-waterfall md-mode="fixed" :md-theme="userTheme">
+			<md-app-toolbar  v-if="!fullscreen" class="md-primary" md-mode="reveal" md-elevation="5">
 				
 				<md-button class="md-icon-button" @click="menuVisible1=!menuVisible1" v-if="!menuVisible1">
 					<md-icon>menu</md-icon>
@@ -37,7 +37,7 @@
 				</md-app-toolbar>
 				
 				
-				<md-app-drawer :md-active.sync="menuVisible1" md-persistent="mini">
+				<md-app-drawer v-if="!fullscreen" :md-active.sync="menuVisible1" md-persistent="mini">
 							<md-toolbar class="md-transparent" md-elevation="3">
 								<span>Navigation</span>
 								<div class="md-toolbar-section-end">
@@ -148,7 +148,7 @@
 					
 
 				<undermaintenance v-if="undermaintenance_flag && !admin" />
-				<router-view  v-else-if="!loading_screen"/>
+				<router-view  :fullscreen="fullscreen" v-else-if="!loading_screen"/>
 				<loading v-else />
 			</md-app-content>
 
@@ -197,6 +197,7 @@ import firebaseui from 'firebaseui'
 				text:""
 			},
 			code:"",
+			fullscreen:false,
 			enter_code:false,
 			languages:languages,
 			searchedBooks:[],
@@ -239,6 +240,12 @@ import firebaseui from 'firebaseui'
 				this.loading_screen=true;
 				next();
 			});
+
+			setInterval(()=>
+			{
+				this.fullscreen=JSON.parse(localStorage.getItem("fullscreen"));
+				//console.log(JSON.parse(localStorage.getItem("fullscreen")));
+			},500);
 			
 			this.$router.afterEach(()=>{
 				setTimeout(()=>{this.loading_screen=false},300);

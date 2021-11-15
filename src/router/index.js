@@ -215,6 +215,10 @@ router.beforeEach((to, from, next) => {
 	let currentUser = FirebaseAuth.currentUser;
 	let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
+	if(!to.path.includes("/page/"))
+	{
+		localStorage.setItem("fullscreen",false);
+	}
 //	if(String(to.path)=="/home") next("/home"); 
 
 /*
