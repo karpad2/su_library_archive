@@ -6,7 +6,7 @@ module.exports = {
       msTileColor: '#ebaa6e',
       display: "standalone",
       scope: "/",
-      start_url: "/",
+      start_url: "/home",
       appleMobileWebAppCapable: 'yes',
       appleMobileWebAppStatusBarStyle: 'black',
       gcm_sender_id: "103953800507",
