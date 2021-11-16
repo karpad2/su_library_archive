@@ -1,9 +1,9 @@
 /* eslint-disable no-console, no-undef */
-
+/*
 import { register } from 'register-service-worker';
+import {sw} from "./sw.js";
 
-
-  register(`sw.js`, {
+  register(sw, {
     ready() {
       console.log(
         'App is being served from cache by a service worker.\n' +
@@ -38,3 +38,4 @@ import { register } from 'register-service-worker';
     }
   });
 
+*/
