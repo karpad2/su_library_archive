@@ -1,6 +1,6 @@
 <template>
-	<div v-if="dataReady" id="vue-js-index-container">
-		<md-app  md-waterfall md-mode="fixed" :md-theme="userTheme">
+	<div  id="vue-js-index-container">
+		<md-app v-if="dataReady"  md-waterfall md-mode="fixed" :md-theme="userTheme">
 			<md-app-toolbar  v-if="!fullscreen" class="md-primary" md-mode="reveal" md-elevation="5">
 				
 				<md-button class="md-icon-button" @click="menuVisible1=!menuVisible1" v-if="!menuVisible1">
@@ -154,6 +154,7 @@
 
 			
 		</md-app>
+		<loading  v-else/>
 	</div>
 </template>
 
