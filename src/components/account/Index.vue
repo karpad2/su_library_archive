@@ -73,6 +73,7 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 				//getAuth().languageCode=this.language;
 				
 				await  localStorage.setItem("language",this.language);
+				//window.location.reload();
 				this.dataReady=true;
 			},
 			changeTheme: function () {

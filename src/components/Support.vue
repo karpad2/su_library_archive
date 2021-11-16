@@ -5,7 +5,7 @@
     <p> Please click<a class="help" href="https://github.com/karpad2/su_library_archive/issues"> here </a> if you want to contact us, feature request and report and if you need help. </p> 
     <p> Please click<a class="help" href="https://github.com/karpad2/su_library_archive/wiki"> here </a> if you want to check manual. </p> 
     <p> App version: {{version}}</p>
-	<p> App made by: {{author}}</p>
+	<p> App made by: <a href="https://karpad2.github.io/"> {{author}} </a></p>
 
 </div>
 </template>

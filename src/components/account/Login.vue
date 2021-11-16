@@ -83,27 +83,28 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 			{
 				return get_text(a);
 			},
-			loginwithgoogle: function()
+			loginwithgoogle: async function()
 			{
 				let _this = this;
 				let provider= new GoogleAuthProvider();
-				signInWithPopup(FirebaseAuth,provider).then((result)=>
+				signInWithPopup(await FirebaseAuth,provider).then(async (result)=>
 				{	
 				
-				const credential = GoogleAuthProvider.credentialFromResult(result);
+				const credential = await GoogleAuthProvider.credentialFromResult(result);
 				const token = credential.accessToken;
 				// The signed-in user info.
 				const user = result.user;
 				this.$router.replace('/home');	
 				this.set_user_data_local();
 				
-				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName},{merge:true});
+				await setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName},{merge:true});
 
 				}).catch((error) => {
 						if (error.code === 'auth/wrong-password') {
 							_this.errorMessage = "Password wrong";
 						} else {
 							_this.errorMessage = "Check email and password";
+							console.log(error);
 						}
 					});
 			}

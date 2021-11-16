@@ -35,13 +35,23 @@
           }
         ]
       },
-      {
-        "source": "sw.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=31536000"
-          }
+     
+       {
+
+        "source": "**",
+        "headers": [ 
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }, 
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "DELETE, POST, GET, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+          } 
         ]
       }
     ]

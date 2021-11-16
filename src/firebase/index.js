@@ -27,6 +27,7 @@ const storage = getStorage(app);
 const firestore = getFirestore(app);
 const analytics = getAnalytics();
 const functions = getFunctions(app);
+
 logEvent(analytics, 'notification_received');
 
 // key for recatchpa3 
