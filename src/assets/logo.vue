@@ -1,5 +1,5 @@
 <template>
-    <img :src="img" alt="app_logo" />
+    <img :src="img" alt="app_logo" width="32" height="32" />
 
 </template>
 <script>
