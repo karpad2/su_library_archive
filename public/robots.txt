@@ -1,0 +1,3 @@
+Useragent: *
+Allow: /*.index.html
+Sitemap:https://su-library-archive.firebaseapp.com/sitemap.xml
