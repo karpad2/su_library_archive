@@ -105,7 +105,7 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
            valid_u=await getDoc(doc(firestore, "users", this.user.uid));
            this.users_data=valid_u.data(); 
         }
-			
+			this.language=this.users_data.language;
 			let date=new Date(Number(0));
 			this.valid_until= moment(date).format('MMMM Do YYYY, h:mm:ss a');
 			this.dataReady=true;
@@ -127,12 +127,12 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 			{
 				return getAuth().currentUser.displayName;
 			},
-			lang_change()
+			async lang_change()
 			{
-				
+				await  updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{language:this.language},{merge:true});
 				
 				localStorage.setItem("language",this.language);
-				updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{language:this.language},{merge:true});
+				window.reload();
 				//getAuth().languageCode=this.language;
 			},
 		}

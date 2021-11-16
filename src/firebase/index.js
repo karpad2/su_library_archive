@@ -10,16 +10,7 @@ import Vue from 'vue';
 import { getFunctions, httpsCallable } from "firebase/functions";
 import {enableIndexedDbPersistence, getFirestore,doc,getDoc,collection,updateDoc,update,setDoc,getDocFromServer,CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 import firebaseCredentials from './credentials';
-
 const app = initializeApp(firebaseCredentials.config);
-const messaging = getMessaging();
-const perf = getPerformance(app);
-const storage = getStorage(app);
-const firestore = getFirestore(app);
-const analytics = getAnalytics();
-const functions = getFunctions(app);
-logEvent(analytics, 'notification_received');
-
 const appCheck = initializeAppCheck(app, {
 	provider: new ReCaptchaV3Provider("6LckM_IcAAAAAJjv3sIzeQP535EjkBl-so0aCuPH"),
   
@@ -27,6 +18,16 @@ const appCheck = initializeAppCheck(app, {
 	// tokens as needed.
 	isTokenAutoRefreshEnabled: true
   });
+
+
+
+const messaging = getMessaging();
+const perf = getPerformance(app);
+const storage = getStorage(app);
+const firestore = getFirestore(app);
+const analytics = getAnalytics();
+const functions = getFunctions(app);
+logEvent(analytics, 'notification_received');
 
 // key for recatchpa3 
 //const appcheck=firebase.appCheck()

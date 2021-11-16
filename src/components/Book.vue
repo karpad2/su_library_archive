@@ -101,6 +101,7 @@ import flag from "@/components/parts/flag";
            this.book=book_ref.data(); 
         }
 			this.book=book_ref.data();
+			
 
 			this.generated_keywords+=`${this.book.book_name},${this.book.author_name},`;
 			this.book.keywords.forEach(e=>

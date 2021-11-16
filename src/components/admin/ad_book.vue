@@ -161,8 +161,6 @@ export default {
     {
       this.keyword_finder(this.book.author_name);
       this.keyword_finder(this.book.book_name);
-      
-      this.book.uploading_date=new Date();
 
        if(this.$route.params.bid=="new" && this.book_id==null)
       {
@@ -173,6 +171,8 @@ export default {
       }
       else
       {
+        let l=new Date();
+        this.book.upload_date=`${l.getFullYear()}-${l.getMonth()}-${l.getUTCDay()}`;
         this.book_ref=updateDoc(doc(firestore,"books",this.book_id),this.book,{merge:true});
       }
            

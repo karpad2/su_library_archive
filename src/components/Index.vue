@@ -276,14 +276,21 @@ import firebaseui from 'firebaseui'
 			this.member=(k.data().member==null?false:k.data().member);
 			this.aterms=(k.data().terms==null?false:k.data().terms);
 
-			if((k.data().h4cker==null?false:k.data().h4cker)){
+			/*if(k.data().h4cker==null)
+			{
+				console.log("validated");
+			}
+			else
+			{
+				if(!k.data().h4cker) return;
 				this.logout();
+				
 				this.$noty.success(this.gt(":3"), {
 						killer: true,
 						timeout: 1500,
 					});
-
-			}
+				this.$router.push("/account/login");
+			}*/
 			localStorage.setItem("language",k.data().language);
 
 			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));

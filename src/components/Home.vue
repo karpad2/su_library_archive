@@ -101,6 +101,7 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getD
 		async mounted()
 		{
 			
+			
 			//this.get_name();
 			//this.events=get_data_from_allroomdb("events");
 			

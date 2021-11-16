@@ -30,7 +30,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 	import {FirebaseAuth,firestore} from "@/firebase";
 	import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
 	import glogo from "@/assets/glogo";
-	import {get_text} from "@/languages";
+	import {get_text,title_page} from "@/languages";
 	import { collection, doc, setDoc, query, where, getDocs,getDoc  } from "firebase/firestore";
 
 	export default {
@@ -38,6 +38,9 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 		components: {
     		glogo
   			},
+	 metaInfo:{
+			title:title_page("","login"),
+		},
 		data() {
 			return {
 				email: "",
