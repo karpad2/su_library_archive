@@ -9,7 +9,7 @@ const serbian= require("./rs.json");
 
 function  get_text(indicator)
 {   let text="";
-    let code="en";
+    let code="en-EN";
     let signed_in=!(getAuth().currentUser==null);
 
     code=localStorage.getItem("language");
@@ -26,16 +26,16 @@ function  get_text(indicator)
     }
     else if(code==null &&!signed_in)
     {
-        code="sr-SR";
+        code="rs-RS";
         localStorage.setItem("language",code);
     }
 
     //console.log(code);
     switch(code)
     {
-        case "en":{text=contains_the_array(english,indicator);} break;
+        case "en-EN":{text=contains_the_array(english,indicator);} break;
         case "hu-HU":{text=contains_the_array(hungarian,indicator);} break;
-        case "sr-SR":{text=contains_the_array(serbian,indicator);} break;
+        case "rs-RS":{text=contains_the_array(serbian,indicator);} break;
     }
     return text
 }
@@ -63,7 +63,7 @@ function title_page(a,type="")
 
 const languages =[
     {
-        code:"sr-SR",
+        code:"rs-RS",
         name:"Srpski"
     },
     
@@ -72,7 +72,7 @@ const languages =[
         name:"Magyar"
     },
     {
-        code:"en",
+        code:"en-EN",
         name:"English"
     }];
 

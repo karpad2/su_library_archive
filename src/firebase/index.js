@@ -36,16 +36,16 @@ const appCheck = initializeAppCheck(app, {
 
 async function isAdmin()
 {
-	let l= await getDocFromServer(doc(collection(firestore,"users"),getAuth().currentUser.uid));
+	let l= await getDoc(doc(collection(firestore,"users"),getAuth().currentUser.uid));
 	return l.data().admin==null?false:true;
 }
 async function get_user_language()
 {
-	let l= await getDocFromServer(doc(collection(firestore,"users"),getAuth().currentUser.uid));
+	let l= await getDoc(doc(collection(firestore,"users"),getAuth().currentUser.uid));
 	let k ="";
 	if(l.data().language==null)
 	{
-		k="sr-RS"
+		k="rs-RS"
 	}
 	else 
 	{

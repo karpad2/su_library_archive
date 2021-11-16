@@ -21,7 +21,7 @@
 					<img :src="image_logo" class="logo" />
 					
 					<div> <h4>{{gt("app-title")}}</h4></div>
-					<router-view @themeChanged="themeChanged"/>
+					<router-view  v-if="dataReady" @themeChanged="themeChanged"/>
 					
 					<hide-at  breakpoint="mediumAndAbove">	
 					 	<b-form-select @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
@@ -46,7 +46,7 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 		name: "AccountIndex",
 		data: () => ({
 			userTheme: "default",
-			languages:[{value:"sr-SR",text:"Srpski"},{value:"hu-HU",text:"Magyar"},{value:"en-EN",text:"English"}],
+			languages:[{value:"rs-RS",text:"Srpski"},{value:"hu-HU",text:"Magyar"},{value:"en-EN",text:"English"}],
 			language:"",
 			dataReady:false,
 
