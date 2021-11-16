@@ -1,27 +1,27 @@
 import Vue from 'vue';
 import router from './router';
-import ForkeMeOnGithub from 'fork-me-on-github-vue';
+//import ForkeMeOnGithub from 'fork-me-on-github-vue';
 import {IconsPlugin } from 'bootstrap-vue';
 import VueQuillEditor from 'vue-quill-editor';
 //import "./serviceWorker/registersw";
 import BootstrapVue from "bootstrap-vue";
 import VueNoty from 'vuejs-noty';
-import VCalendar from 'v-calendar';
+//import VCalendar from 'v-calendar';
 import disableDevtool from 'disable-devtool';
-import AudioRecorder from 'vue-audio-recorder';
-import vueAwesomeCountdown from 'vue-awesome-countdown'
+//import AudioRecorder from 'vue-audio-recorder';
+//import vueAwesomeCountdown from 'vue-awesome-countdown'
 import VueMaterial from 'vue-material'; // TODO: import only needed component, not all
 import 'vue-material/dist/vue-material.min.css';
 import VueMeta from 'vue-meta';
 import CountryFlag from 'vue-country-flag'
-import VueSocialSharing from 'vue-social-sharing'
-import Vuetify from 'vuetify';
+//import VueSocialSharing from 'vue-social-sharing'
+//import Vuetify from 'vuetify';
 import VueLazyload from 'vue-lazyload'
 import 'vuetify/dist/vuetify.min.css';
 import flag from "./components/parts/flag";
 
 Vue.component('country-flag', CountryFlag);
-Vue.use(Vuetify);
+//Vue.use(Vuetify);
 Vue.use(flag);
 Vue.use(VueMeta);
 Vue.use(VueMaterial);
@@ -39,15 +39,15 @@ Vue.use(VueQuillEditor, /* { default global options } */);
 
 
  
-Vue.use(AudioRecorder);
+//Vue.use(AudioRecorder);
 Vue.use(BootstrapVue);
-Vue.use(VueSocialSharing);
+//Vue.use(VueSocialSharing);
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
 Vue.use(IconsPlugin);
-Vue.use(VCalendar, {})
-Vue.use(vueAwesomeCountdown);
+//Vue.use(VCalendar, {})
+//Vue.use(vueAwesomeCountdown);
 
 Vue.use(VueNoty, {
 	timeout: 4000,
