@@ -10,7 +10,6 @@
 
 		<md-card-content>
 		 
-		{{gt("genres")}}
 		
 		<div class="section">
 			<bookcard v-for="book in searchedBooks" :key="book.id" :book_id="book.id"/>
@@ -30,8 +29,9 @@ import loading from "@/components/parts/loading";
 import bookcard from "@/components/parts/bookcard";
 
 import logo from "@/assets/logo";
-import Bookcard from './parts/bookcard.vue';
 
+// {{gt("genres")}}
+		
 	export default {
 		components: {
 		bookcard

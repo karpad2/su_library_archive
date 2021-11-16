@@ -16,7 +16,14 @@
 			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" md-static>{{book.author_name}}</md-chip></p>
 			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
 			<p>{{gt("language")}}: <md-chip @click="keyword_link(book.language)" md-static><flag :flag="book.language" /></md-chip> </p>
+		<div>
+		{{gt("information")}}:
 		<div v-html="book.description">
+			</div>
+			<div>
+			
+		<p>{{gt("upload_date")}}:{{book.upload_date}}</p>
+		</div>
 		</div>
 		<div>
 			{{gt("page_number")}}: <md-chip>{{book.page_number}}</md-chip>
@@ -25,10 +32,7 @@
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
 			</div>	
 		</div>
-		<div>
-			{{gt("information")}}
-			<p>{{gt("upload_date")}}:{{book.upload_date}}</p>
-		</div>
+		
 		<div >
 			
 		</div>

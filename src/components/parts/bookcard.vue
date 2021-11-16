@@ -4,7 +4,8 @@
   <div v-if="dataReady">
       <md-card-media-cover md-solid>
         <md-card-media @click="open_book" md-ratio="1:1">
-          <img  class="cover" v-lazy="book_cover" alt="thumb_book_cover">
+          <img v-if="imageload" class="cover" v-lazy="book_cover" alt="thumb_book_cover">
+          <loading v-else/>
         </md-card-media>
 
         <md-card-area>
@@ -70,6 +71,7 @@ export default {
   {
       return{
           dataReady:false,
+          imageload:false,
           book:{},
           user:{},
           is_favorite:false,
@@ -86,8 +88,9 @@ export default {
   {
     let bookref=await getDoc(doc(firestore,"books",this.book_id));
     this.book=bookref.data();
-    let ref_thumbnail=ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
-    this.book_cover=await getDownloadURL(ref_thumbnail);
+
+
+    this.image_loading();
     //console.log(this.book_cover);
     this.signedin= !(getAuth().currentUser==null);
     if(this.signedin)
@@ -120,6 +123,12 @@ export default {
 			await updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites-1},{merge:true}); 
 				
 			}
+      },
+      async image_loading()
+      {
+        let ref_thumbnail=ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
+    this.book_cover=await getDownloadURL(ref_thumbnail);
+    this.imageload=true;
       },
 
     open_book()
