@@ -160,7 +160,7 @@
 <script>
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider } from "firebase/auth";
-import {get_text,languages,get_defaultlanguage} from "@/languages";
+import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,functions} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,getDocFromCache  } from "firebase/firestore";
 import {showAt, hideAt} from 'vue-breakpoints';
@@ -231,6 +231,9 @@ import firebaseui from 'firebaseui'
       }	
 
 		}),
+		metaInfo:{
+			title:title_page("",""),
+		},
 		async mounted() {
 
 			this.signed_in= !(await getAuth().currentUser==null);
@@ -291,6 +294,14 @@ import firebaseui from 'firebaseui'
 					});
 				this.$router.push("/account/login");
 			}*/
+			console.log(localStorage.getItem("language"));
+			console.log(k.data().language);
+			if(k.data().language!=localStorage.getItem("language"))
+			{
+				localStorage.setItem("language",k.data().language);
+				window.location.reload();
+
+			}
 			localStorage.setItem("language",k.data().language);
 
 			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));

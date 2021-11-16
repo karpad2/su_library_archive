@@ -17,9 +17,8 @@
 		</div>
 		<md-field>
 			<p>{{gt("login_with_google")}}</p>
-			<md-button class="md-raised md-primary" @click="loginwithgoogle">{{gt("login_with")}} <glogo/></md-button>
+			<md-button type="button" class="md-raised md-primary" @click="loginwithgoogle">{{gt("login_with")}} <glogo/></md-button>
 		</md-field>
-		<p> {{gt("login_reason")}}</p>
 		<p style="color:red;">{{errorMessage}}</p>
 
 	</div>
@@ -46,7 +45,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				email: "",
 				password: "",
 				errorMessage: "",
-				enable_public_login:false
+				enable_public_login:true
 			}
 		},
 		mounted() {

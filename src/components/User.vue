@@ -132,7 +132,7 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 				await  updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{language:this.language},{merge:true});
 				
 				localStorage.setItem("language",this.language);
-				window.reload();
+				window.location.reload();
 				//getAuth().languageCode=this.language;
 			},
 		}

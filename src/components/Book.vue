@@ -40,7 +40,7 @@
 		</div>
         </md-card-content>
 	</md-card>
-	<md-card v-if="signed_in">
+	<md-card v-if="(signed_in &&member||admin)||(signed_in&&promotion)">
 		 <md-card-content>
 			 <Pages :bid="book_id"/>
 		</md-card-content>	
@@ -74,6 +74,9 @@ import flag from "@/components/parts/flag";
 			dataReady: false,
 			signed_in:false,
 			book_thumbnail:"",
+			admin:false,
+			member:false,
+			promotion:false,
 			is_favorite:false,
 			title_side:title_page(),
 			book_id:"",
@@ -110,6 +113,37 @@ import flag from "@/components/parts/flag";
 			});
 			setDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
+			
+			if(this.signed_in)
+			{
+			this.user= getAuth().currentUser;
+			let k;
+			try{
+        k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+        
+        }
+        catch(e)
+        {
+           k=await getDoc(doc(firestore,"users",this.user.uid)); 
+        }
+
+
+			this.admin=(k.data().admin==null?false:k.data().admin);
+			this.member=(k.data().member==null?false:k.data().member);
+			} 
+			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
+			
+				try{
+        get_under=await getDocFromCache(doc(firestore,"properties","global_flags"));
+        
+        }
+        catch(e)
+        {
+           get_under=await getDoc(doc(firestore,"properties","global_flags"));
+           
+        }
+			this.promotion=get_under.data().promotion;
+
 			let ref_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
 			this.book_thumbnail= await getDownloadURL(ref_storage);
 			if(this.book.hided) this.$router.push("/home");

@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import {signOut} from "firebase/auth";
+import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,storage,firestore} from "@/firebase";
 import { getStorage, ref, listAll,get, getDownloadURL } from "firebase/storage";
 import InnerImageZoom from 'vue-inner-image-zoom';
@@ -108,6 +108,10 @@ import logo from "@/assets/logo";
 				page:1,
 				image_pre:[],
 				title_side:"",
+				admin:false,
+				member:false,
+				promotion:false,
+				user:{},
 				choosed_pager:0,
 				preloading_page_number:3,
 				settings_dialog:false
@@ -116,6 +120,35 @@ import logo from "@/assets/logo";
 		async mounted() {
 			this.book_id= this.$route.params.bid;
 			this.page = Number(this.$route.params.pid);
+			this.user= getAuth().currentUser;
+			let k;
+			try{
+        k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+        
+        }
+        catch(e)
+        {
+           k=await getDoc(doc(firestore,"users",this.user.uid)); 
+        }
+
+
+			this.admin=(k.data().admin==null?false:k.data().admin);
+			this.member=(k.data().member==null?false:k.data().member);
+			
+			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
+			
+				try{
+        get_under=await getDocFromCache(doc(firestore,"properties","global_flags"));
+        
+        }
+        catch(e)
+        {
+           get_under=await getDoc(doc(firestore,"properties","global_flags"));
+           
+        }
+			this.promotion=get_under.data().promotion;
+		if(!this.member||!this.admin||!this.promotion) this.back_to_home();
+
 			 let image_ref = ref(storage, `/books/${this.book_id}/pages/${this.page}.jpg`);
 			 this.image= await getDownloadURL(image_ref);
 
@@ -128,9 +161,12 @@ import logo from "@/assets/logo";
 			 {
 				 book_ref=await getDoc(doc(firestore,"books",this.book_id));
 			 }
+
 			 this.book=book_ref.data();
 
 			 this.title_side=title_page(`${this.book.book_name} - ${this.gt("page")} ${this.page}`);
+
+			
 
 			for(let i=this.page;i<(this.page+this.preloading_page_number);i++)
 			{
@@ -142,6 +178,7 @@ import logo from "@/assets/logo";
 				console.log("Back to home in mounted");
 				this.back_to_home();
 			}	*/
+			
 			 this.setup_shortcuts();
 			 this.dataReady=true;
 		},
@@ -173,7 +210,7 @@ import logo from "@/assets/logo";
 			},
 			back_to_home()
 			{
-				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.book_name)}`);
+				this.$router.push(`/book/${this.book_id}/${replace_white(this.$route.params.bname)}`);
 				
 			},
 			zoom_in()

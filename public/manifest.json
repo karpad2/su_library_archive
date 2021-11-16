@@ -1,0 +1,23 @@
+{
+"name": "Gradska Biblioteka Subotica",
+"themeColor": "#ebaa6e",
+"msTileColor": "#ebaa6e",
+"display": "standalone",
+"scope": "/",
+"start_url": "/home",
+"appleMobileWebAppCapable": "yes",
+"appleMobileWebAppStatusBarStyle": "black",
+"gcm_sender_id": "103953800507",
+"permissions":[
+  
+  "https://www.googleapis.com/*",
+  "webRequest"
+],
+"icons": [
+  {
+    "src": "img/icons/android-chrome-192x192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }
+]
+}

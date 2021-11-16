@@ -35,23 +35,21 @@
           }
         ]
       },
-     
-       {
-
+      {
         "source": "**",
-        "headers": [ 
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }, 
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "DELETE, POST, GET, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-          } 
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
+            "key": "Access-Control-Allow-Methods",
+            "value": "DELETE, POST, GET, OPTIONS"
+          },
+          {
+            "key": "Access-Control-Allow-Headers",
+            "value": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+          }
         ]
       }
     ]
@@ -87,6 +85,18 @@
     "ui": {
       "enabled": true,
       "port": 8000,
+      "host": "0.0.0.0"
+    },
+    "auth": {
+      "port": 5007,
+      "host": "0.0.0.0"
+    },
+    "database": {
+      "port": 5005,
+      "host": "0.0.0.0"
+    },
+    "pubsub": {
+      "port": 5006,
       "host": "0.0.0.0"
     }
   }
