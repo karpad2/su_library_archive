@@ -15,7 +15,7 @@
 			</md-app-toolbar>
 
 			<md-app-content>
-				<div class="middle-center">
+				<div  v-if="dataReady" class="middle-center">
 					
 					
 					<img :src="image_logo" class="logo" />
@@ -67,12 +67,12 @@ import {get_text,languages,get_defaultlanguage} from "@/languages";
 				if (localStorage.userTheme === "dark") this.userTheme = "dark";
 				else this.userTheme = "default";
 			},
-			lang_change()
+			async lang_change()
 			{
 				this.dataReady=false;
 				//getAuth().languageCode=this.language;
 				
-				localStorage.setItem("language",this.language);
+				await  localStorage.setItem("language",this.language);
 				this.dataReady=true;
 			},
 			changeTheme: function () {

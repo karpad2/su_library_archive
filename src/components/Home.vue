@@ -57,7 +57,7 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getD
 			
 		}),
 		metaInfo:{
-			title:title_page("","Home"),
+			title:title_page("","home"),
 		},
 		components:{
 			bookcard
