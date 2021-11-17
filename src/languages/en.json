@@ -111,7 +111,9 @@
     "skip_page":"Skip, pages",
     "page":"Page",
     "Zoom":"Zoom",
-    "upload_a_blog":"Admin blogs"
+    "upload_a_blog":"Admin blogs",
+    "deletebook":"Delete book",
+    "register":"Register"
 
 
 

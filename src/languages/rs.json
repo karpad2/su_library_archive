@@ -114,7 +114,11 @@
         "skip_page":"Preskrači stranicu",
         "Zoom":"Zoom",
         "upload_a_blog":"Adminov blog",
-        "page":"strana"
+        "page":"strana",
+        "deletebook":"Brisanje knjige",
+        "register":"Registracija",
+        "password_pls_write_again":"Potvrdite lozinku"
+
     
     
     

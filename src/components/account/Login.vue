@@ -14,6 +14,8 @@
 		
 
 		<md-button class="md-raised md-primary" @click="login">{{gt("login")}}</md-button>
+		
+		<md-button class="md-raised md-primary" @click="registerbutton">{{gt("register")}}</md-button>
 		</div>
 		<md-field>
 			<p>{{gt("login_with_google")}}</p>
@@ -82,6 +84,11 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 			{
 				return get_text(a);
 			},
+			registerbutton()
+			{
+				this.$router.push("/account/register");
+			},
+
 			loginwithgoogle: async function()
 			{
 				let _this = this;
@@ -113,7 +120,6 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 			localStorage.user=this.user;
 			});
 		}
-
 		
 	}
 </script>

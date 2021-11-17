@@ -8,6 +8,7 @@ import Error404 from "../components/Error404";
 import AccountIndex from "../components/account/Index";
 import AccountInfo from "../components/account/AccountInfo";
 import AccountLogin from "../components/account/Login";
+import AccountRegister from "../components/account/Register";
 
 
 import AdminUsers from "../components/admin/ad_users";
@@ -199,7 +200,13 @@ const router = new VueRouter ({
 					path: 'login',
 					name: 'account-login',
 					component: AccountLogin,
+				},
+				{
+					path: 'register',
+					name: 'account-register',
+					component: AccountRegister,
 				}
+				
 			]
 		},
 		{

@@ -15,10 +15,10 @@ const PDF_EXTENSION = ".pdf";
 const JPEG_EXTENSION = ".jpg";
 
 
-export default  async (object:any) => 
+export default  async (object:functions.storage.ObjectMetadata) => 
     {
-  
-    if (!object.contentType.startsWith("application/pdf")) {
+    if(object==undefined) return;
+    if (!object?.contentType?.startsWith("application/pdf")) {
       return null;
     }
     let filePath = object.name;
@@ -43,7 +43,7 @@ export default  async (object:any) =>
     
     admin.initializeApp(functions.config().firebase);
   
-    if (object.contentType.startsWith("application/pdf")) {
+    if (object?.contentType?.startsWith("application/pdf")) {
       functions.logger.log("PDF file. Start convert...");
     }
 /*
@@ -64,7 +64,7 @@ export default  async (object:any) =>
     });
 
   
-    //functions.logger.log('jpg directory.',tempLocalJPGDir);
+    functions.logger.log(object.bucket);
   
     let bucket = admin.storage().bucket(object.bucket);
   

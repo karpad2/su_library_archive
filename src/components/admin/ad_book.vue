@@ -56,6 +56,8 @@
       <label>{{gt('page_number')}}</label>
       <md-input @change="change" v-model="book.page_number" md-counter="100"></md-input>
     </md-field>
+    <md-button class="md-raised md-primary" @click="deletebook">{{gt("deletebook")}}</md-button>
+		
      </md-card-content>   
 </md-card>
 <loading v-else />
@@ -157,6 +159,12 @@ export default {
     {
 
     },
+    async deletebook()
+    {
+       updateDoc(doc(firestore,"books",this.book_id),null);
+       this.$router.go(-1); 
+    },
+
     async change()
     {
       this.keyword_finder(this.book.author_name);
@@ -188,7 +196,7 @@ export default {
 
     async upload_book()
     {
-      const firststorageRef = ref(storage,`books/${this.book_id}/thumbnail.jpg`);
+      const firststorageRef = ref(storage,`books/${this.book_id}/book.pdf`);
       const metadata = {contentType: 'application/pdf'};
       this.dataReady=false;
       let uploadTask = await uploadBytes(firststorageRef, this.pdf_file, metadata);

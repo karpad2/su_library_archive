@@ -112,7 +112,10 @@
     "back_page":"Vissza egy lappal",
     "skip_page":"Oldal ugrás",
     "Zoom":"Nagyítás",
-    "page":"Oldal"
+    "page":"Oldal",
+    "deletebook":"Könyv törlése",
+    "register":"Register",
+    "password_pls_write_again":"Ismételje meg a jelszót"
     
 
 
