@@ -19,6 +19,8 @@ import CountryFlag from 'vue-country-flag'
 import VueLazyload from 'vue-lazyload'
 import 'vuetify/dist/vuetify.min.css';
 import flag from "./components/parts/flag";
+import 'viewerjs/dist/viewer.css'
+import Vuer from 'v-viewer'
 
 Vue.component('country-flag', CountryFlag);
 //Vue.use(Vuetify);
@@ -26,6 +28,7 @@ Vue.use(flag);
 Vue.use(VueMeta);
 Vue.use(VueMaterial);
 Vue.use(VueLazyload);
+Vue.use(Vuer);
 
 
 

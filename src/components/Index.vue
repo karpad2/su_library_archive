@@ -68,6 +68,10 @@
 								</md-list-item>
 								<show-at breakpoint="mediumAndAbove">
 								</show-at>
+								<md-list-item v-if="signed_in" @click="$router.push(add_public('/support'))">
+											<md-icon class="md-icon">contact_support</md-icon>
+											<span class="md-list-item-text">{{gt("support")}}</span>
+								</md-list-item>
 								<md-list-item v-if="signed_in" @click="$router.push('/user')">
 											<md-icon class="md-icon">translate</md-icon>
 											<span class="md-list-item-text">{{gt("language")}}</span>
@@ -77,9 +81,8 @@
 											<md-icon class="md-icon">logout</md-icon>
 											<span class="md-list-item-text">{{gt("logout")}}</span>
 								</md-list-item>
-
 								
-								
+																
 							</md-list>
 				</md-app-drawer>
 				
@@ -248,7 +251,7 @@ import firebaseui from 'firebaseui'
 			setInterval(()=>
 			{
 				this.fullscreen=JSON.parse(localStorage.getItem("fullscreen"));
-				//console.log(JSON.parse(localStorage.getItem("fullscreen")));
+				//logger(JSON.parse(localStorage.getItem("fullscreen")));
 			},500);
 			
 			this.$router.afterEach(()=>{
@@ -367,17 +370,19 @@ import firebaseui from 'firebaseui'
 					link: this.add_public('/books'),
 					auth: true,
 				},
-				
 				{
-					icon: 'contact_support',
-					title: this.gt("support"),
-					link: this.add_public('/support'),
+					icon: 'newspaper',
+					title: this.gt("newspapers"),
+					link: this.add_public('/newspapers'),
 					auth: true,
 				},
-				
-				
-				
-			
+				{
+					icon: 'photo_library',
+					title: this.gt("photoalbums"),
+					link: this.add_public('/photoalbums'),
+					auth: true,
+				},
+		
 			];
 			if(this.admin && this.signed_in)
 			{
@@ -410,6 +415,24 @@ import firebaseui from 'firebaseui'
 					admin:true
 				
 					});	
+				this.menuTab.push({
+						
+					icon: 'feed',
+					title: this.gt("admin_newspaper"),
+					link: '/admin/newspapers',
+					auth: true,
+					admin:true
+				
+					});
+				this.menuTab.push({
+						
+					icon: 'add_to_photos',
+					title: this.gt("admin_photoalbums"),
+					link: '/admin/photoalbums',
+					auth: true,
+					admin:true
+				
+					});				
 			}
 			this.dataReady=true;
 		},

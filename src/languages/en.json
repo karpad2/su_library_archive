@@ -53,6 +53,9 @@
     "book_name":"Title of book",
     "author_name":"Author name",
     "first_page_as_cover":"Use first page as cover?",
+    "open_book":"Open book",
+    "upload_book_info":"Book informations",
+    "upload_book_finish":"Book upload finish",
     
     "language":"Language",
     "serbian":"Srpski",
@@ -114,6 +117,7 @@
     "upload_a_blog":"Admin blogs",
     "deletebook":"Delete book",
     "register":"Register"
+   
 
 
 

@@ -48,7 +48,8 @@ function contains_the_array(array,word)
 
     if(array[word]==undefined)
       { console.log(word);
-           return english[word];
+        return word;   
+        //return english[word];
       }
     else 
         return array[word];

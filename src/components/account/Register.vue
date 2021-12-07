@@ -34,15 +34,14 @@
 
 <script>
 import {signInWithEmailAndPassword,createUserWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider,getAuth } from "firebase/auth";
-	import {FirebaseAuth,firestore} from "@/firebase";
+import {FirebaseAuth,firestore} from "@/firebase";
+import Password from 'vue-password-strength-meter'
+import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
+import glogo from "@/assets/glogo";
+import {get_text,title_page} from "@/languages";
+import { collection, doc, setDoc, query, where, getDocs,getDoc} from "firebase/firestore";
 
-  import Password from 'vue-password-strength-meter'
-	import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
-	import glogo from "@/assets/glogo";
-	import {get_text,title_page} from "@/languages";
-	import { collection, doc, setDoc, query, where, getDocs,getDoc  } from "firebase/firestore";
-
-	export default {
+export default {
 		name: "AccountRegister",
 		components: {
 			
@@ -135,6 +134,9 @@ import {signInWithEmailAndPassword,createUserWithEmailAndPassword,onAuthStateCha
 				}).catch((error) => {
 						if (error.code === 'auth/wrong-password') {
 							_this.errorMessage = "Password wrong";
+						}
+						else if (error.code === 'auth/email-already-in-use') {
+							_this.errorMessage = "Email is already in use";
 						} else {
 							_this.errorMessage = "Check email and password";
 							console.log(error);

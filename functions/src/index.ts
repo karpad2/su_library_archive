@@ -4,8 +4,7 @@ import sitemap from "./sitemap";
 import createuser from "./createuser";
 import deletebook from "./deletebook";
 
-exports.buildSitemap = functions.https.onRequest((request: functions.Request,
-     response: functions.Response)=>
+exports.buildSitemap = functions.https.onRequest((request: functions.https.Request,response: functions.Response)=>
 {
  sitemap(request,response);
 });

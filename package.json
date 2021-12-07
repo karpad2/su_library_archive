@@ -39,6 +39,7 @@
     "uglify-js": "^3.14.3",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "v-calendar": "^2.3.2",
+    "v-viewer": "^1.6.4",
     "vue": "^2.6.11",
     "vue_pdfjs_viewer": "^0.1.12",
     "vue-audio-recorder": "^3.0.1",
