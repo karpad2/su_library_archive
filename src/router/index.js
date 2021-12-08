@@ -30,6 +30,10 @@ import AdminPhoto from "../components/admin/photoalbum/ad_photo";
 import AdminPhotoalbum from "../components/admin/photoalbum/ad_photoalbum";
 import AdminPhotoalbums from "../components/admin/photoalbum/ad_photoalbums";
 
+import AdminNote from "../components/admin/notes/ad_note";
+import AdminNoteCollection from "../components/admin/notes/ad_notecollection";
+import AdminNoteCollections from "../components/admin/notes/ad_notecollections";
+
 import Home from "../components/Home";
 import PublicIndex from "../components/Index";
 
@@ -42,8 +46,12 @@ import NewsPaper from "../components/Newspaper/NewsPaper";
 import PhotoAlbums from "../components/PhotoAlbum/PhotoAlbums";
 import PhotoAlbum from "../components/PhotoAlbum/PhotoAlbum";
 
+import Notes from "../components/Notes/Notes";
+import Note from "../components/Notes/Note";
+
 import BookPage from "../components/ViewerPages/BookPage";
 import PhotoAlbumViewer from "../components/ViewerPages/PhotoAlbumViewer";
+import NoteViewer from "../components/ViewerPages/NoteViewer";
 import ChapterPage from "../components/ViewerPages/ChapterPage";
 
 import Blog from "../components/blog/Blog";
@@ -125,7 +133,28 @@ const router = new VueRouter ({
 			name: 'photoalbumwithoutviewerlogin',
 			component: PhotoAlbumViewer
 		},
-		
+
+		{
+			path: 'notes',
+			name: 'photoalbumswithoutlogin',
+			component: Notes
+		},
+		{
+			path: 'notes/:bmode/:bsearch',
+			name: 'photoalbumswithoutlogin',
+			component: Notes
+		},
+		{
+			path: 'note/:pid/:pname',
+			name: 'photoalbumwithoutlogin',
+			component: Note
+		},
+		{
+			path: 'note/:nid/:nname/chapter/:cid/page/:pid',
+			name: 'newspaperwithoutlogin',
+			component: NoteViewer
+		},
+
 		{
 			path: 'support',
 			name: 'support_public',
@@ -275,6 +304,23 @@ const router = new VueRouter ({
 					component: AdminPhoto,
 					
 				},
+				{
+					path: 'admin/notes',
+					name: 'admin-notes',
+					component: AdminNoteCollections,
+				},
+				{
+					path: 'admin/note/:bid',
+					name: 'admin-note-viewer',
+					component: AdminNoteCollection,
+					
+				},
+				{
+					path: 'admin/notes/:bid/note/:pid',
+					name: 'admin-note-viewer',
+					component: AdminNote,	
+				},
+				
 				{
 					path: 'admin/newspapers',
 					name: 'admin-newspapers',

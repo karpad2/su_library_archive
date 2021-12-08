@@ -6,7 +6,7 @@ import {initializeApp,firestore} from "firebase-admin";
 
 export default (async (req:functions.https.Request,res:functions.Response)=>  {
     initializeApp(functions.config().firebase);
-    const address=`https://su-library-archive.firebaseapp.com`;
+    const address=`https://su-library-archive.web.app`;
     const day=`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`;
   
     let routing_public=[{
@@ -47,6 +47,39 @@ export default (async (req:functions.https.Request,res:functions.Response)=>  {
         let book=b.data();
         
         sitemap+=`<url><loc>${address}/public/book/${b.id}/${book.book_name}</loc><lastmod>${day}</lastmod></url>\n`;
+  
+      })
+    });
+
+    await firestore().collection("photoalbums").get().then((a:any)=>
+    {
+    a.forEach( async (b:any)=>
+      {
+        let photoalbums=b.data();
+        
+        sitemap+=`<url><loc>${address}/public/photoalbum/${photoalbums.id}/${photoalbums.photoalbum_name}</loc><lastmod>${day}</lastmod></url>\n`;
+  
+      })
+    });
+
+   
+
+    await firestore().collection("newspapers").get().then((a:any)=>
+    {
+    a.forEach( async (b:any)=>
+      {
+        let newspaper=b.data();
+        sitemap+=`<url><loc>${address}/public/newspaper/${newspaper.id}/${newspaper.newspaper_name}</loc><lastmod>${day}</lastmod></url>\n`;
+  
+      })
+    });
+
+    await firestore().collection("notes").get().then((a:any)=>
+    {
+    a.forEach( async (b:any)=>
+      {
+        let note=b.data();
+        sitemap+=`<url><loc>${address}/public/note/${note.id}/${note.note_name}</loc><lastmod>${day}</lastmod></url>\n`;
   
       })
     });

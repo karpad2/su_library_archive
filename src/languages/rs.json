@@ -117,9 +117,6 @@
         "page":"strana",
         "deletebook":"Brisanje knjige",
         "register":"Registracija",
-        "password_pls_write_again":"Potvrdite lozinku",
-        "register":"Registracija",
-
         "password_pls_write_again":"Ponovite lozinku",
         "newspapers":"Časopis",
         "upload_a_newspaper":"Otpremljivanje časopise",
@@ -149,21 +146,10 @@
         "photoalbum_name":"Naziv fotoalbuma",
         "upload_photoalbum_cover":"Dodavanje naslovnice fotoalbuma",
         "upload_photoalbum":"Dodavanje fotografije",
-        "hided":"Skriveno",
         "search_for_photoalbums":"Pretraga fotoalbuma",
         "photos":"Fotografije",
         "photo_cant_found":"Fotografija se ne može pronaći",
         "add_new_photo":"Dodavanje fotografije",
         "photo_name":"Naziv fotografije",
-        "notes":"Note"
-
-
-    
-    
-    
-    
-    
-    
-    
-    
+        "notes":"Note"   
 }

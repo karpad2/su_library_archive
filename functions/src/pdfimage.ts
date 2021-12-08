@@ -1,23 +1,23 @@
 import * as functions from "firebase-functions";
 import {firestore, initializeApp,storage} from "firebase-admin";
-//const vision = require('@google-cloud/vision');
-const fromPath = require("pdf2pic");
-const mkdirp = require('mkdirp');
 
+const fromPathpdf = require("pdf2pic");
+const mkdirp = require('mkdirp');
 const pdf = require('pdf-parse');
 const { mkdirsSync } = require("fs-extra");
-
-
 const rimraf = require('rimraf');
 
-const path = require('path');
+import {basename,dirname,extname,normalize,join,format} from "path";
+
 const os = require('os');
 const fs = require('fs');
 
-const PDF_EXTENSION = ".pdf";
-const JPEG_EXTENSION = ".jpg";
-const JSON_EXTENSION = ".json";
 
+const extensions={
+  pdf:".pdf",
+  jpg:".jpg",
+  json:".json"
+};
 
 export default  async (object:functions.storage.ObjectMetadata) => 
     {
@@ -25,25 +25,21 @@ export default  async (object:functions.storage.ObjectMetadata) =>
     if (!object?.contentType?.startsWith("application/pdf")) {
       return null;
     }
-    let filePath = object.name;
+    let filePath = String(object.name);
   
-
-  
-
-    let baseFileName = path.basename(filePath, path.extname(filePath));
-    let fileDir = path.dirname(filePath);
-    let JPGDIr = path.dirname (filePath)+"/pages";
+    let baseFileName = basename(filePath, extname(filePath));
+    let fileDir = dirname(filePath);
+    let JPGDIr = dirname (filePath)+"/pages";
    
-    
-    let PDFFilePath = path.normalize(path.format({dir: fileDir, name: baseFileName, ext: PDF_EXTENSION}));
-    let JPGFilePath = path.normalize(path.format({dir: JPGDIr, name: baseFileName, ext: JPEG_EXTENSION}));
+    let PDFFilePath = normalize(format({dir: fileDir, name: baseFileName, ext: extensions.pdf }));
+    let JPGFilePath = normalize(format({dir: JPGDIr, name: baseFileName, ext: extensions.jpg}));
 
-    let JSONFilePath = path.normalize(path.format({dir: fileDir, name: `book`, ext: JSON_EXTENSION}));
-    let tempLocalFile = path.join(os.tmpdir(), filePath);
-    let tempLocalDir = path.dirname(tempLocalFile);
-    let tempLocalPDFFile = path.join(os.tmpdir(), PDFFilePath);
-    let tempLocalJSONFile = path.join(os.tmpdir(), JSONFilePath);
-    let tempLocalJPGDir = path.join(os.tmpdir(), JPGDIr);
+    let JSONFilePath = normalize(format({dir: fileDir, name: `book`, ext: extensions.json}));
+    let tempLocalFile = join(os.tmpdir(), filePath);
+    let tempLocalDir = dirname(tempLocalFile);
+    let tempLocalPDFFile = join(os.tmpdir(), PDFFilePath);
+    let tempLocalJSONFile = join(os.tmpdir(), JSONFilePath);
+    let tempLocalJPGDir = join(os.tmpdir(), JPGDIr);
     let RemoteJPGFilePath;
     let RemoteJSONFilePath;
     let keywords=[`keyword`];
@@ -71,7 +67,7 @@ export default  async (object:functions.storage.ObjectMetadata) =>
     }
 });
 
-RemoteJSONFilePath = path.normalize(path.format({dir: fileDir, name: "book", ext: JSON_EXTENSION}));
+RemoteJSONFilePath = normalize(format({dir: fileDir, name: "book", ext: extensions.json}));
 await bucket.upload(tempLocalJSONFile, {destination: RemoteJSONFilePath,validation:false});
  };
 
@@ -93,46 +89,27 @@ await bucket.upload(tempLocalJSONFile, {destination: RemoteJSONFilePath,validati
     });
     functions.logger.log(`Page number: `,pn)
     
-    /*
-    const worker = createWorker({
-      logger: m =>  functions.logger.log(`Tesseract: `,m)
-    });
-*/
+   
     let json_conf={
       progress:"start"
     };
-
     config_writer();
-    
-   
+     
     const upload_store= (async(a:any)=>
     {
         await storeAsImage(a);
-        RemoteJPGFilePath = path.normalize(path.format({dir: JPGDIr, name: `${a}`, ext: JPEG_EXTENSION}));
-        JPGFilePath = path.normalize(path.format({dir: tempLocalJPGDir, name:  `a.${a}`, ext: JPEG_EXTENSION}));
+        RemoteJPGFilePath = normalize(format({dir: JPGDIr, name: `${a}`, ext: extensions.jpg}));
+        JPGFilePath = normalize(format({dir: tempLocalJPGDir, name:  `a.${a}`, ext: extensions.jpg}));
         await bucket.upload(JPGFilePath, {destination: RemoteJPGFilePath,validation:false});
        
         if(a==1)
              {
-              functions.logger.log("Try to ocr image text:");      
-               RemoteJPGFilePath = path.normalize(path.format({dir: fileDir, name: "thumbnail", ext: JPEG_EXTENSION}));
+               functions.logger.log("Try to make thumbnail: ");      
+               RemoteJPGFilePath = normalize(format({dir: fileDir, name: "thumbnail", ext: extensions.jpg}));
                await bucket.upload(JPGFilePath, {destination: RemoteJPGFilePath,validation:false});
-               /*const client = new vision.ImageAnnotatorClient();
-               const [result] = await client.textDetection(`gs://${RemoteJPGFilePath}`);
-               const detections = result.textAnnotations;
-               detections.forEach((element:any) => {
-                 keywords.push(element.description);
-                 let l=element.property.detectedLanguages[0].languageCode
-                 language=`${l}-${String(l).toLocaleUpperCase()}`;
-               });
-                */
-              
-
               }
-             
     });
 
- 
     let page_number=pn;
     
     const options = {
@@ -144,7 +121,7 @@ await bucket.upload(tempLocalJSONFile, {destination: RemoteJSONFilePath,validati
     height: 1808
   };
   
-  const storeAsImage =  fromPath.fromPath(tempLocalPDFFile, options).subClass({ imageMagick: true });;
+  const storeAsImage =  fromPathpdf(tempLocalPDFFile, options).subClass({ imageMagick: true });;
   
   for(var i=1;i<=page_number;i++)
   {   
@@ -168,9 +145,6 @@ await bucket.upload(tempLocalJSONFile, {destination: RemoteJSONFilePath,validati
     "favorites":0,
     "language":"rs-RS"
   });
-
-
-
 
    fs.unlinkSync(JPGDIr);
    fs.unlinkSync(tempLocalFile);

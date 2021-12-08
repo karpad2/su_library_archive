@@ -21,9 +21,9 @@
 				</md-field>
 				</hide-at>
 				<div class="md-toolbar-section-end">
-        			<md-button v-if="signed_in" class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
+        			<md-button v-if="signed_in && !library_user " class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
 					
-					<md-button v-if="signed_in" class="desktop profile" @click="$router.push('/user')">
+					<md-button v-if="signed_in && !library_user" class="desktop profile" @click="$router.push('/user')">
 					<md-avatar style="z-index:999" >
 						<img  :src="profile_picture_url" alt="Avatar">
 					</md-avatar>
@@ -31,8 +31,6 @@
 					
 						<md-button v-else class="desktop" @click="$router.push('/account/login')">️{{gt("login")}} <md-icon class="md-icon">login</md-icon> </md-button>
 						
-					
-
      		 	</div>
 				</md-app-toolbar>
 				
@@ -77,7 +75,7 @@
 											<span class="md-list-item-text">{{gt("language")}}</span>
 								</md-list-item>
 								<md-divider></md-divider>
-								<md-list-item v-if="signed_in" @click="logout">
+								<md-list-item v-if="signed_in && !library_user" @click="logout">
 											<md-icon class="md-icon">logout</md-icon>
 											<span class="md-list-item-text">{{gt("logout")}}</span>
 								</md-list-item>
@@ -122,7 +120,7 @@
     </md-drawer>
 
 			<md-app-content>
-				    <b-alert v-if="signed_in && !email_verified" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
+				    <b-alert v-if="signed_in && !email_verified && !libraryuser" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
 					<b-alert v-if="promotion && !promotion_hide &&(!member||!admin)" variant="success" show>{{gt("promotion_text")}}</b-alert>
 					<b-alert v-if="!promotion && !promotion_hide && (!member||!admin)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
@@ -192,6 +190,7 @@ import firebaseui from 'firebaseui'
 			profile_name:"",
 			admin:true,
 			member:true,
+			library_user:false,
 			valid_until:new Date(),
 			dateFormat:"",
 			user:{},
@@ -265,6 +264,7 @@ import firebaseui from 'firebaseui'
 			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
 			this.profile_name=await FirebaseAuth.displayName;
 			this.email_verified=await getAuth().currentUser.emailVerified;
+			this.library_user=await getAuth().currentUser.email=="libraryuser@su-library-archive.web.app";
 			//this.language= await this.get_user_language();
 			
 			//let k=await getDoc(doc(firestore,"users",this.user.uid));
@@ -298,8 +298,9 @@ import firebaseui from 'firebaseui'
 					});
 				this.$router.push("/account/login");
 			}*/
-			console.log(localStorage.getItem("language"));
-			console.log(k.data().language);
+			
+			
+
 			if(k.data().language!=localStorage.getItem("language"))
 			{
 				localStorage.setItem("language",k.data().language);

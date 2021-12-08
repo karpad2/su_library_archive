@@ -8,8 +8,5 @@ export default (async (doc:functions.firestore.DocumentSnapshot,res:any)=>  {
    bucket.deleteFiles({prefix:`books/${id}`}).then(()=>{
         functions.logger.log("Files are deleted");
     });
-
-  
     return;
-  
   })

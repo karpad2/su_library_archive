@@ -77,7 +77,12 @@ onAuthStateChanged(auth, (user) => {
 	if (!app) {
 		app = new Vue({
 			router,
-			render: h => h(App)
+			render: h => h(App),
+			created()
+			{
+			this.$router.push('/')
+			}
+			
 		});
 		//app.use(BootstrapIconsPlugin);
 		app.$mount('#app');

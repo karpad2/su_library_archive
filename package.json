@@ -1,14 +1,16 @@
 {
   "name": "su-library-archive",
+  "description": "Gradska biblioteka Subotica",
   "version": "0.1.0-alpha-prerelease",
   "author": "karpad2",
   "private": true,
-  "main": "main.js",
+  "main": "electron/main.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dev": "vue-cli-service serve ."
+    "dev": "vue-cli-service serve .",
+    "start": "electron ."
   },
   "dependencies": {
     "@vue/cli-plugin-pwa": "^4.5.15",
@@ -17,10 +19,11 @@
     "bootstrap-icons": "^1.5.0",
     "bootstrap-icons-vue": "^0.7.0",
     "bootstrap-vue": "^2.21.2",
+    "connect-history-api-fallback": "^1.6.0",
     "core-js": "^3.6.4",
     "crypto-js": "^4.1.1",
     "disable-devtool": "^0.1.5",
-    "electron": "^13.2.3",
+    "express": "^4.17.1",
     "firebase": "^9.0.0-beta.7",
     "firebase-admin": "^10.0.0",
     "firebase-auth": "^0.1.2",
@@ -70,6 +73,7 @@
     "@vue/cli-service": "~4.3.0",
     "@webpack-cli/generators": "^2.3.0",
     "babel-eslint": "^10.1.0",
+    "electron": "^16.0.4",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.17.0",
     "node-sass": "^4.14.0",

@@ -31,6 +31,14 @@
             <label>{{gt('publisher')}}</label>
             <md-input @change="change" v-model="book.publisher" md-counter="100"></md-input>
           </md-field>
+          <md-field>
+            <label>{{gt('publishing-year')}}</label>
+            <md-input @change="change" v-model="book.publishingyear" md-counter="100"></md-input>
+          </md-field>
+          <md-field>
+            <label>{{gt('publishing-place')}}</label>
+            <md-input @change="change" v-model="book.publishingplace" md-counter="100"></md-input>
+          </md-field>
         
             <md-field>
               <b-form-select @change="change" v-model="book.language" :options="languages"></b-form-select> <flag :flag="book.language"/>  
