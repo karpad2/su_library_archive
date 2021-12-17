@@ -18,7 +18,7 @@
       	<h3>{{user.displayName}}</h3>
 		<md-field>
 		<label for="useremail">{{gt('user_email')}}</label>
-      		<md-input id="useremail" v-model="user.email" disabled></md-input>
+      		<md-input id="useremail" v-if="!library_user" v-model="user.email" disabled></md-input>
     	</md-field>
 
 		<md-field>
@@ -78,6 +78,7 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 				email:""
 			},
 			dataReady: false,
+			library_user:false
 			
 		}),
 		async mounted() {
@@ -86,7 +87,7 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 			//let update_number=(await getDoc(collection(firestore,"books"),book_id)).data().favorites;
 			//collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
 			this.language=get_defaultlanguage();
-
+			this.library_user=await getAuth().currentUser.email=="libraryuser@su-library-archive.web.app";
 			//console.log(this.language);
 			const lang=languages;
 			lang.forEach((a)=>

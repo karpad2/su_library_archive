@@ -20,8 +20,8 @@
 						<md-input  md-layout="box" @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 				</md-field>
 				</hide-at>
-				<div class="md-toolbar-section-end">
-        			<md-button v-if="signed_in && !library_user " class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
+				<div v-if="!library_user" class="md-toolbar-section-end">
+        			<md-button v-if="signed_in" class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
 					
 					<md-button v-if="signed_in && !library_user" class="desktop profile" @click="$router.push('/user')">
 					<md-avatar style="z-index:999" >
@@ -70,7 +70,7 @@
 											<md-icon class="md-icon">contact_support</md-icon>
 											<span class="md-list-item-text">{{gt("support")}}</span>
 								</md-list-item>
-								<md-list-item v-if="signed_in" @click="$router.push('/user')">
+								<md-list-item v-if="signed_in && !library_user" @click="$router.push('/user')">
 											<md-icon class="md-icon">translate</md-icon>
 											<span class="md-list-item-text">{{gt("language")}}</span>
 								</md-list-item>

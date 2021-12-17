@@ -10,6 +10,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev": "vue-cli-service serve .",
+    "publish": "electron-builder  --win -p always",
     "start": "electron ."
   },
   "dependencies": {
