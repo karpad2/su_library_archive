@@ -24,9 +24,7 @@ function createWindow () {
     
     webPreferences: {
       webSecurity: false,
-      nodeIntegration: true,
-
-      
+      nodeIntegration: true
     }
   })
 let middleware=express.static(path.join(__dirname,`../dist` ));
