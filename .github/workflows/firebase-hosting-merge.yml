@@ -18,7 +18,7 @@ jobs:
       - name: Set Node.js 12
           uses: actions/setup-node@v1
           with:
-                node-version: 12
+            node-version: 12
       - run: echo '${{ secrets.CREDENTIALJS }}'  > ./src/firebase/credentials.js
       - run: node -v 
       - run: npm install --saveDev node-sass@4.5.3 
