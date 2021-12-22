@@ -133,28 +133,26 @@ const router = new VueRouter ({
 			name: 'photoalbumwithoutviewerlogin',
 			component: PhotoAlbumViewer
 		},
-
 		{
 			path: 'notes',
-			name: 'photoalbumswithoutlogin',
+			name: 'notealbumswithoutlogin',
 			component: Notes
 		},
 		{
 			path: 'notes/:bmode/:bsearch',
-			name: 'photoalbumswithoutlogin',
+			name: 'notealbumswithoutlogin',
 			component: Notes
 		},
 		{
 			path: 'note/:pid/:pname',
-			name: 'photoalbumwithoutlogin',
+			name: 'notealbumwithoutlogin',
 			component: Note
 		},
 		{
 			path: 'note/:nid/:nname/chapter/:cid/page/:pid',
-			name: 'newspaperwithoutlogin',
+			name: 'notepaperwithoutlogin',
 			component: NoteViewer
 		},
-
 		{
 			path: 'support',
 			name: 'support_public',

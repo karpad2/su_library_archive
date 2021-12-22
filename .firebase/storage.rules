@@ -7,9 +7,52 @@ service firebase.storage {
       allow read :if true;
       allow write:if request.auth!=null;
     }
+    match /newspapers/{bid}/thumbnail.jpg {
+      allow read :if true;
+      allow write:if request.auth!=null;
+    }
+    match /newspapers/{bid}/book.pdf {
+      allow read :if true;
+      allow write:if request.auth!=null;
+      allow create:if request.auth!=null;
+    }
+    match /newspapers/{bid}/chapters/{cid}/newspaper.pdf {
+      allow read :if true;
+      allow write:if request.auth!=null;
+      allow create:if request.auth!=null;
+    }
+    match /newspapers/{bid}/chapters/{cid}/pages/{imagename} {
+      allow read :if request.auth!=null;
+      allow write:if request.auth!=null;
+      allow create:if request.auth!=null;
+    }
+    
+    match /books/{bid}/book.pdf {
+      allow read :if true;
+      allow write:if request.auth!=null;
+      allow create:if request.auth!=null;
+    }
     
     match /books/{bid}/pages/{imageID} {
       allow read :if request.auth!=null;
+      allow write:if request.auth!=null;
+    }
+    
+     match /photoalbums/{bid}/thumbnail.jpg {
+      allow read :if true;
+      allow write:if request.auth!=null;
+    }
+    match /photoalbums/{bid}/photos/{ppp} {
+      allow read :if true;
+      allow write:if request.auth!=null;
+    }
+
+     match /notes/{bid}/thumbnail.jpg {
+      allow read :if true;
+      allow write:if request.auth!=null;
+    }
+    match /notes/{bid}/note/{ppp} {
+      allow read :if true;
       allow write:if request.auth!=null;
     }
     

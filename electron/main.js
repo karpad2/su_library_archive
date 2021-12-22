@@ -1,5 +1,7 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow,session} = require('electron');
+const {autoUpdater} = require("electron-updater");
+const log = require('electron-log');
 
 const express = require('express');
 var history = require('connect-history-api-fallback');
@@ -27,15 +29,9 @@ function createWindow () {
       nodeIntegration: true
     }
   })
-let middleware=express.static(path.join(__dirname,`../dist` ));
-server.use(middleware);
-server.use(history({
-  index: "/index.html"
-}));
-server.use(middleware);
 
 
-const infos = server.listen(0, 'localhost', () => mainWindow.loadURL(`http://localhost:${infos.address().port}/index.html`));
+ mainWindow.loadURL(`https://su-library-archive.web.app/`);
   // and load the index.html of the app.
  // mainWindow.loadURL();
 

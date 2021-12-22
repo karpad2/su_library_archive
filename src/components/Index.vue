@@ -383,6 +383,12 @@ import firebaseui from 'firebaseui'
 					link: this.add_public('/photoalbums'),
 					auth: true,
 				},
+				{
+					icon: 'audio_track',
+					title: this.gt("notes"),
+					link: this.add_public('/notes'),
+					auth: true,
+				},
 		
 			];
 			if(this.admin && this.signed_in)
@@ -433,7 +439,16 @@ import firebaseui from 'firebaseui'
 					auth: true,
 					admin:true
 				
-					});				
+					});
+				this.menuTab.push({
+						
+					icon: 'add_to_notes',
+					title: this.gt("admin_notes"),
+					link: '/admin/notes',
+					auth: true,
+					admin:true
+				
+					});						
 			}
 			this.dataReady=true;
 		},
