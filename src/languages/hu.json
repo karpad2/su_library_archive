@@ -27,6 +27,7 @@
     "support":"Támogatás",
     "ctheme":"Téma csere",
     "Home":"Főoldal",
+    "navigation":"Navigáció",
     "account":"Felhasználó",
     "cookie_text":"A weboldal süti(cookie) technológiát használ.",
     "search_for_books":"Könyvek keresése",
@@ -155,7 +156,9 @@
     "photos":"Fényképek",
     "photo_cant_found":"Fénykép nem található",
     "add_new_photo":"Fénykép hozzáadása",
-    "photo_name":"Fotó név"
+    "photo_name":"Fotó név",
+    "notes":"Kották",
+    "admin_notes":"Kották adminisztrálása"
 
 
 

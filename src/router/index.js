@@ -5,58 +5,43 @@ Vue.use(VueRouter);
 
 import Index from "../components/Index";
 import Error404 from "../components/Error404";
-
 import AccountIndex from "../components/account/Index";
 import AccountInfo from "../components/account/AccountInfo";
 import AccountLogin from "../components/account/Login";
 import AccountRegister from "../components/account/Register";
-
 import Admin_Dashboard from "../components/admin/ad_dashboard";
-
 import AdminUsers from "../components/admin/users/ad_users";
 import AdminUser from "../components/admin/users/ad_user";
-
 import AdminBlogs from "../components/admin/blogs/ad_blogs";
 import AdminBlog from "../components/admin/blogs/ad_blog";
-
 import AdminNewspaper from "../components/admin/newspapers/ad_newspaper";
 import AdminChapter from "../components/admin/newspapers/ad_chapter";
 import AdminNewspapers from "../components/admin/newspapers/ad_newspapers";
-
 import AdminBooks from "../components/admin/books/ad_books";
 import AdminBook from "../components/admin/books/ad_book";
-
 import AdminPhoto from "../components/admin/photoalbum/ad_photo";
 import AdminPhotoalbum from "../components/admin/photoalbum/ad_photoalbum";
 import AdminPhotoalbums from "../components/admin/photoalbum/ad_photoalbums";
-
 import AdminNote from "../components/admin/notes/ad_note";
 import AdminNoteCollection from "../components/admin/notes/ad_notecollection";
 import AdminNoteCollections from "../components/admin/notes/ad_notecollections";
-
 import Home from "../components/Home";
 import PublicIndex from "../components/Index";
-
+import Search from "../components/Search";
 import Books from "../components/Books/Books";
 import Book from "../components/Books/Book";
-
 import NewsPapers from "../components/Newspaper/NewsPapers";
 import NewsPaper from "../components/Newspaper/NewsPaper";
-
 import PhotoAlbums from "../components/PhotoAlbum/PhotoAlbums";
 import PhotoAlbum from "../components/PhotoAlbum/PhotoAlbum";
-
 import Notes from "../components/Notes/Notes";
 import Note from "../components/Notes/Note";
-
 import BookPage from "../components/ViewerPages/BookPage";
 import PhotoAlbumViewer from "../components/ViewerPages/PhotoAlbumViewer";
 import NoteViewer from "../components/ViewerPages/NoteViewer";
 import ChapterPage from "../components/ViewerPages/ChapterPage";
-
 import Blog from "../components/blog/Blog";
 import Favorites from "../components/Favorites";
-
 import User from "../components/account/User";
 
 import Support from "@/components/Support";
@@ -119,6 +104,16 @@ const router = new VueRouter ({
 			component: PhotoAlbums
 		},
 		{
+			path: 'search',
+			name: 'Searchwithoutlogin',
+			component: Search
+		},
+		{
+			path: 'search/:bmode/:bsearch',
+			name: 'Search_aa_withoutlogin',
+			component: Search
+		},
+		{
 			path: 'photoalbums/:bmode/:bsearch',
 			name: 'photoalbumswithoutlogin',
 			component: PhotoAlbums
@@ -135,23 +130,18 @@ const router = new VueRouter ({
 		},
 		{
 			path: 'notes',
-			name: 'notealbumswithoutlogin',
+			name: 'notealbumswithoutlogin_index',
 			component: Notes
 		},
 		{
 			path: 'notes/:bmode/:bsearch',
-			name: 'notealbumswithoutlogin',
+			name: 'notealbumswithoutlogin_search',
 			component: Notes
 		},
 		{
 			path: 'note/:pid/:pname',
 			name: 'notealbumwithoutlogin',
 			component: Note
-		},
-		{
-			path: 'note/:nid/:nname/chapter/:cid/page/:pid',
-			name: 'notepaperwithoutlogin',
-			component: NoteViewer
 		},
 		{
 			path: 'support',
@@ -181,12 +171,36 @@ const router = new VueRouter ({
 					name: 'favorites',
 					component: Favorites,
 				},
-				
+				{
+					path: 'search',
+					name: 'Searchwithoutlogin',
+					component: Search
+				},
+				{
+					path: 'search/:bmode/:bsearch',
+					name: 'Search_aa_withoutlogin',
+					component: Search
+				},
 				{
 					path: 'books',
 					name: 'bookssearch',
 					component: Books,
 					meta: {requiresAuth: false}
+				},
+				{
+					path: 'notes',
+					name: 'notealbums_index',
+					component: Notes
+				},
+				{
+					path: 'notes/:bmode/:bsearch',
+					name: 'notealbums_search',
+					component: Notes
+				},
+				{
+					path: 'note/:pid/:pname',
+					name: 'notealbumwithoutlogin',
+					component: Note
 				},
 				{
 					path: 'books/:bmode/:bsearch',
@@ -233,6 +247,11 @@ const router = new VueRouter ({
 					path: 'newspaper/:nid/:nname/chapter/:cid/page/:pid',
 					name: 'newspaperwithoutlogin',
 					component: ChapterPage
+				},
+				{
+					path: 'note/:nid/:nname/sheet/:cid/page/:pid',
+					name: 'notepaperwithoutlogin',
+					component: NoteViewer
 				},
 				{
 					path: 'photoalbums',
@@ -314,7 +333,7 @@ const router = new VueRouter ({
 					
 				},
 				{
-					path: 'admin/notes/:bid/note/:pid',
+					path: 'admin/notes/:bid/sheet/:pid',
 					name: 'admin-note-viewer',
 					component: AdminNote,	
 				},
@@ -353,16 +372,12 @@ const router = new VueRouter ({
 					name: 'admin-blog',
 					component: AdminBlog,
 				},
-
 				{
 					path: 'admin',
 					name: 'admin-info',
 					component: Admin_Dashboard,
 				},
-				
-				
-			
-			]
+				]
 		},
 		
 		{

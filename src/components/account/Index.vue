@@ -18,7 +18,7 @@
 				<div  v-if="dataReady" class="middle-center">
 					
 					
-					<img :src="image_logo" class="logo" />
+					<Biglogo />
 					
 					<div> <h4>{{gt("app-title")}}</h4></div>
 					<router-view  v-if="dataReady" @themeChanged="themeChanged"/>
@@ -38,10 +38,12 @@ import {getAuth} from "firebase/auth";
 import imagelogo from "@/assets/icons/android-chrome-512x512.png";
 import {showAt, hideAt} from 'vue-breakpoints';
 import {get_text,languages,get_defaultlanguage} from "@/languages";
+import Biglogo from '@/assets/biglogo.vue';
 	export default {
 		components: {
 		logo,
-		showAt, hideAt
+		showAt, hideAt,
+		Biglogo
 		},
 		name: "AccountIndex",
 		data: () => ({

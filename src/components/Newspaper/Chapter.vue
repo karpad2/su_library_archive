@@ -10,7 +10,7 @@
 		    <md-card-content>
 				<div class="book-container">
 				<div class="bookavatar">
-				<img  @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
+				<img draggable="false"  @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
 				</div>
 		<div class="book-info">
 			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" md-static>{{book.author_name}}</md-chip></p>

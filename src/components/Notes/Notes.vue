@@ -37,7 +37,7 @@ import logo from "@/assets/logo";
 		notecard
 
 		},
-		name: 'notes',
+		name: 'Notes',
 		metaInfo:{
 			title:title_page("","notes"),
 		},

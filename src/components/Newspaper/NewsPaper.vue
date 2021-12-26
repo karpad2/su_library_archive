@@ -10,7 +10,7 @@
 		    <md-card-content>
 				<div class="newspaper-container">
 				<div class="newspaperavatar">
-				<img  @click="enter_read(1)" class="newspaper_cover" alt="newspaper_cover" :src="newspaper_thumbnail" />
+				<img  draggable="false" @click="enter_read(1)" class="newspaper_cover" alt="newspaper_cover" :src="newspaper_thumbnail" />
 				</div>
 		<div class="newspaper-info">
 			<p> {{gt("publisher")}}: <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>

@@ -1,6 +1,6 @@
 {
   "name": "su-library-archive",
-  "description": "Gradska biblioteka Subotica",
+  "description": "Gradska digitalna biblioteka Subotica",
   "version": "0.1.0-alpha-prerelease",
   "author": "karpad2",
   "private": true,
@@ -10,8 +10,34 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev": "vue-cli-service serve .",
-    "publish": "electron-builder  --win -p always",
+    "publishwin": "electron-builder  --win --linux -p always --publish never",
     "start": "electron ."
+  },
+  "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "karpad2",
+        "repo": "su_library_archive"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon":"src/assets/icons/android-chrome-512x512.png" 
+      },
+      "productName": "Gradska digitalna biblioteka Subotica",
+    
+    "nsis": {
+      "oneClick": false,
+      "artifactName": "su_library_archive.setup.${version}.${ext}",
+      "uninstallDisplayName": "Gradska digitalna biblioteka Subotica"
+    },
+    "linux": {
+      "category": "karpad2.app.category.Education",
+      "target": "AppImage",
+      "icon":"src/assets/icons/android-chrome-512x512.png" 
+    },
+    "appId": "com.github.karpad2.su_library_archive"
   },
   "dependencies": {
     "@vue/cli-plugin-pwa": "^4.5.15",
@@ -25,6 +51,7 @@
     "crypto-js": "^4.1.1",
     "disable-devtool": "^0.1.5",
     "electron-log": "^4.4.3",
+    "electron-notarize": "^1.1.1",
     "electron-updater": "^4.6.1",
     "express": "^4.17.1",
     "firebase": "^9.0.0-beta.7",

@@ -4,28 +4,28 @@
 <md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title"> <h1>{{chapter.chapter_name}}</h1></div>
+          <div class="md-title"></div>
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-				<div class="book-container">
-				<div class="bookavatar">
-				<img  @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
+				<div class="note-container">
+				<div class="noteavatar">
+				<img  @click="enter_read(1)" class="note_cover" alt="note_cover" :src="note_thumbnail" />
 				</div>
-		<div class="book-info">
-			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" md-static>{{book.author_name}}</md-chip></p>
-			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
+		<div class="note-info">
+			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(note.author_name)" md-static>{{note.author_name}}</md-chip></p>
+			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in note.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
 		{{gt("information")}}:
-		<div v-html="book.description">
+		<div v-html="note.description">
 			</div>
 			<div>
 			
-		<p>{{gt("upload_date")}}:{{book.upload_date}}</p>
+		<p>{{gt("upload_date")}}:{{note.upload_date}}</p>
 		</div>
 		</div>
 		<div>
-			{{gt("page_number")}}: <md-chip>{{book.page_number}}</md-chip>
+			{{gt("page_number")}}: <md-chip>{{note.page_number}}</md-chip>
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
@@ -41,9 +41,6 @@
 	</md-card>
 	<md-card v-if="(signed_in &&member||admin)||(signed_in&&promotion)">
 		 <md-card-content>
-			 
-
-			 
 		</md-card-content>	
 	</md-card>	
 	</div>
@@ -69,18 +66,18 @@ import flag from "@/components/parts/flag";
 		flag
 		},
 		
-		name: 'Book',
+		name: 'note',
 		data: () => ({
-			book:{},
+			note:{},
 			dataReady: false,
 			signed_in:false,
-			book_thumbnail:"",
+			note_thumbnail:"",
 			admin:false,
 			member:false,
 			promotion:false,
 			is_favorite:false,
 			title_side:title_page(),
-			book_id:"",
+			note_id:"",
 			generated_keywords:"",
 			user:{}
 			
@@ -92,27 +89,26 @@ import flag from "@/components/parts/flag";
 			}
 		},
 		async mounted() {
-			this.book_id=this.$route.params.bid;
-			let book_ref;
+			this.note_id=this.$route.params.bid;
+			let note_ref;
 
 			try{
-        book_ref=await getDocFromCache(doc(firestore,"books",this.book_id));
-        this.book=book_ref.data();
+        note_ref=await getDocFromCache(doc(firestore,"notes",this.note_id));
+        this.note=note_ref.data();
         }
         catch(e)
         {
-           book_ref=await getDoc(doc(firestore,"books",this.book_id));
-           this.book=book_ref.data(); 
+           note_ref=await getDoc(doc(firestore,"notes",this.note_id));
+           this.note=note_ref.data(); 
         }
-			this.book=book_ref.data();
+			this.note=note_ref.data();
 			
-
-			this.generated_keywords+=`${this.book.book_name},${this.book.author_name},`;
-			this.book.keywords.forEach(e=>
+			this.generated_keywords+=`${this.note.note_name},${this.note.author_name},`;
+			this.note.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;
 			});
-			setDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
+			setDoc(doc(firestore,"notes",this.note_id),{popularity:this.note.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
 			
 			if(this.signed_in)
@@ -145,10 +141,10 @@ import flag from "@/components/parts/flag";
         }
 			this.promotion=get_under.data().promotion;
 
-			let ref_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
-			this.book_thumbnail= await getDownloadURL(ref_storage);
-			if(this.book.hided) this.$router.push("/home");
-			this.title_side=title_page(this.book.book_name);
+			let ref_storage =ref(storage,`/notes/${this.note_id}/thumbnail.jpg`);
+			this.note_thumbnail= await getDownloadURL(ref_storage);
+			if(this.note.hided) this.$router.push("/home");
+			this.title_side=title_page(this.note.note_name);
 			if(this.signed_in)
 				{
 				let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
@@ -158,9 +154,9 @@ import flag from "@/components/parts/flag";
 				}
 				else
 				{
-					this.is_favorite=this.user.favorites.includes(this.book_id);
+					this.is_favorite=this.user.favorites.includes(this.note_id);
 				}
-				//this.favorite=(this.user.favorites.indexOf(this.book_id)>=0);
+				//this.favorite=(this.user.favorites.indexOf(this.note_id)>=0);
 				}
 
 			this.dataReady=true;
@@ -176,26 +172,26 @@ import flag from "@/components/parts/flag";
 			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
 			if(!this.signed_in) return;
 			if(this.is_favorite) {
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.book_id)});
-			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
-			await updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.note_id)});
+			let fav= (await getDoc(doc(firestore,"notes",this.note_id))).data().favorites;
+			await updateDoc(doc(firestore,"notes",this.note_id),{favorites:this.note.favorites+1},{merge:true}); 
 			}
 			else 
 			{
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.book_id)});	
-			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
-			await updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites-1},{merge:true}); 
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.note_id)});	
+			let fav= (await getDoc(doc(firestore,"notes",this.note_id))).data().favorites;
+			await updateDoc(doc(firestore,"notes",this.note_id),{favorites:this.note.favorites-1},{merge:true}); 
 				
 			}
 			
 			},
 			enter_read(i)
 			{
-				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.book_name)}/page/${i}`);
+				this.$router.push(`/note/${this.note_id}/${replace_white(this.note.note_name)}/page/${i}`);
 			},
 			keyword_link(i)
 			{
-				this.$router.push(`/books/search/${i}`);
+				this.$router.push(`/notes/search/${i}`);
 			}
 		}
 	}
@@ -203,7 +199,7 @@ import flag from "@/components/parts/flag";
 </script>
 
 <style lang="scss" >
-	.book_cover{
+	.note_cover{
 		width: 350px;
 		height: 494px;
 		aspect-ratio: auto 350/494;
@@ -215,23 +211,23 @@ import flag from "@/components/parts/flag";
 		vertical-align: top;
 	}
 		
-.bookavatar{
+.noteavatar{
 	float: left;
     margin: 2 em;
 
 }
-.bookavatar img{
+.noteavatar img{
 	width: 350px;
 	height:494px;
 	aspect-ratio: auto 350/494; 
     
 
 }
-.book-info{
+.note-info{
 	float:left;
 	 margin: 50px;
 }
-.book-container
+.note-container
 {
 	overflow: auto;
 	margin-bottom: 25px;

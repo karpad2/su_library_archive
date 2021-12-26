@@ -31,7 +31,7 @@
 	<inner-image-zoom  :width="1280*zoom_scale+'px'" :src="image" class="img" :zoomScale="zoom_scale" :alt="page"/>
 	</hide-at>
 	<hide-at breakpoint="mediumAndAbove">
-		<img :src="image" class="img" />
+		<img draggable="false" :src="image" class="img" />
 	</hide-at>
 	<link rel="preload" as="image" :href="preimage.url" v-for="preimage in image_pre" :key="preimage.id"/>
 </div>
@@ -50,8 +50,6 @@
 		</div>
 	</hide-at>
 	<md-button @click="fullscreen_toggle"><md-icon>fullscreen</md-icon></md-button>
-	
-	
 	<md-button v-if="page<photoalbum.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
 	<hide-at breakpoint="small"> 
 		<md-button @click="settings"><md-icon>settings</md-icon></md-button>
@@ -252,6 +250,7 @@ import logo from "@/assets/logo";
 			},
 			escapeListener(event)
 			{
+				if(this.$route.params.pid == undefined || this.$route.params.bid==undefined) return;
 				if(event.key=="d"||event.key=="ArrowRight")
 				{
 					this.next_page();

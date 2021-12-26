@@ -10,7 +10,7 @@
 		    <md-card-content>
 				<div class="note-container">
 				<div class="noteavatar">
-				<img  @click="enter_read(1)" class="note_cover" alt="note_cover" :src="note_thumbnail" />
+				<img  draggable="false" @click="enter_read(1)" class="note_cover" alt="note_cover" :src="note_thumbnail" />
 				</div>
 		<div class="note-info">
 			<p> {{gt("publisher")}}: <md-chip @click="keyword_link(note.publisher)" md-static>{{note.publisher}}</md-chip></p>
@@ -39,10 +39,10 @@
         </md-card-content>
 	</md-card>
 	<md-card>
-		<md-table v-model="chapters" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+		<md-table v-model="sheets" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
-                <h1 class="md-title">{{gt("chapters")}}</h1>
+                <h1 class="md-title">{{gt("sheets")}}</h1>
                 </div>
             </md-table-toolbar>
 
@@ -56,7 +56,7 @@
                
                 <md-table-cell :md-label="gt('notename')" md-sort-by="notename">{{ item.data.chapter_name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publishing_date }}</md-table-cell>
-                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/note/${note_id}/${gy(note.note_name)}/chapter/${item.id}/page/1`)">{{gt("readchapter")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/note/${note_id}/${gy(note.note_name)}/sheets/${item.id}/page/1`)">{{gt("readchapter")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
 	</md-card>
@@ -83,14 +83,14 @@ import flag from "@/components/parts/flag";
 		flag
 		},
 		
-		name: 'note',
+		name: 'Note',
 		data: () => ({
 			note:{},
 			dataReady: false,
 			signed_in:false,
 			note_thumbnail:"",
 			admin:false,
-			chapters:[],
+			sheets:[],
 			member:false,
 			promotion:false,
 			is_favorite:false,
@@ -123,11 +123,11 @@ import flag from "@/components/parts/flag";
         }
 			this.note=note_ref.data();
 			this.chapters=[];
-		let chapters_refread=await getDocs(collection(firestore,`notes/${this.note_id}/chapters`));
+		let sheets_refread=await getDocs(collection(firestore,`notes/${this.note_id}/sheets`));
 			
-		chapters_refread.forEach(as=>{
+		sheets_refread.forEach(as=>{
 			this.counted_chapters++;
-					this.chapters.push({data:as.data(),id:as.id});
+					this.sheets.push({data:as.data(),id:as.id});
 					});
 
 			this.generated_keywords+=`${this.note.note_name},${this.note.author_name},`;
@@ -217,11 +217,10 @@ import flag from "@/components/parts/flag";
 			await updateDoc(doc(firestore,"notes",this.note_id),{favorites:this.note.favorites-1},{merge:true}); 
 				
 			}
-			
 			},
 			enter_read(i)
 			{
-				this.$router.push(`/note/${this.note_id}/${replace_white(this.note.note_name)}/page/${i}`);
+				//this.$router.push(`/note/${this.note_id}/${replace_white(this.note.note_name)}/page/${i}`);
 			},
 			keyword_link(i)
 			{

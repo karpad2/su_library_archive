@@ -31,7 +31,7 @@ function createWindow () {
   })
 
 
- mainWindow.loadURL(`https://su-library-archive.web.app/`);
+ mainWindow.loadURL(`https://su-library-archive.firebaseapp.com/`);
   // and load the index.html of the app.
  // mainWindow.loadURL();
 

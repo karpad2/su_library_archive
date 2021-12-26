@@ -1,13 +1,13 @@
 <template>
     <div v-if="dataReady">
-        <h3>{{gt("upload_a_title_photoalbums")}}</h3>
-        <div>{{gt("upload_a_photoalbums")}}
+        <h3>{{gt("upload_a_title_notes")}}</h3>
+        <div>{{gt("upload_a_notes")}}
         
         <div class="section">
-        <md-table v-model="searchedphotoalbums" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+        <md-table v-model="searchednotes" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
-                <h1 class="md-title">{{gt("Photoalbums")}}</h1>
+                <h1 class="md-title">{{gt("notes")}}</h1>
                 </div>
 
                 <md-field md-clearable class="md-toolbar-section-end">
@@ -16,21 +16,21 @@
             </md-table-toolbar>
 
             <md-table-empty-state v-if="searching_text!=''"
-                :md-label="gt('photoalbums_cant_found')"
-                :md-description="`${gt('no_photoalbums_cant_be_found')} '${searching_text}'.`">
-                <md-button class="md-primary md-raised" @click="$router.push(`/admin/photoalbums/new`)">{{gt('add_new_photoalbums')}}</md-button>
+                :md-label="gt('notes_cant_found')"
+                :md-description="`${gt('no_notes_cant_be_found')} '${searching_text}'.`">
+                <md-button class="md-primary md-raised" @click="$router.push(`/admin/note/new`)">{{gt('add_new_notes')}}</md-button>
             </md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-                <md-table-cell :md-label="gt('photoalbum_name')" md-sort-by="photoalbum_name">{{ item.data.photoalbum_name }}</md-table-cell>
+                <md-table-cell :md-label="gt('note_name')" md-sort-by="note_name">{{ item.data.note_name }}</md-table-cell>
                 <md-table-cell :md-label="gt('keywords')" md-sort-by="keywords">{{ item.data.keywords }}</md-table-cell>
-                <md-table-cell :md-label="gt('editphotoalbums')" md-sort-by="editphotoalbums"><md-button @click="$router.push(`/admin/photoalbum/${item.id}`)">{{gt("editphotoalbum")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt('editnotes')" md-sort-by="editnotes"><md-button @click="$router.push(`/admin/note/${item.id}`)">{{gt("editnote")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
         </div>
 
-        <md-button @click="$router.push(`/admin/photoalbum/new`)">{{gt("add_new_photoalbums")}}</md-button>
+        <md-button @click="$router.push(`/admin/note/new`)">{{gt("add_new_notes")}}</md-button>
         </div>
 
 
@@ -58,21 +58,21 @@ export default {
     data:()=>
     ({
         searching_text: "",
-        searchedphotoalbums: [],
-        photoalbums:[],
+        searchednotes: [],
+        notes:[],
         dataReady:false
        
     }),
     async mounted()
     {
-         const q = query(collection(firestore, "photoalbums"),limit(10));
+         const q = query(collection(firestore, "notes"),limit(10));
             const querySnapshot = await getDocs(q);
             let b=[];
             querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             b.push({id:doc.id,data:doc.data()});
             });  
-            this.photoalbums=b;
+            this.notes=b;
              await this.searching();
             this.dataReady=true;
     },
@@ -85,10 +85,10 @@ export default {
       async searching()
 			{
 				this.dataReady=false;
-				this.searchedphotoalbums=[];
+				this.searchednotes=[];
                 if(this.seaching_text=="")
                 {
-                let q=query(collection(firestore,"photoalbums"),limit(10));
+                let q=query(collection(firestore,"notes"),limit(10));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
@@ -96,18 +96,18 @@ export default {
                 }
                 else {
 				//if(!(String(this.seaching_text).length>0)) return [];
-				let q=query(collection(firestore,"photoalbums"),where("keywords","array-contains",[this.searching_text]),limit(10));
+				let q=query(collection(firestore,"notes"),where("keywords","array-contains",[this.searching_text]),limit(10));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
 				});
-				 q=query(collection(firestore,"photoalbums"),where("author_name","<=",this.searching_text),where("author_name",">=",this.searching_text),limit(10));
+				 q=query(collection(firestore,"notes"),where("author_name","<=",this.searching_text),where("author_name",">=",this.searching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
 				});
 
-				q=query(collection(firestore,"photoalbums"),where("album_name","<=",this.searching_text),where("album_name",">=",this.searching_text),limit(10));
+				q=query(collection(firestore,"notes"),where("album_name","<=",this.searching_text),where("album_name",">=",this.searching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
@@ -115,10 +115,10 @@ export default {
 
                 }
 				this.dataReady=true;
-				//console.log(this.searchedphotoalbums);
+				//console.log(this.searchednotes);
 			},
 			check_element_exist(b){
-			 if(!this.searchedphotoalbums.includes(b)) this.searchedphotoalbums.push(b);
+			 if(!this.searchednotes.includes(b)) this.searchednotes.push(b);
 			 }
     },
     computed:

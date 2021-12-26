@@ -31,7 +31,7 @@
 	<inner-image-zoom  :width="1280*zoom_scale+'px'" :src="image" class="img" :zoomScale="zoom_scale" :alt="page"/>
 	</hide-at>
 	<hide-at breakpoint="mediumAndAbove">
-		<img :src="image" class="img" />
+		<img draggable="false" :src="image" class="img" />
 	</hide-at>
 	<link rel="preload" as="image" :href="preimage.url" v-for="preimage in image_pre" :key="preimage.id"/>
 </div>
@@ -149,17 +149,17 @@ import logo from "@/assets/logo";
 			this.promotion=get_under.data().promotion;
 		if(!(this.member||this.admin||this.promotion)) this.back_to_home();
 
-			 let image_ref = ref(storage, `/newspapers/${this.$route.params.nid}/notes/${this.$route.params.cid}/pages/${this.page}.jpg`);// loading page from bucket
+			 let image_ref = ref(storage, `/notes/${this.$route.params.nid}/sheets/${this.$route.params.cid}/pages/${this.page}.jpg`);// loading page from bucket
 			 this.image= await getDownloadURL(image_ref);
 
 			 //this.$emit('fullscreen',true);
 			 let note_ref;
 			 try{
-			 note_ref=await getDocFromCache(doc(firestore,`newspapers/${this.$route.params.nid}/notes`,this.note_id));
+			 note_ref=await getDocFromCache(doc(firestore,`notes/${this.$route.params.nid}/sheets`,this.note_id));
 			 }
 			 catch(e)
 			 {
-				 note_ref=await getDoc(doc(firestore,`newspapers/${this.$route.params.nid}/notes`,this.note_id));
+				 note_ref=await getDoc(doc(firestore,`notes/${this.$route.params.nid}/sheets`,this.note_id));
 			 }
 
 			 this.note=note_ref.data();
@@ -185,7 +185,7 @@ import logo from "@/assets/logo";
 		methods: {
 			async add_page_to_load(lo)
 			{
-				let prev= ref(storage,`/newspapers/${this.$route.params.nid}/notes/${this.$route.params.cid}/pages/${lo}.jpg`);
+				let prev= ref(storage,`/notes/${this.$route.params.nid}/sheets/${this.$route.params.cid}/pages/${lo}.jpg`);
 				let l={
 						id:lo,
 						url: await getDownloadURL(prev)
@@ -210,7 +210,7 @@ import logo from "@/assets/logo";
 			},
 			back_to_home()
 			{
-				this.$router.push(`/newspaper/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}`);
+				this.$router.push(`/note/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}`);
 				
 			},
 			zoom_in()
@@ -232,7 +232,7 @@ import logo from "@/assets/logo";
 
 			enter_read(i)
 			{
-				this.$router.push(`/newspaper/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}/note/${this.note_id}/page/${i}`);
+				this.$router.push(`/note/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}/sheet/${this.note_id}/page/${i}`);
 			},
 			settings()
 			{
@@ -252,6 +252,7 @@ import logo from "@/assets/logo";
 			},
 			escapeListener(event)
 			{
+				if(this.$route.params.pid == undefined || this.$route.params.bid==undefined) return;
 				if(event.key=="d"||event.key=="ArrowRight")
 				{
 					this.next_page();

@@ -182,7 +182,7 @@ export default {
       {
         this.new_note=false;
         this.note_id=this.$route.params.pid;
-        let note_refread=await getDoc(doc(firestore,`notes/${this.$route.params.bid}/note`,this.note_id));
+        let note_refread=await getDoc(doc(firestore,`notes/${this.$route.params.bid}/sheets`,this.note_id));
         this.note=note_refread.data();
       }
       
@@ -205,7 +205,7 @@ export default {
     },
     async deletenote()
     {
-       updateDoc(doc(firestore,`notes/${this.$route.params.bid}/notes`,this.note_id),null);
+       updateDoc(doc(firestore,`notes/${this.$route.params.bid}/sheets`,this.note_id),null);
        this.$router.go(-1); 
     },
 
@@ -217,15 +217,15 @@ export default {
        if(this.$route.params.pid=="new" && this.note_id==null)
       {
       
-      this.note_ref=await addDoc(collection(firestore,`notealbums/${this.$route.params.bid}/notes`),this.note,{merge:true});
+      this.note_ref=await addDoc(collection(firestore,`notes/${this.$route.params.bid}/sheets`),this.note,{merge:true});
       this.note_id=this.note_ref.id;
-      this.$router.push(`/admin/newspaper/${this.$route.params.bid}/note/${this.note_id}`);
+      this.$router.push(`/admin/note/${this.$route.params.bid}/sheets/${this.note_id}`);
       }
       else
       {
         let l=new Date();
         this.note.upload_date=`${l.getFullYear()}-${l.getMonth()}-${l.getUTCDay()}`;
-        this.note_ref=updateDoc(doc(firestore,`notealbums/${this.$route.params.bid}/notes`,this.note_id),this.note,{merge:true});
+        this.note_ref=updateDoc(doc(firestore,`notes/${this.$route.params.bid}/sheets`,this.note_id),this.note,{merge:true});
       }
            
       
@@ -238,12 +238,12 @@ export default {
        if(this.$route.params.pid=="new" && this.note_id==null)
       {
       
-      this.note_ref=await addDoc(collection(firestore,`notealbums/${this.$route.params.bid}/notes`),this.note,{merge:true});
+      this.note_ref=await addDoc(collection(firestore,`notes/${this.$route.params.bid}/sheets`),this.note,{merge:true});
       this.note_id=this.note_ref.id;
       }  
 
 
-      const firststorageRef = ref(storage,`notealbums/${this.$route.params.bid}/notes/${this.note_id}.jpg`);
+      const firststorageRef = ref(storage,`notes/${this.$route.params.bid}/sheets/${this.note_id}.jpg`);
 
       this.dataReady=false;
       let uploadTask = await uploadBytes(firststorageRef, this.pdf_file);

@@ -4,7 +4,7 @@
   <div v-if="dataReady">
       <md-card-media-cover md-solid>
         <md-card-media @click="open_book" md-ratio="1:1">
-          <img v-if="imageload" class="cover" v-lazy="book_cover" alt="thumb_book_cover">
+          <img draggable="false" v-if="imageload" class="cover" v-lazy="book_cover" alt="thumb_book_cover">
           <loading v-else/>
         </md-card-media>
 

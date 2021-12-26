@@ -37,7 +37,7 @@
 				
 				<md-app-drawer v-if="!fullscreen" :md-active.sync="menuVisible1" md-persistent="mini">
 							<md-toolbar class="md-transparent" md-elevation="3">
-								<span>Navigation</span>
+								<span>{{gt("navigation")}}</span>
 								<div class="md-toolbar-section-end">
 									<md-button class="md-icon-button md-dense" @click="menuVisible1=!menuVisible1">
 										<md-icon>keyboard_arrow_left</md-icon>
@@ -56,7 +56,7 @@
 									</router-link>
 								</div>
 								<md-divider></md-divider>
-								<md-list-item v-if="!member" @click="enter_code=1">
+								<md-list-item v-if="!member && false" @click="enter_code=1">
 											<md-icon class="md-icon">vpn_key</md-icon>
 											<span class="md-list-item-text">{{gt("enter_code")}}</span>
 								</md-list-item>
@@ -384,7 +384,7 @@ import firebaseui from 'firebaseui'
 					auth: true,
 				},
 				{
-					icon: 'audio_track',
+					icon: 'library_music',
 					title: this.gt("notes"),
 					link: this.add_public('/notes'),
 					auth: true,
@@ -442,7 +442,7 @@ import firebaseui from 'firebaseui'
 					});
 				this.menuTab.push({
 						
-					icon: 'add_to_notes',
+					icon: 'art_track',
 					title: this.gt("admin_notes"),
 					link: '/admin/notes',
 					auth: true,
@@ -487,7 +487,7 @@ import firebaseui from 'firebaseui'
 			{
 				let k=this.seaching_text;
 				this.seaching_text="";
-				this.$router.push(`/books/search/${k}`);
+				this.$router.push(`/search/search_text/${k}`);
 			
 			},
 			
@@ -503,7 +503,6 @@ import firebaseui from 'firebaseui'
 				},
 				async check_terms()
 				{
-					
 					let terms=this.aterms;
 
 					if(!terms)

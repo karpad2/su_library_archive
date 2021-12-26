@@ -1,7 +1,7 @@
 <template>
     <div  class="pagecontainer" >
         <router-link :to="link">
-        <img  class="thumbcontainer" v-lazy="image" v-if="dataReady" alt="thumbnail"/>
+        <img draggable="false"  class="thumbcontainer" v-lazy="image" v-if="dataReady" alt="thumbnail"/>
         </router-link>
     </div>
 </template>

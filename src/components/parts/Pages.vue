@@ -1,7 +1,7 @@
 <template>
 	<div id="pages" v-if="dataReady&&signed_in">
 		<md-card>
-			<thumbnailpage :book_id="book_id" v-for="page in pages" :key="page" :page="page" />
+			<thumbnailpage  :book_id="book_id" v-for="page in pages" :key="page" :page="page" />
 			<div class="middle-center">
 				<md-button @click="addmore">{{gt("load_more")}}</md-button>
 			</div>

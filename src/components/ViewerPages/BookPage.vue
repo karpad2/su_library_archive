@@ -21,14 +21,19 @@
 	<hide-at breakpoint="small"> 
 		<md-button @click="settings"><md-icon>settings</md-icon></md-button>
 	</hide-at>
+	<hide-at breakpoint="small"> 
+		<md-button @click="print"><md-icon>print</md-icon></md-button>
+	</hide-at>
 	</div>
 </md-toolbar> 
 <div class="section">
 	<hide-at breakpoint="small">
-	<inner-image-zoom  :width="1280*zoom_scale+'px'" :src="image" class="img" :zoomScale="zoom_scale" :alt="page"/>
+	<inner-image-zoom draggable="false"  :width="1280*zoom_scale+'px'" :src="image" class="img" :zoomScale="zoom_scale" :alt="page"/>
 	</hide-at>
 	<hide-at breakpoint="mediumAndAbove">
-		<img :src="image" class="img" />
+		<div id="img" >
+		<img  draggable="false" :src="image" class="img" />
+		</div>
 	</hide-at>
 	<link rel="preload" as="image" :href="preimage.url" v-for="preimage in image_pre" :key="preimage.id"/>
 </div>
@@ -249,6 +254,9 @@ import logo from "@/assets/logo";
 			},
 			escapeListener(event)
 			{
+				console.log(this.$route.params);
+
+				if(this.$route.params.pid == undefined || this.$route.params.bid==undefined) return;
 				if(event.key=="d"||event.key=="ArrowRight")
 				{
 					this.next_page();
@@ -271,6 +279,10 @@ import logo from "@/assets/logo";
 				this.fullscreen=!this.fullscreen;
 				localStorage.setItem("fullscreen",this.fullscreen);
 
+			},
+			print()
+			{
+				window.print();
 			}
 
 
