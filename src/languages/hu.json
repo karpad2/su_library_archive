@@ -158,7 +158,12 @@
     "add_new_photo":"Fénykép hozzáadása",
     "photo_name":"Fotó név",
     "notes":"Kották",
-    "admin_notes":"Kották adminisztrálása"
+    "admin_notes":"Kották adminisztrálása",
+    "upload_a_title_notes":"Kották adminisztrálása",
+    "add_new_notes":"Kotta hozzáadása",
+    "note_name":"Kotta neve",
+    "edit_notes":"Kotta szerkesztése"
+
 
 
 
