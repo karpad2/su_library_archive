@@ -23,10 +23,9 @@
     ],
     "win": {
       "target": "nsis",
-      "icon":"src/assets/icons/android-chrome-512x512.png" 
-      },
-      "productName": "Gradska digitalna biblioteka Subotica",
-    
+      "icon": "src/assets/icons/android-chrome-512x512.png"
+    },
+    "productName": "Gradska digitalna biblioteka Subotica",
     "nsis": {
       "oneClick": false,
       "artifactName": "su_library_archive.setup.${version}.${ext}",
@@ -35,7 +34,7 @@
     "linux": {
       "category": "karpad2.app.category.Education",
       "target": "AppImage",
-      "icon":"src/assets/icons/android-chrome-512x512.png" 
+      "icon": "src/assets/icons/android-chrome-512x512.png"
     },
     "appId": "com.github.karpad2.su_library_archive"
   },
@@ -61,6 +60,7 @@
     "firebase-tools": "^9.16.5",
     "firebaseui": "^6.0.0",
     "fork-me-on-github-vue": "^1.0.7",
+    "ionic": "^5.4.16",
     "lzma": "^2.3.2",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",

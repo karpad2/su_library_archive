@@ -6,6 +6,7 @@ import { getAuth } from "firebase/auth";
 const english= require("./en.json");
 const hungarian= require("./hu.json");
 const serbian= require("./rs.json");
+const croatian= require("./cro.json");
 
 function  get_text(indicator)
 {   let text="";
@@ -36,6 +37,7 @@ function  get_text(indicator)
         case "en-EN":{text=contains_the_array(english,indicator);} break;
         case "hu-HU":{text=contains_the_array(hungarian,indicator);} break;
         case "rs-RS":{text=contains_the_array(serbian,indicator);} break;
+        case "hr-HR":{text=contains_the_array(croatian,indicator);} break;
     }
     return text
 }
@@ -71,6 +73,10 @@ const languages =[
     {
         code:"hu-HU",
         name:"Magyar"
+    },
+    {
+        code:"hr-HR",
+        name:"Hrvatski"
     },
     {
         code:"en-EN",

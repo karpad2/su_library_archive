@@ -48,7 +48,7 @@ import Biglogo from '@/assets/biglogo.vue';
 		name: "AccountIndex",
 		data: () => ({
 			userTheme: "default",
-			languages:[{value:"rs-RS",text:"Srpski"},{value:"hu-HU",text:"Magyar"},{value:"en-EN",text:"English"}],
+			languages:[{value:"rs-RS",text:"Srpski"},{value:"hu-HU",text:"Magyar"},{value:"hr-HR",text:"Hrvatski"},{value:"en-EN",text:"English"}],
 			language:"",
 			dataReady:false,
 
