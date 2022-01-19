@@ -169,7 +169,13 @@ import flag from "@/components/parts/flag";
 			this.promotion=get_under.data().promotion;
 
 			let ref_storage =ref(storage,`/newspapers/${this.newspaper_id}/thumbnail.jpg`);
+			try{
 			this.newspaper_thumbnail= await getDownloadURL(ref_storage);
+			}
+			catch
+			{
+				//
+			}
 			if(this.newspaper.hided) this.$router.push("/home");
 			this.title_side=title_page(this.newspaper.newspaper_name);
 			if(this.signed_in)

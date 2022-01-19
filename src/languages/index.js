@@ -1,6 +1,7 @@
 import {FirebaseAuth} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,  } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import {convertWordToCyrillic} from "./transliteration"
 //import { firestore } from "firebase-admin";
 
 const english= require("./en.json");
@@ -37,6 +38,7 @@ function  get_text(indicator)
         case "en-EN":{text=contains_the_array(english,indicator);} break;
         case "hu-HU":{text=contains_the_array(hungarian,indicator);} break;
         case "rs-RS":{text=contains_the_array(serbian,indicator);} break;
+        case "sr-SR":{text=convertWordToCyrillic(contains_the_array(serbian,indicator));} break;
         case "hr-HR":{text=contains_the_array(croatian,indicator);} break;
     }
     return text

@@ -5,7 +5,7 @@ import { initializeApp } from "firebase/app";
 import { getMessaging,getToken } from "firebase/messaging";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
-import { getStorage } from "firebase/storage";
+import { getStorage,getDownloadURL } from "firebase/storage";
 import Vue from 'vue';
 import { getFunctions, httpsCallable } from "firebase/functions";
 import {enableIndexedDbPersistence, getFirestore,doc,getDoc,collection,updateDoc,update,setDoc,getDocFromServer,CACHE_SIZE_UNLIMITED } from "firebase/firestore";
@@ -66,7 +66,6 @@ const FireDb = getDatabase();
 
 
 const presenceRef = ref(FireDb, "disconnectmessage");
-
 onDisconnect(presenceRef).set("I disconnected!");
 
 
@@ -78,6 +77,7 @@ onValue(connectedRef, (snap) => {
     ///Not connected
   }
 });
+
 
 
 let userId = null;
@@ -110,6 +110,14 @@ const change_Theme_Fb= async (value)=>{
 	}
 };
 
+async function loadimage(link)
+{
+	let ref_thumbnail=ref(storage,link);
+    let image=await getDownloadURL(ref_thumbnail);
+	return image;
+
+}
+
 
 export {
 	FirebaseAuth,
@@ -124,5 +132,6 @@ export {
 	functions,
 	user_is_admin,
 	user_email_verified,
+	loadimage
 }
 

@@ -23,15 +23,6 @@
             <label>{{gt('chapter_name')}}</label>
             <md-input @change="change" v-model="chapter.chapter_name" md-counter="100"></md-input>
           </md-field>
-          
-          <md-field>
-            <label>{{gt('publisher')}}</label>
-            <md-input @change="change" v-model="chapter.publisher" md-counter="100"></md-input>
-          </md-field>
-        
-            <md-field>
-              <b-form-select @change="change" v-model="chapter.language" :options="languages"></b-form-select> <flag :flag="chapter.language"/>  
-            </md-field>
           <md-field>
           <quillEditor class="ql-editor" @change="change" v-model="chapter.description" />
           </md-field>

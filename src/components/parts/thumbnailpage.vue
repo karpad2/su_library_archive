@@ -1,7 +1,8 @@
 <template>
     <div  class="pagecontainer" >
         <router-link :to="link">
-        <img draggable="false"  class="thumbcontainer" v-lazy="image" v-if="dataReady" alt="thumbnail"/>
+        <img  draggable="false"  class="thumbcontainer" v-lazy="image" v-if="dataReady && !failimage" alt="thumbnail"/>
+         <loading v-else/>
         </router-link>
     </div>
 </template>
@@ -10,22 +11,31 @@
 import {getStorage,ref,getDownloadURL} from "firebase/storage";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
+import loading from "./loading";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
 export default {
     props:["book_id","page"],
+    components:[loading],
     data()
     {
         return{
         dataReady:false,
         image:"",
         link:"",
-        book:{}            
+        book:{},
+        failimage:false            
         }
     },
     async mounted()
     {
         let k= ref(storage, `/books/${this.book_id}/pages/${this.page}.jpg`);
+        try{
         this.image =await getDownloadURL(k);
+        }
+        catch (e)
+        {
+            this.failimage=true; 
+        }
         let book_ref;
         try{
         book_ref=await getDocFromCache(doc(firestore,"books",this.book_id));

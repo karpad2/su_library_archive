@@ -31,9 +31,11 @@
 					
 						<md-button v-else class="desktop" @click="$router.push('/account/login')">️{{gt("login")}} <md-icon class="md-icon">login</md-icon> </md-button>
 					
-						<b-form-select v-if="library_user" @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
-				
+						
      		 	</div>
+				<div v-else class="md-toolbar-section-end">
+				  <b-form-select v-if="library_user" @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
+				</div>
 				</md-app-toolbar>
 				
 				
@@ -122,10 +124,10 @@
     </md-drawer>
 
 			<md-app-content>
-				    <b-alert v-if="signed_in && !email_verified && !libraryuser" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
+				    <b-alert v-if="signed_in && !email_verified && !library_user" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
-					<b-alert v-if="promotion && !libraryuser && !promotion_hide &&(!member||!admin)" variant="success" show>{{gt("promotion_text")}}</b-alert>
-					<b-alert v-if="!promotion && !libraryuser && !promotion_hide && (!member||!admin)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
+					<b-alert v-if="promotion && !library_user && !promotion_hide &&(!member||!admin)" variant="success" show>{{gt("promotion_text")}}</b-alert>
+					<b-alert v-if="!promotion && !library_user && !promotion_hide && (!member||!admin)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
 
 					 <md-dialog-confirm
 						:md-active.sync="terms"
@@ -204,7 +206,7 @@ import firebaseui from 'firebaseui'
 			code:"",
 			fullscreen:false,
 			enter_code:false,
-			languages:[{value:"rs-RS",text:"Srpski"},{value:"hu-HU",text:"Magyar"},{value:"hr-HR",text:"Hrvatski"},{value:"en-EN",text:"English"}],
+			languages:[{value:"rs-RS",text:"Srpski"},{value:"sr-SR",text:"Српски"},{value:"hu-HU",text:"Magyar"},{value:"hr-HR",text:"Hrvatski"},{value:"en-EN",text:"English"}],
 			language:"",
 			searchedBooks:[],
 			dataReady: false,
@@ -411,15 +413,7 @@ import firebaseui from 'firebaseui'
 					admin:true
 				
 					});
-				this.menuTab.push({
-						
-					icon: 'people',
-					title: this.gt("admin_users"),
-					link: '/admin/users',
-					auth: true,
-					admin:true
 				
-					});
 
 				this.menuTab.push({
 						

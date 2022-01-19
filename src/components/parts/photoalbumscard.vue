@@ -90,7 +90,13 @@ export default {
     let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
     this.user=user_ref.data();
     }
+    try {
     await this.image_loading();
+    }
+    catch
+    {
+      this.imageload=false
+    }
     this.dataReady=true;
   },
   methods:

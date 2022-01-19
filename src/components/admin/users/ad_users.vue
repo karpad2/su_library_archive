@@ -86,7 +86,7 @@ export default {
 				this.dataReady=true;
 				//console.log(this.searchedusers);
 			},
-            check_element_exist(b){
+            check_element_user_exist(b){
                 console.log(b);
 			 if(!this.users.includes(b)) this.users.push(b);
 			 }

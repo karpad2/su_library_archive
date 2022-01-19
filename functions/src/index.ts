@@ -19,12 +19,11 @@ exports.deletebook = functions.firestore.document("books/{bookID}").onDelete(
           deletebook(snap,context);
 });
 
-
 exports.renderpdftoimage=functions.runWith({
-    timeoutSeconds: 540,
-    memory: "4GB"
-  })
-  .storage.object().onFinalize((object:functions.storage.ObjectMetadata)=>
-  {
-   pdfimage(object);
-  });
+     timeoutSeconds: 540,
+     memory: "4GB"
+   })
+   .storage.object().onFinalize(async (object:functions.storage.ObjectMetadata)=>
+   {
+     await pdfimage(object);
+   });

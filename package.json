@@ -61,6 +61,7 @@
     "firebaseui": "^6.0.0",
     "fork-me-on-github-vue": "^1.0.7",
     "ionic": "^5.4.16",
+    "latin-to-cyrillic": "^1.0.1",
     "lzma": "^2.3.2",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",

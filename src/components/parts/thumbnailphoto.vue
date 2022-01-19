@@ -2,6 +2,7 @@
     <div  class="pagecontainer" >
         <router-link :to="link">
         <img draggable="false" class="thumbcontainer" v-lazy="image" v-if="dataReady" alt="thumbnail"/>
+        <loading v-else/>
         </router-link>
     </div>
 </template>
@@ -42,7 +43,14 @@ export default {
         this.dataReady=true;
 
     },
-    methods:{
+    methods:
+  {
+    async image_loading()
+      {
+    let ref_thumbnail=ref(storage,`/photoalbums/${this.photoalbum_id}/thumbnail.jpg`);
+    this.photoalbum_cover=await getDownloadURL(ref_thumbnail);
+    this.imageload=true;
+      },
         enter_read()
 			{
 				return `/photoalbums/${this.photoalbum_id}/${replace_white(this.book.book_name)}/photo/${this.page}`;

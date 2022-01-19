@@ -77,7 +77,8 @@ export default {
           is_favorite:false,
           signedin:false,
           sharepopup:false,
-          newspaper_cover:""
+          newspaper_cover:"",
+          failimage:false
       }
   },
   components:{
@@ -89,8 +90,14 @@ export default {
     let newspaperref=await getDoc(doc(firestore,"newspapers",this.newspaper_id));
     this.newspaper=newspaperref.data();
 
-
+    try {
     this.image_loading();
+    }
+    catch (e)
+    {
+      this.failimage=true;
+    }
+   
     //console.log(this.newspaper_cover);
     this.signedin= !(getAuth().currentUser==null);
     if(this.signedin)
@@ -104,7 +111,7 @@ export default {
   {
       async image_loading()
       {
-        let ref_thumbnail=ref(storage,`/newspapers/${this.newspaper_id}/thumbnail.jpg`);
+    let ref_thumbnail=ref(storage,`/newspapers/${this.newspaper_id}/thumbnail.jpg`);
     this.newspaper_cover=await getDownloadURL(ref_thumbnail);
     this.imageload=true;
       },
