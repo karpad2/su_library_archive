@@ -171,6 +171,7 @@ import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,functi
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,getDocFromCache  } from "firebase/firestore";
 import {showAt, hideAt} from 'vue-breakpoints';
 import { getFunctions, httpsCallable } from "firebase/functions";
+import firebaseCredentials from "@/firebase/credentials";
 import loading from "@/components/parts/loading";
 import undermaintenance from "@/components/parts/undermaintenance";
 import logo from "@/assets/logo";
@@ -268,7 +269,7 @@ import firebaseui from 'firebaseui'
 			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
 			this.profile_name=await FirebaseAuth.displayName;
 			this.email_verified=await getAuth().currentUser.emailVerified;
-			this.library_user=await getAuth().currentUser.email=="libraryuser@su-library-archive.web.app";
+			this.library_user=await getAuth().currentUser.email==firebaseCredentials.public_profile.u;
 			//this.language= await this.get_user_language();
 			
 			//let k=await getDoc(doc(firestore,"users",this.user.uid));
@@ -450,7 +451,17 @@ import firebaseui from 'firebaseui'
 					auth: true,
 					admin:true
 				
-					});						
+					});
+			
+			this.menuTab.push({
+						
+					icon: 'art_track',
+					title: this.gt("admin_posters"),
+					link: '/admin/posters',
+					auth: true,
+					admin:true
+				
+					});
 			}
 			this.dataReady=true;
 		},

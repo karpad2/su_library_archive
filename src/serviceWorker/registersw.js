@@ -1,5 +1,4 @@
-/* eslint-disable no-console, no-undef */
-/*
+
 import { register } from 'register-service-worker';
 import {sw} from "./sw.js";
 
@@ -38,4 +37,3 @@ import {sw} from "./sw.js";
     }
   });
 
-*/

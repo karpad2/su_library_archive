@@ -104,7 +104,9 @@ export default {
     async image_loading()
       {
     let ref_thumbnail=ref(storage,`/photoalbums/${this.photoalbum_id}/thumbnail.jpg`);
+
     this.photoalbum_cover=await getDownloadURL(ref_thumbnail);
+    
     this.imageload=true;
       },
 

@@ -34,9 +34,11 @@
 
 <script>
 import logo from '@/assets/logo';
-import {getAuth} from "firebase/auth";
+
+import {FirebaseAuth,firestore} from "@/firebase";
 import imagelogo from "@/assets/icons/android-chrome-512x512.png";
 import {showAt, hideAt} from 'vue-breakpoints';
+import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider,getAuth } from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 import Biglogo from '@/assets/biglogo.vue';
 	export default {
@@ -60,6 +62,8 @@ import Biglogo from '@/assets/biglogo.vue';
 			{ localStorage.setItem("language",get_defaultlanguage());
 				this.language=get_defaultlanguage();
 			}
+
+			
 			else this.language=localStorage.getItem("language");
 			this.image_logo=imagelogo;
 			this.dataReady=true;
@@ -126,9 +130,5 @@ import Biglogo from '@/assets/biglogo.vue';
 		max-width: 200pt;
 		min-width: 100pt;
 	}
-	/*.md-select{
-		max-width: 200pt;
-		min-width: 100pt;
-		
-	}*/
+	
 </style>

@@ -139,6 +139,7 @@
 import {get_text} from "@/languages";
 import { quillEditor } from 'vue-quill-editor';
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+
 import axios from "axios";
 import loading from "@/components/parts/loading";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
@@ -281,6 +282,9 @@ export default {
 
     async upload_book()
     {
+
+       var pdfjs = require("pdfjs"); 
+     // pdfjs.Document.
       this.serverside_finished=false;
        if(this.$route.params.bid=="new" && this.book_id==null)
       {

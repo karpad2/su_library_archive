@@ -1,4 +1,4 @@
-import {getAuth,setPersistence,inMemoryPersistence,browserSessionPersistence} from 'firebase/auth';
+import {getAuth,setPersistence,inMemoryPersistence,browserSessionPersistence,browserLocalPersistence} from 'firebase/auth';
 const { initializeAppCheck, ReCaptchaV3Provider } = require("firebase/app-check");
 import {getDatabase,ref,set, onValue,onDisconnect,child} from 'firebase/database';
 import { initializeApp } from "firebase/app";
@@ -60,7 +60,7 @@ async function get_user_language()
 
 //appcheck.setTokenAutoRefreshEnabled();
 const FirebaseAuth = getAuth();
-setPersistence(FirebaseAuth,browserSessionPersistence);
+setPersistence(FirebaseAuth,browserLocalPersistence);
 //const Firebase = firebase;
 const FireDb = getDatabase();
 

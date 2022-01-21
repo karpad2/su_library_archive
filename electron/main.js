@@ -3,6 +3,7 @@ const {app, BrowserWindow,session} = require('electron');
 const {autoUpdater} = require("electron-updater");
 const log = require('electron-log');
 
+
 const express = require('express');
 var history = require('connect-history-api-fallback');
 //const ses = session.fromPartition('persist:sulibraryarchive')
@@ -30,13 +31,14 @@ function createWindow () {
     }
   })
 
-
+mainWindow.webContents.userAgent = "Electron_profile";
  mainWindow.loadURL(`https://su-library-archive.firebaseapp.com/`);
+
   // and load the index.html of the app.
  // mainWindow.loadURL();
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+   mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

@@ -67,7 +67,7 @@
     "moment-duration-format": "^2.3.2",
     "pdf-image": "^2.0.0",
     "pdf2pic": "^2.1.4",
-    "pdfjs": "^2.4.6",
+    "pdfjs": "^2.4.7",
     "register-service-worker": "^1.7.2",
     "sass-loader": "^12.4.0",
     "tf-idf": "^1.0.0",
