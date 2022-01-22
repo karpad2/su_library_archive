@@ -1,8 +1,8 @@
 <template>
 	<div id="app">
 		<router-view class="router-view"/>
-	<footer>
-    	<cookie-law id="cookie_button" theme="dark-lime" :message="cookie_text" :buttonText="cookie_ok"></cookie-law>
+	<footer >
+    	<cookie-law v-if="!disablecookiebanner" id="cookie_button" theme="dark-lime" :message="cookie_text" :buttonText="cookie_ok"></cookie-law>
   	</footer>
 	</div> 
 </template>
@@ -10,6 +10,7 @@
 <script>
   import CookieLaw from 'vue-cookie-law';
   import {get_text} from "./languages";
+  import firebaseCredentials from "./firebase/credentials";
 	export default {
 		name: 'App',
 		components: { CookieLaw },
@@ -17,12 +18,17 @@
 		{
 		
 		if( localStorage.getItem("userTheme")===null) localStorage.userTheme = "light";
+		if(navigator.userAgent==firebaseCredentials.public_profile.agent)
+		{
+			this.disablecookiebanner=true;
+		}
 		},
 		data()
 		{
 			return{
 				cookie_text:get_text("cookie_text"),
-				cookie_ok:get_text("ok")
+				cookie_ok:get_text("ok"),
+				disablecookiebanner:false
 			/*	<Ribbon v-bind="ribbonOptions"></Ribbon>
 		ribbonOptions: {
         	text: 'Fork me on GitHub',

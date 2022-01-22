@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 const latToCyrMap = {
     "A": "А",
     "B": "Б",

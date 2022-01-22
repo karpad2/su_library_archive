@@ -31,7 +31,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 	import {FirebaseAuth,firestore} from "@/firebase";
 	import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
 	import glogo from "@/assets/glogo";
-	import firebaseCredentials from '@/firebase/credentials';
+	import firebaseCredentials from '../../firebase/credentials';
 	import {get_text,title_page} from "@/languages";
 	import { collection, doc, setDoc, query, where, getDocs,getDoc  } from "firebase/firestore";
 
@@ -51,33 +51,28 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				enable_public_login:true
 			}
 		},
-		mounted() {
+		async mounted() {
 			const auth = getAuth();
 
-
+			console.log(navigator.userAgent);
+			console.log(firebaseCredentials.public_profile.agent);
+			
 			if(navigator.userAgent==firebaseCredentials.public_profile.agent)
 			{
-				let _this = this;
-				signInWithEmailAndPassword(FirebaseAuth,firebaseCredentials.public_profile.u, firebaseCredentials.public_profile.p).then(() => {
-						this.password = "";
-						
-						this.$router.replace('/home'); // User logged
-						this.set_user_data_local();
-					}).catch((error) => {
-						if (error.code === 'auth/wrong-password') {
-							_this.errorMessage = "Password wrong";
-						} else {
-							_this.errorMessage = "Check email and password";
-						}
-					});
-			}
+				alert("test");
+				this.email=firebaseCredentials.public_profile.u;
+				this.password=firebaseCredentials.public_profile.p;
+				this.login();
+				
+			} 
+			else {
 			onAuthStateChanged(auth,(user) => {
 				if (user && this.email === "") this.$router.replace('/account').catch(() => {
 				localStorage.user=this.user;
 				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName,email:user.email,phone:user.phoneNumber},{merge:true});
 				
 				}); // User already logged
-			});
+			});}
 		},
 		methods: {
 			login: function () {
