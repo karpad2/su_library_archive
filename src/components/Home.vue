@@ -15,7 +15,7 @@
 	</md-card>	
 </div>
 <div class="section">
-	<md-card>
+	<md-card class="bookcards">
 		<md-card-header>
         <md-card-header-text>
           <div class="md-title"><md-icon class="md-icon icon-color">library_add</md-icon> {{gt("recent_uploads")}}</div>
@@ -307,7 +307,10 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getD
 	color:#ed2553;
 }
 .md-card{
-	min-width: 320px;
+	min-width: 290px;
 	padding:5px;
+}
+.bookcards{
+	min-width: 250px;
 }
 </style>

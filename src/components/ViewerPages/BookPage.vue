@@ -28,7 +28,8 @@
 </md-toolbar> 
 <div class="section">
 	<hide-at breakpoint="small">
-	<inner-image-zoom draggable="false"  :width="1280*zoom_scale+'px'" :src="image" class="img" :zoomScale="zoom_scale" :alt="page"/>
+	<vue-pdf-app :pdf="pdf_file"></vue-pdf-app>
+
 	</hide-at>
 	<hide-at breakpoint="mediumAndAbove">
 		<div id="img" >
@@ -73,6 +74,7 @@
 </template>
 
 <script>
+import VuePdfApp from "vue-pdf-app";
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,storage,firestore} from "@/firebase";
 import { getStorage, ref, listAll,get, getDownloadURL } from "firebase/storage";
@@ -86,9 +88,10 @@ import logo from "@/assets/logo";
 
 	export default {
 		components: {
-		'inner-image-zoom': InnerImageZoom,
+		
 		 hideAt,
-		loading
+		loading,
+		VuePdfApp
 		},
 		metaInfo(){
 			return{
@@ -105,6 +108,7 @@ import logo from "@/assets/logo";
 				image:"",
 				book_id:"",
 				zoom_scale:1,
+				pdf_file:"",
 				fullscreen:false,
 				zooming:0,
 				page:1,
@@ -318,6 +322,8 @@ import logo from "@/assets/logo";
 					auth: true,
 				},
 	*/
+	//<inner-image-zoom draggable="false"  :width="1280*zoom_scale+'px'" :src="image" class="img" :zoomScale="zoom_scale" :alt="page"/>
+	
 </script>
 
 <style lang="scss" scope>

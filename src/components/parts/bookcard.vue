@@ -43,8 +43,9 @@
 </template>
 <style lang="scss" scoped>
   .md-card {
-    width: 320px;
-    height:320px;
+    min-width: 270px;
+    max-width: 320px;
+    max-height:320px;
     margin: 4px;
     display: inline-block;
     //padding-top: 10px;

@@ -35,6 +35,8 @@ Vue.use(Vuer);
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
+import "vue-pdf-app/dist/icons/main.css";
+
 
 Vue.use(VueQuillEditor, /* { default global options } */);
 
