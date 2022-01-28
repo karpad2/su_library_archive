@@ -18,7 +18,7 @@
 				<div  v-if="dataReady" class="middle-center">
 					
 					
-					<Biglogo />
+					<logo style="width:75px;height:75px;" />
 					
 					<div> <h4>{{gt("app-title")}}</h4></div>
 					<router-view  v-if="dataReady" @themeChanged="themeChanged"/>
@@ -45,7 +45,7 @@ import Biglogo from '@/assets/biglogo.vue';
 		components: {
 		logo,
 		showAt, hideAt,
-		Biglogo
+		
 		},
 		name: "AccountIndex",
 		data: () => ({

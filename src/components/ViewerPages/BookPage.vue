@@ -11,9 +11,9 @@
 	<div class="md-toolbar-section-end">
 	<hide-at breakpoint="small"> 
 		<div>
-		<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
-		<md-button>{{zooming_percent}}%</md-button>
-		<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+		<md-button :id="idConfig.zoomOut" ><md-icon>zoom_out</md-icon></md-button>
+		
+		<md-button :id="idConfig.zoomIn"><md-icon>zoom_in</md-icon></md-button>
 		</div>
 	</hide-at>
 	<md-button @click="fullscreen_toggle" class="small"><md-icon>fullscreen</md-icon></md-button>
@@ -28,15 +28,10 @@
 </md-toolbar> 
 <div class="section">
 	<hide-at breakpoint="small">
-	<vue-pdf-app :pdf="pdf_file"></vue-pdf-app>
+	<vue-pdf-app :config="config"  :id-config="idConfig" style="height: 100vh;" :page-number="page" :pdf="pdf_file" ></vue-pdf-app>
 
 	</hide-at>
-	<hide-at breakpoint="mediumAndAbove">
-		<div id="img" >
-		<img  draggable="false" :src="image" class="img" />
-		</div>
-	</hide-at>
-	<link rel="preload" as="image" :href="preimage.url" v-for="preimage in image_pre" :key="preimage.id"/>
+	
 </div>
 <md-toolbar class="md-primary">
 	<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
@@ -47,9 +42,9 @@
 	<div class="md-toolbar-section-end">
 	<hide-at breakpoint="small"> 
 		<div>
-		<md-button @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
-		<md-button>{{zooming_percent}}%</md-button>
-		<md-button @click="zoom_in"><md-icon>zoom_in</md-icon></md-button>
+		<md-button :id="idConfig.zoomOut" @click="zoom_out"><md-icon>zoom_out</md-icon></md-button>
+	
+		<md-button :id="idConfig.zoomIn"><md-icon>zoom_in</md-icon></md-button>
 		</div>
 	</hide-at>
 	<md-button @click="fullscreen_toggle"><md-icon>fullscreen</md-icon></md-button>
@@ -78,11 +73,13 @@ import VuePdfApp from "vue-pdf-app";
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,storage,firestore} from "@/firebase";
 import { getStorage, ref, listAll,get, getDownloadURL } from "firebase/storage";
+import { saveAs } from 'file-saver';
 import InnerImageZoom from 'vue-inner-image-zoom';
 import 'vue-inner-image-zoom/lib/vue-inner-image-zoom.css';
 import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
 import {getDoc,doc, getDocFromCache} from "firebase/firestore";
 import loading from "@/components/parts/loading";
+import axios from "axios";
 import {showAt, hideAt} from 'vue-breakpoints';
 import logo from "@/assets/logo";
 
@@ -105,10 +102,14 @@ import logo from "@/assets/logo";
 				book:{},
 				mpagechooser :false,
 				dataReady:false,
+				config:{toolbar: false},
+				idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId" },
+				pdf_file:"",
 				image:"",
 				book_id:"",
 				zoom_scale:1,
-				pdf_file:"",
+				
+				pdfblob:null,
 				fullscreen:false,
 				zooming:0,
 				page:1,
@@ -155,9 +156,10 @@ import logo from "@/assets/logo";
 			this.promotion=get_under.data().promotion;
 			if(!(this.member||this.admin||this.promotion)) this.back_to_home();
 
-			 let image_ref = ref(storage, `/books/${this.book_id}/pages/${this.page}.jpg`);
-			 this.image= await getDownloadURL(image_ref);
-
+			
+			 let pdf_ref = ref(storage, `/books/${this.book_id}/book.pdf`);
+			 this.pdf_file= await getDownloadURL(pdf_ref);
+			 
 			 //this.$emit('fullscreen',true);
 			 let book_ref;
 			 try{
@@ -191,14 +193,7 @@ import logo from "@/assets/logo";
 		methods: {
 			async add_page_to_load(lo)
 			{
-				let prev= ref(storage, `/books/${this.book_id}/pages/${lo}.jpg`);
-				let l={
-						id:lo,
-						url: await getDownloadURL(prev)
-					};
-				if ( !this.image_pre.includes(l)) {
-    				this.image_pre.push(l); 
-				}
+				
 			},
 			next_page()
 			{

@@ -268,7 +268,7 @@ export default {
       }  
 
 
-      const firststorageRef = ref(storage,`newspapers/${this.$route.params.bid}/chapters/${this.chapter_id}/newspaper.pdf`);
+      const firststorageRef = ref(storage,`newspapers/${this.$route.params.bid}/chapters/${this.chapter_id}/book.pdf`);
       const metadata = {contentType: 'application/pdf'};
       this.dataReady=false;
       let uploadTask = await uploadBytes(firststorageRef, this.pdf_file, metadata);

@@ -46,11 +46,7 @@
                 </div>
             </md-table-toolbar>
 
-            <md-table-empty-state
-                :md-label="gt('newspaper_cant_found')"
-               >
-              
-            </md-table-empty-state>
+            <md-table-empty-state :md-label="gt('newspaper_cant_found')"></md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                
@@ -241,8 +237,7 @@ import flag from "@/components/parts/flag";
 <style lang="scss" >
 	.newspaper_cover{
 		width: 350px;
-		height: 494px;
-		aspect-ratio: auto 350/494;
+		
 	}
 	.big_container
 	{

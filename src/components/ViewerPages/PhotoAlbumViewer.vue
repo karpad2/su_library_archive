@@ -27,13 +27,7 @@
 	</div>
 </md-toolbar> 
 <div class="section">
-	<hide-at breakpoint="small">
-	<inner-image-zoom  :width="1280*zoom_scale+'px'" :src="image" class="img" :zoomScale="zoom_scale" :alt="page"/>
-	</hide-at>
-	<hide-at breakpoint="mediumAndAbove">
-		<img draggable="false" :src="image" class="img" />
-	</hide-at>
-	<link rel="preload" as="image" :href="preimage.url" v-for="preimage in image_pre" :key="preimage.id"/>
+	<vue-pdf-app :config="config"  :id-config="idConfig" style="height: 100vh;" :page-number="page" :pdf="pdf_file" ></vue-pdf-app>
 </div>
 <md-toolbar class="md-primary">
 	<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
@@ -73,6 +67,7 @@ import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,storage,firestore} from "@/firebase";
 import { getStorage, ref, listAll,get, getDownloadURL } from "firebase/storage";
 import InnerImageZoom from 'vue-inner-image-zoom';
+import VuePdfApp from "vue-pdf-app";
 import 'vue-inner-image-zoom/lib/vue-inner-image-zoom.css';
 import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
 import {getDoc,doc, getDocFromCache} from "firebase/firestore";
@@ -82,7 +77,7 @@ import logo from "@/assets/logo";
 
 	export default {
 		components: {
-		'inner-image-zoom': InnerImageZoom,
+		VuePdfApp,
 		 hideAt,
 		loading
 		},
@@ -99,6 +94,9 @@ import logo from "@/assets/logo";
 				mpagechooser :false,
 				dataReady:false,
 				image:"",
+				config:{toolbar: false},
+				idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId" },
+				pdf_file:"",
 				photoalbum_id:"",
 				zoom_scale:1,
 				fullscreen:false,
@@ -147,8 +145,8 @@ import logo from "@/assets/logo";
 			this.promotion=get_under.data().promotion;
 		if(!this.member||!this.admin||!this.promotion) this.back_to_home();
 
-			 let image_ref = ref(storage, `/photoalbums/${this.photoalbum_id}/photos/${this.page}.jpg`);
-			 this.image= await getDownloadURL(image_ref);
+			 let image_ref = ref(storage, `/photoalbums/${this.photoalbum_id}/photos/book.pdf`);
+			 this.pdf_file= await getDownloadURL(image_ref);
 
 			 //this.$emit('fullscreen',true);
 			 let photoalbum_ref;

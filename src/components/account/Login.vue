@@ -16,6 +16,8 @@
 		<md-button class="md-raised md-primary" @click="login">{{gt("login")}}</md-button>
 		
 		<md-button class="md-raised md-primary" @click="registerbutton">{{gt("register")}}</md-button>
+		<md-button class="md-raised md-primary" v-if="inlibrary" @click="libraryloginbutton">{{gt("libraryuser")}}</md-button>
+		
 		</div>
 		<md-field>
 			<p>{{gt("login_with_google")}}</p>
@@ -31,6 +33,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 	import {FirebaseAuth,firestore} from "@/firebase";
 	import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
 	import glogo from "@/assets/glogo";
+	import axios from "axios";
 	import firebaseCredentials from '../../firebase/credentials';
 	import {get_text,title_page} from "@/languages";
 	import { collection, doc, setDoc, query, where, getDocs,getDoc  } from "firebase/firestore";
@@ -48,6 +51,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				email: "",
 				password: "",
 				errorMessage: "",
+				inlibrary:false,
 				enable_public_login:true
 			}
 		},
@@ -72,7 +76,10 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName,email:user.email,phone:user.phoneNumber},{merge:true});
 				
 				}); // User already logged
-			});}
+			});
+			
+			this.checkin();
+			}
 		},
 		methods: {
 			login: function () {
@@ -97,6 +104,23 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 			gt(a)
 			{
 				return get_text(a);
+			},
+			libraryloginbutton()
+			{
+				this.email=firebaseCredentials.public_profile.u;
+				this.password=firebaseCredentials.public_profile.p;
+				this.login();
+			},
+			async checkin()
+			{
+				axios.get("https://api.ipify.org?format=json")
+				.then(resp => {
+					if(resp.data.ip==firebaseCredentials.public_profile.ip)
+					{
+						this.inlibrary=true;
+					}
+        		//console.log(resp.data);
+    			})
 			},
 			registerbutton()
 			{
