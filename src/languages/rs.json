@@ -151,5 +151,7 @@
         "photo_cant_found":"Fotografija se ne može pronaći",
         "add_new_photo":"Dodavanje fotografije",
         "photo_name":"Naziv fotografije",
-        "notes":"Note"   
+        "notes":"Note",
+        "search_for_notes":"",
+        "navigation":"Navigacija"   
 }
