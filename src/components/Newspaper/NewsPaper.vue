@@ -4,13 +4,13 @@
 <md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title"> <h1>{{newspaper.newspaper_name}}</h1></div>
+          <div class="md-title"> <h1>{{newspaper.name}}</h1></div>
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
 				<div class="newspaper-container">
 				<div class="newspaperavatar">
-				<img  draggable="false" @click="enter_read(1)" class="newspaper_cover" alt="newspaper_cover" :src="newspaper_thumbnail" />
+				<img  draggable="false"  class="newspaper_cover" alt="newspaper_cover" :src="newspaper_thumbnail" />
 				</div>
 		<div class="newspaper-info">
 			<p> {{gt("publisher")}}: <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>
@@ -29,6 +29,7 @@
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
+			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt("edit_newspaper")}}</md-button>
 			</div>	
 		</div>
 		
@@ -52,7 +53,7 @@
                
                 <md-table-cell :md-label="gt('newspapername')" md-sort-by="newspapername">{{ item.data.chapter_name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publishing_date }}</md-table-cell>
-                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/newspaper/${newspaper_id}/${gy(newspaper.newspaper_name)}/chapter/${item.id}/page/1`)">{{gt("readchapter")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/newspaper/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}/page/1`)">{{gt("readchapter")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
 	</md-card>
@@ -82,6 +83,7 @@ import flag from "@/components/parts/flag";
 		name: 'newspaper',
 		data: () => ({
 			newspaper:{},
+			profile:"newspaper",
 			dataReady: false,
 			signed_in:false,
 			newspaper_thumbnail:"",
@@ -126,7 +128,7 @@ import flag from "@/components/parts/flag";
 					this.chapters.push({data:as.data(),id:as.id});
 					});
 
-			this.generated_keywords+=`${this.newspaper.newspaper_name},${this.newspaper.author_name},`;
+			this.generated_keywords+=`${this.newspaper.name},${this.newspaper.author},`;
 			this.newspaper.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;
@@ -173,7 +175,7 @@ import flag from "@/components/parts/flag";
 				//
 			}
 			if(this.newspaper.hided) this.$router.push("/home");
-			this.title_side=title_page(this.newspaper.newspaper_name);
+			this.title_side=title_page(this.newspaper.name);
 			if(this.signed_in)
 				{
 				let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
@@ -223,12 +225,16 @@ import flag from "@/components/parts/flag";
 			},
 			enter_read(i)
 			{
-				this.$router.push(`/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.newspaper_name)}/page/${i}`);
+				this.$router.push(`/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.name)}/page/${i}`);
 			},
 			keyword_link(i)
 			{
 				this.$router.push(`/newspapers/search/${i}`);
-			}
+			},
+			movetoadmin()
+			{
+				this.$router.push(`/admin/newspaper/${this.newspaper_id}`);
+			},
 		}
 	}
 	

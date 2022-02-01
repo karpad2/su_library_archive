@@ -13,7 +13,7 @@
 				<img  @click="enter_read(1)" class="note_cover" alt="note_cover" :src="note_thumbnail" />
 				</div>
 		<div class="note-info">
-			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(note.author_name)" md-static>{{note.author_name}}</md-chip></p>
+			<p> {{gt("author")}}: <md-chip @click="keyword_link(note.author)" md-static>{{note.author}}</md-chip></p>
 			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in note.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
 		{{gt("information")}}:
@@ -103,7 +103,7 @@ import flag from "@/components/parts/flag";
         }
 			this.note=note_ref.data();
 			
-			this.generated_keywords+=`${this.note.note_name},${this.note.author_name},`;
+			this.generated_keywords+=`${this.note.note_name},${this.note.author},`;
 			this.note.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;

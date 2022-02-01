@@ -1,19 +1,20 @@
 <template>
 
-<md-card >
+<md-card style="height:320px" >
   <div v-if="dataReady">
-      <md-card-media-cover md-solid>
+      <md-card-media-cover style="height:320px" md-solid>
         <md-card-media @click="open_book" md-ratio="1:1">
-          <img draggable="false" v-if="imageload" class="cover" v-lazy="book_cover" alt="thumb_book_cover">
+           <img ref="bookcover" draggable="false" v-if="imageload" class="cover" v-lazy="book_cover" alt="thumb_book_cover">
           <loading v-else/>
+          
         </md-card-media>
 
         <md-card-area>
           <md-card-header>
-            <router-link  :to="get_link()"> <span  class="md-title">{{book.book_name}}</span> </router-link>
+            <router-link  :to="get_link()"> <span  class="md-title">{{book.name}}</span> </router-link>
             
             
-            <span @click="open_book" class="md-subhead">{{book.author_name}}</span>
+            <span @click="open_book" class="md-subhead">{{book.author}}</span>
           </md-card-header>
 
           <md-card-actions>
@@ -29,6 +30,8 @@
           </md-card-actions>
         </md-card-area>
       </md-card-media-cover>
+        <div v-if="!pdf_hide">
+			</div>
     </div>
     <div v-else>
       <md-card-media-cover md-solid>
@@ -38,6 +41,7 @@
       </md-card-media-cover>
       <ShareNetwork v-if="sharepopup" :popup="{width: 400, height: 200}" />
     </div>
+
   </md-card>
     
 </template>
@@ -55,6 +59,7 @@
     //padding:0 0 0% 10%;
 
   }
+  
 </style>
 
 <script>
@@ -64,6 +69,7 @@ import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,updateDoc,arrayUnion,arrayRemove } from "firebase/firestore";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import loading from "@/components/parts/loading";
+import VuePdfApp from "vue-pdf-app";
 import flag from "@/components/parts/flag";
 export default {
   name: 'MediaCover',
@@ -75,10 +81,16 @@ export default {
           imageload:false,
           book:{},
           user:{},
+          bck_image:"",
+          jpg_file:"",
+          pdf_hide:false,
           is_favorite:false,
           signedin:false,
           sharepopup:false,
-          book_cover:""
+          book_cover:"",
+          config:{toolbar: false},
+				  idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId" },
+				  pdf_file:"",
       }
   },
   components:{
@@ -89,9 +101,6 @@ export default {
   {
     let bookref=await getDoc(doc(firestore,"books",this.book_id));
     this.book=bookref.data();
-
-
-    this.image_loading();
     //console.log(this.book_cover);
     this.signedin= !(getAuth().currentUser==null);
     if(this.signedin)
@@ -103,6 +112,8 @@ export default {
     }
     this.is_favorite=this.user.favorites.includes(this.book_id);
     }
+    let ref_img_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
+		this.jpg_file= await getDownloadURL(ref_img_storage);
     this.dataReady=true;
   },
   methods:
@@ -125,12 +136,7 @@ export default {
 				
 			}
       },
-      async image_loading()
-      {
-        let ref_thumbnail=ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
-    this.book_cover=await getDownloadURL(ref_thumbnail);
-    this.imageload=true;
-      },
+      
 
     open_book()
     {
@@ -138,11 +144,11 @@ export default {
 
       if(this.signedin())
       {
-        l=`/book/${this.book_id}/${replace_white(this.book.book_name)}`;
+        l=`/book/${this.book_id}/${replace_white(this.book.name)}`;
       }
       else
       {
-        l=`/public/book/${this.book_id}/${replace_white(this.book.book_name)}`;
+        l=`/public/book/${this.book_id}/${replace_white(this.book.name)}`;
       }
       this.$router.push(l);
 
@@ -157,14 +163,15 @@ export default {
 
       if(this.signedin)
       {
-        l=`/book/${this.book_id}/${replace_white(this.book.book_name)}`;
+        l=`/book/${this.book_id}/${replace_white(this.book.name)}`;
       }
       else
       {
-        l=`/public/book/${this.book_id}/${replace_white(this.book.book_name)}`;
+        l=`/public/book/${this.book_id}/${replace_white(this.book.name)}`;
       }
     return l;
-    }
+    },
+   
 
   },
   computed:{

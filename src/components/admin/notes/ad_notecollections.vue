@@ -101,7 +101,7 @@ export default {
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
 				});
-				 q=query(collection(firestore,"notes"),where("author_name","<=",this.searching_text),where("author_name",">=",this.searching_text),limit(10));
+				 q=query(collection(firestore,"notes"),where("author","<=",this.searching_text),where("author",">=",this.searching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});

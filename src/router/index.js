@@ -12,35 +12,22 @@ import AccountRegister from "../components/account/Register";
 import Admin_Dashboard from "../components/admin/ad_dashboard";
 import AdminUsers from "../components/admin/users/ad_users";
 import AdminUser from "../components/admin/users/ad_user";
-import AdminBlogs from "../components/admin/blogs/ad_blogs";
-import AdminBlog from "../components/admin/blogs/ad_blog";
-import AdminNewspaper from "../components/admin/newspapers/ad_newspaper";
-import AdminChapter from "../components/admin/newspapers/ad_chapter";
-import AdminNewspapers from "../components/admin/newspapers/ad_newspapers";
-import AdminBooks from "../components/admin/books/ad_books";
-import AdminBook from "../components/admin/books/ad_book";
-import AdminPhoto from "../components/admin/photoalbum/ad_photo";
-import AdminPhotoalbum from "../components/admin/photoalbum/ad_photoalbum";
-import AdminPhotoalbums from "../components/admin/photoalbum/ad_photoalbums";
-import AdminNote from "../components/admin/notes/ad_note";
-import AdminNoteCollection from "../components/admin/notes/ad_notecollection";
-import AdminNoteCollections from "../components/admin/notes/ad_notecollections";
+
 import Home from "../components/Home";
 import PublicIndex from "../components/Index";
 import Search from "../components/Search";
-import Books from "../components/Books/Books";
-import Book from "../components/Books/Book";
-import NewsPapers from "../components/Newspaper/NewsPapers";
-import NewsPaper from "../components/Newspaper/NewsPaper";
-import PhotoAlbums from "../components/PhotoAlbum/PhotoAlbums";
-import PhotoAlbum from "../components/PhotoAlbum/PhotoAlbum";
-import Notes from "../components/Notes/Notes";
-import Note from "../components/Notes/Note";
-import BookPage from "../components/ViewerPages/BookPage";
-import PhotoAlbumViewer from "../components/ViewerPages/PhotoAlbumViewer";
-import NoteViewer from "../components/ViewerPages/NoteViewer";
-import ChapterPage from "../components/ViewerPages/ChapterPage";
-import Blog from "../components/blog/Blog";
+
+
+import template_views from "../components/template/template_views";
+import template_view from "../components/template/template_view";
+import template_chapter from "../components/template/template_chapter";
+import template_chapter_page from "../components/template/template_chapterpage";
+
+import AdminContents from "../components/admin/content/ad_contents";
+import AdminContent from "../components/admin/content/ad_content";
+import AdminContentChapter from "../components/admin/content/ad_chapter_content";
+
+
 import Favorites from "../components/Favorites";
 import User from "../components/account/User";
 
@@ -66,43 +53,7 @@ const router = new VueRouter ({
 			name: 'homewithoutloginned',
 			component: Home
 		},
-		{
-			path: 'books',
-			name: 'bookswithoutlogin',
-			component: Books
-		},
-		{
-			path: 'books/:bmode/:bsearch',
-			name: 'bookswithoutlogin',
-			component: Books
-		},
 		
-		{
-			path: 'book/:bid/:bname',
-			name: 'bookwithoutlogin',
-			component: Book
-		},
-		{
-			path: 'newspapers',
-			name: 'newspaperswithoutlogin',
-			component: NewsPapers
-		},
-		{
-			path: 'newspapers/:bmode/:bsearch',
-			name: 'newspaperswithoutlogin',
-			component: NewsPapers
-		},
-		{
-			path: 'newspaper/:nid/:nname',
-			name: 'newspaperwithoutlogin',
-			component: NewsPaper
-		},
-		
-		{
-			path: 'photoalbums',
-			name: 'photoalbumswithoutlogin',
-			component: PhotoAlbums
-		},
 		{
 			path: 'search',
 			name: 'Searchwithoutlogin',
@@ -113,36 +64,7 @@ const router = new VueRouter ({
 			name: 'Search_aa_withoutlogin',
 			component: Search
 		},
-		{
-			path: 'photoalbums/:bmode/:bsearch',
-			name: 'photoalbumswithoutlogin',
-			component: PhotoAlbums
-		},
-		{
-			path: 'photoalbum/:pid/:pname',
-			name: 'photoalbumwithoutlogin',
-			component: PhotoAlbum
-		},
-		{
-			path: 'photoalbum/:pid/:pname/:photo_page',
-			name: 'photoalbumwithoutviewerlogin',
-			component: PhotoAlbumViewer
-		},
-		{
-			path: 'notes',
-			name: 'notealbumswithoutlogin_index',
-			component: Notes
-		},
-		{
-			path: 'notes/:bmode/:bsearch',
-			name: 'notealbumswithoutlogin_search',
-			component: Notes
-		},
-		{
-			path: 'note/:pid/:pname',
-			name: 'notealbumwithoutlogin',
-			component: Note
-		},
+		
 		{
 			path: 'support',
 			name: 'support_public',
@@ -181,98 +103,34 @@ const router = new VueRouter ({
 					name: 'Search_aa_withoutlogin',
 					component: Search
 				},
+			
 				{
-					path: 'books',
-					name: 'bookssearch',
-					component: Books,
-					meta: {requiresAuth: false}
+					path: 'views/:viewtype',
+					name: 'viewswithoutlogin',
+					component: template_views
 				},
 				{
-					path: 'notes',
-					name: 'notealbums_index',
-					component: Notes
-				},
-				{
-					path: 'notes/:bmode/:bsearch',
-					name: 'notealbums_search',
-					component: Notes
-				},
-				{
-					path: 'note/:pid/:pname',
-					name: 'notealbumwithoutlogin',
-					component: Note
-				},
-				{
-					path: 'books/:bmode/:bsearch',
-					name: 'bookssearch',
-					component: Books,
-					meta: {requiresAuth: false}
-				},
-				{
-					path: 'book/:bid/:bname',
-					name: 'book',
-					component: Book,
-					meta: {requiresAuth: false}
-				},
-				{
-					path: 'book/:bid/:bname/page/:pid',
-					name: 'bookpage',
-					component: BookPage,
-					
-				},
-				{
-					path: 'blog/:bid/:bname',
-					name: 'blog',
-					component: Blog,
-					
+					path: 'view/:viewtype/:nid/:nname',
+					name: 'viewwithoutlogin',
+					component: template_view
 				},
 				
 				{
-					path: 'newspapers',
-					name: 'newspaperswithoutlogin',
-					component: NewsPapers
+					path: 'view/:viewtype/:bmode/:psearch',
+					name: 'viewwithoutlogin',
+					component: template_view
 				},
 				{
-					path: 'newspapers/:bmode/:nsearch',
-					name: 'newspaperswithoutlogin',
-					component: NewsPapers
+					path: 'view/:viewtype/:nid/:nname/chapter/:cid',
+					name: 'chapterviewwithoutlogin',
+					component: template_chapter
 				},
 				{
-					path: 'newspaper/:nid/:nname',
-					name: 'newspaperwithoutlogin',
-					component: NewsPaper
+					path: 'view/:viewtype/:nid/:nname/chapter/:cid/page/:pid',
+					name: 'templatepageviewerwithoutlogin',
+					component: template_chapter_page
 				},
 				
-				{
-					path: 'newspaper/:nid/:nname/chapter/:cid/page/:pid',
-					name: 'newspaperwithoutlogin',
-					component: ChapterPage
-				},
-				{
-					path: 'note/:nid/:nname/sheet/:cid/page/:pid',
-					name: 'notepaperwithoutlogin',
-					component: NoteViewer
-				},
-				{
-					path: 'photoalbums',
-					name: 'photoalbumswithoutlogin',
-					component: PhotoAlbums
-				},
-				{
-					path: 'photoalbums/:bmode/:psearch',
-					name: 'photoalbumswithoutlogin',
-					component: PhotoAlbums
-				},
-				{
-					path: 'photoalbum/:pid/:pname',
-					name: 'photoalbumwithoutlogin',
-					component: PhotoAlbum
-				},
-				{
-					path: 'photoalbum/:pid/:pname/:pid',
-					name: 'photoalbumwithoutlogin',
-					component: PhotoAlbumViewer
-				},
 				{
 					path: 'support',
 					name: 'support',
@@ -293,85 +151,28 @@ const router = new VueRouter ({
 					name: 'admin-user',
 					component: AdminUser,
 				},
+			
+
 				{
-					path: 'admin/books',
-					name: 'admin-books',
-					component: AdminBooks,
-				},
-				{
-					path: 'admin/book/:bid',
-					name: 'admin-book',
-					component: AdminBook,
+					path: 'admin/content/:viewtype',
+					name: 'admin-contents',
+					component: AdminContents,
 					
 				},
 				{
-					path: 'admin/photoalbums',
-					name: 'admin-photoalbums',
-					component: AdminPhotoalbums,
-				},
-				{
-					path: 'admin/photoalbum/:bid',
-					name: 'admin-photoalbum-viewer',
-					component: AdminPhotoalbum,
+					path: 'admin/content/:viewtype/:bid',
+					name: 'admin-content',
+					component: AdminContent,
 					
 				},
 				{
-					path: 'admin/photoalbum/:bid/photo/:pid',
-					name: 'admin-photoalbum-viewer',
-					component: AdminPhoto,
+					path: 'admin/content/:viewtype/:bid/chapter/:cid',
+					name: 'admin-content-chapter',
+					component: AdminContentChapter,
 					
 				},
-				{
-					path: 'admin/notes',
-					name: 'admin-notes',
-					component: AdminNoteCollections,
-				},
-				{
-					path: 'admin/note/:bid',
-					name: 'admin-note-viewer',
-					component: AdminNoteCollection,
-					
-				},
-				{
-					path: 'admin/notes/:bid/sheet/:pid',
-					name: 'admin-note-viewer',
-					component: AdminNote,	
-				},
+
 				
-				{
-					path: 'admin/newspapers',
-					name: 'admin-newspapers',
-					component: AdminNewspapers,
-					
-				},
-				{
-					path: 'admin/newspaper/:bid',
-					name: 'admin-newspaper',
-					component: AdminNewspaper,
-					
-				},
-				{
-					path: 'admin/newspaper/:bid/chapter/:cid',
-					name: 'admin-chapter',
-					component: AdminChapter,
-					
-				},
-				
-				{
-					path: 'admin/blogs',
-					name: 'admin-blogs',
-					component: AdminBlogs,
-				},
-				{
-					path: 'admin/dashboard',
-					name: 'admin-dashboard',
-					component: Admin_Dashboard,
-				},
-				{
-					path: 'admin/blog/:bid',
-					name: 'admin-blog',
-					component: AdminBlog,
-				},
 				{
 					path: 'admin',
 					name: 'admin-info',

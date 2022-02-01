@@ -7,8 +7,8 @@
     </md-card-header>
      <md-card-content>
     <md-field>
-      <label>{{gt('book_name')}}</label>
-      <md-input @change="change" v-model="book.book_name" md-counter="100"></md-input>
+      <label>{{gt('name')}}</label>
+      <md-input @change="change" v-model="book.name" md-counter="100"></md-input>
     </md-field>
       <md-field>
         <b-form-select @change="change" v-model="book.language" :options="languages"></b-form-select>   <flag :flag="book.language"/>  
@@ -67,8 +67,8 @@ export default {
     data(){
     return{
       book:{
-        book_name:"",
-        author_name:"",
+        name:"",
+        author:"",
         keywords:[],
         page:"",
         
@@ -83,9 +83,9 @@ export default {
         keywords:[],
         book_cover:null,
         description:"",
-        book_name:"",
+        name:"",
         first_page_as_cover:false,
-        author_name:"",
+        author:"",
         language_chooser:"",
         pdf_file:null,
         pages:[],
@@ -150,8 +150,8 @@ export default {
     },
     async change()
     {
-      this.keyword_finder(this.book.author_name);
-      this.keyword_finder(this.book.book_name);
+      this.keyword_finder(this.book.author);
+      this.keyword_finder(this.book.name);
       
       this.book.uploading_date=new Date();
 

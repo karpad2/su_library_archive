@@ -4,28 +4,28 @@
 <md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title"></div>
+          <div class="md-title"> <h1>{{chapter.chapter_name}}</h1></div>
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-				<div class="manuscript-container">
-				<div class="manuscriptavatar">
-				<img  @click="enter_read(1)" class="manuscript_cover" alt="manuscript_cover" :src="manuscript_thumbnail" />
+				<div class="book-container">
+				<div class="bookavatar">
+				<img draggable="false"  @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
 				</div>
-		<div class="manuscript-info">
-			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(manuscript.author_name)" md-static>{{manuscript.author_name}}</md-chip></p>
-			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in manuscript.keywords" md-static>{{keyword}}</md-chip> </p>
+		<div class="book-info">
+			<p> {{gt("author")}}: <md-chip @click="keyword_link(book.author)" md-static>{{book.author}}</md-chip></p>
+			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
 		{{gt("information")}}:
-		<div v-html="manuscript.description">
+		<div v-html="book.description">
 			</div>
 			<div>
 			
-		<p>{{gt("upload_date")}}:{{manuscript.upload_date}}</p>
+		<p>{{gt("upload_date")}}:{{book.upload_date}}</p>
 		</div>
 		</div>
 		<div>
-			{{gt("page_number")}}: <md-chip>{{manuscript.page_number}}</md-chip>
+			{{gt("page_number")}}: <md-chip>{{book.page_number}}</md-chip>
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
@@ -41,6 +41,9 @@
 	</md-card>
 	<md-card v-if="(signed_in &&member||admin)||(signed_in&&promotion)">
 		 <md-card-content>
+			 
+
+			 
 		</md-card-content>	
 	</md-card>	
 	</div>
@@ -66,18 +69,18 @@ import flag from "@/components/parts/flag";
 		flag
 		},
 		
-		name: 'manuscript',
+		name: 'Book',
 		data: () => ({
-			manuscript:{},
+			book:{},
 			dataReady: false,
 			signed_in:false,
-			manuscript_thumbnail:"",
+			book_thumbnail:"",
 			admin:false,
 			member:false,
 			promotion:false,
 			is_favorite:false,
 			title_side:title_page(),
-			manuscript_id:"",
+			book_id:"",
 			generated_keywords:"",
 			user:{}
 			
@@ -89,26 +92,27 @@ import flag from "@/components/parts/flag";
 			}
 		},
 		async mounted() {
-			this.manuscript_id=this.$route.params.bid;
-			let manuscript_ref;
+			this.book_id=this.$route.params.bid;
+			let book_ref;
 
 			try{
-        manuscript_ref=await getDocFromCache(doc(firestore,"manuscripts",this.manuscript_id));
-        this.manuscript=manuscript_ref.data();
+        book_ref=await getDocFromCache(doc(firestore,"books",this.book_id));
+        this.book=book_ref.data();
         }
         catch(e)
         {
-           manuscript_ref=await getDoc(doc(firestore,"manuscripts",this.manuscript_id));
-           this.manuscript=manuscript_ref.data(); 
+           book_ref=await getDoc(doc(firestore,"books",this.book_id));
+           this.book=book_ref.data(); 
         }
-			this.manuscript=manuscript_ref.data();
+			this.book=book_ref.data();
 			
-			this.generated_keywords+=`${this.manuscript.manuscript_name},${this.manuscript.author_name},`;
-			this.manuscript.keywords.forEach(e=>
+
+			this.generated_keywords+=`${this.book.name},${this.book.author},`;
+			this.book.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;
 			});
-			setDoc(doc(firestore,"manuscripts",this.manuscript_id),{popularity:this.manuscript.popularity+1},{merge:true});
+			setDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
 			
 			if(this.signed_in)
@@ -141,10 +145,10 @@ import flag from "@/components/parts/flag";
         }
 			this.promotion=get_under.data().promotion;
 
-			let ref_storage =ref(storage,`/manuscripts/${this.manuscript_id}/thumbnail.jpg`);
-			this.manuscript_thumbnail= await getDownloadURL(ref_storage);
-			if(this.manuscript.hided) this.$router.push("/home");
-			this.title_side=title_page(this.manuscript.manuscript_name);
+			let ref_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
+			this.book_thumbnail= await getDownloadURL(ref_storage);
+			if(this.book.hided) this.$router.push("/home");
+			this.title_side=title_page(this.book.name);
 			if(this.signed_in)
 				{
 				let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
@@ -154,9 +158,9 @@ import flag from "@/components/parts/flag";
 				}
 				else
 				{
-					this.is_favorite=this.user.favorites.includes(this.manuscript_id);
+					this.is_favorite=this.user.favorites.includes(this.book_id);
 				}
-				//this.favorite=(this.user.favorites.indexOf(this.manuscript_id)>=0);
+				//this.favorite=(this.user.favorites.indexOf(this.book_id)>=0);
 				}
 
 			this.dataReady=true;
@@ -172,26 +176,26 @@ import flag from "@/components/parts/flag";
 			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
 			if(!this.signed_in) return;
 			if(this.is_favorite) {
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.manuscript_id)});
-			let fav= (await getDoc(doc(firestore,"manuscripts",this.manuscript_id))).data().favorites;
-			await updateDoc(doc(firestore,"manuscripts",this.manuscript_id),{favorites:this.manuscript.favorites+1},{merge:true}); 
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.book_id)});
+			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
+			await updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
 			}
 			else 
 			{
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.manuscript_id)});	
-			let fav= (await getDoc(doc(firestore,"manuscripts",this.manuscript_id))).data().favorites;
-			await updateDoc(doc(firestore,"manuscripts",this.manuscript_id),{favorites:this.manuscript.favorites-1},{merge:true}); 
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.book_id)});	
+			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
+			await updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites-1},{merge:true}); 
 				
 			}
 			
 			},
 			enter_read(i)
 			{
-				this.$router.push(`/manuscript/${this.manuscript_id}/${replace_white(this.manuscript.manuscript_name)}/page/${i}`);
+				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.name)}/page/${i}`);
 			},
 			keyword_link(i)
 			{
-				this.$router.push(`/manuscripts/search/${i}`);
+				this.$router.push(`/books/search/${i}`);
 			}
 		}
 	}
@@ -199,7 +203,7 @@ import flag from "@/components/parts/flag";
 </script>
 
 <style lang="scss" >
-	.manuscript_cover{
+	.book_cover{
 		width: 350px;
 		height: 494px;
 		aspect-ratio: auto 350/494;
@@ -211,23 +215,23 @@ import flag from "@/components/parts/flag";
 		vertical-align: top;
 	}
 		
-.manuscriptavatar{
+.bookavatar{
 	float: left;
     margin: 2 em;
 
 }
-.manuscriptavatar img{
+.bookavatar img{
 	width: 350px;
 	height:494px;
 	aspect-ratio: auto 350/494; 
     
 
 }
-.manuscript-info{
+.book-info{
 	float:left;
 	 margin: 50px;
 }
-.manuscript-container
+.book-container
 {
 	overflow: auto;
 	margin-bottom: 25px;

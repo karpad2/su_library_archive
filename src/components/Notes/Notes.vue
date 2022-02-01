@@ -6,6 +6,7 @@
 		<md-field>
 			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 		</md-field>
+		<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt("admin_notes")}}</md-button>
 		</md-card-header>
 
 		<md-card-content>
@@ -23,7 +24,7 @@
 import {signOut} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,getDocFromCache  } from "firebase/firestore";
 import { getStorage, ref, listAll,get } from "firebase/storage";
 import loading from "@/components/parts/loading";
 import notecard from "@/components/parts/notecard";
@@ -51,7 +52,10 @@ import logo from "@/assets/logo";
 			searchednotes:[],
 			userTheme: "default",
 			loading_screen:false,
-			dataReady:false
+			dataReady:false,
+			admin:false,
+			user:{}
+
 			
 		}),
 		async mounted() {
@@ -68,6 +72,19 @@ import logo from "@/assets/logo";
 				this.check_element_exist({id:element.id});
 				});
 			}
+			this.user=await FirebaseAuth.currentUser;
+			let k;
+			try{
+				k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+				
+				}
+				catch(e)
+				{
+				k=await getDoc(doc(firestore,"users",this.user.uid)); 
+				}
+
+
+			this.admin=(k.data().admin==null?false:k.data().admin);
 
 			this.dataReady=true;
 		},
@@ -82,7 +99,7 @@ import logo from "@/assets/logo";
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
 				});
-				 q=query(collection(firestore,"notes"),where("author_name","<=",this.seaching_text),where("author_name",">=",this.seaching_text),limit(10));
+				 q=query(collection(firestore,"notes"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
@@ -103,7 +120,11 @@ import logo from "@/assets/logo";
 				},
 			check_element_exist(b){
 			 if(!this.searchednotes.includes(b)) this.searchednotes.push(b);
-			 }
+			 },
+			   movetoadmin()
+			{
+				this.$router.push("/admin/notes");
+			},
 		},
 		computed:
 		{

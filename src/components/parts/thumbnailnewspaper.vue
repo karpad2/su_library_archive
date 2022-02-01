@@ -45,7 +45,7 @@ export default {
     methods:{
         enter_read()
 			{
-				return `/photoalbums/${this.photoalbum_id}/${replace_white(this.book.book_name)}/photo/${this.page}`;
+				return `/photoalbums/${this.photoalbum_id}/${replace_white(this.book.name)}/photo/${this.page}`;
 			}
     }
 }

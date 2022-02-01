@@ -11,7 +11,7 @@
         <md-card-area>
           <md-card-header>
             <router-link  :to="get_link()"> <span  class="md-title">{{note.note_name}}</span> </router-link>
-            <span @click="open_note" class="md-subhead">{{note.author_name}}</span>
+            <span @click="open_note" class="md-subhead">{{note.author}}</span>
           </md-card-header>
 
           <md-card-actions>

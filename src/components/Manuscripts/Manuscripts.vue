@@ -2,17 +2,18 @@
 	<div>
 	<md-card>	
 		<md-card-header>
-		{{gt("search_for_notes")}}
+		{{gt("search_for_"+profile+"s")}}
 		<md-field>
 			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 		</md-field>
+		<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt("admin_"+profile)}}</md-button>
 		</md-card-header>
 
 		<md-card-content>
 		 
 		
 		<div class="section">
-			<notecard v-for="note in searchednotes" :key="note.id" :note_id="note.id"/>
+			<manuscriptcard v-for="newspaper in searchednewspapers" :key="newspaper.id" :newspaper_id="newspaper.id"/>
 		</div>
 		</md-card-content>
 	</md-card>
@@ -23,10 +24,10 @@
 import {signOut} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,getDocFromCache  } from "firebase/firestore";
 import { getStorage, ref, listAll,get } from "firebase/storage";
 import loading from "@/components/parts/loading";
-import notecard from "@/components/parts/notecard";
+import manuscriptcard from "@/components/parts/manuscriptcard";
 
 import logo from "@/assets/logo";
 
@@ -34,24 +35,27 @@ import logo from "@/assets/logo";
 		
 	export default {
 		components: {
-		notecard
+		manuscriptcard
 
 		},
-		name: 'Notes',
+		name: "manuscript",
 		metaInfo:{
-			title:title_page("","notes"),
+			title:title_page("","manuscripts"),
 		},
 		
 		data: () => ({
+			profile:"manuscript",
 			profile_picture_url:"",
 			profile_name:"",
 			seaching_text:"",
 			showSidepanel:false,
 			menuVisible: false,
-			searchednotes:[],
+			searchednewspapers:[],
 			userTheme: "default",
 			loading_screen:false,
-			dataReady:false
+			dataReady:false,
+			user:{},
+			admin:false
 			
 		}),
 		async mounted() {
@@ -62,12 +66,25 @@ import logo from "@/assets/logo";
 			}
 			else 
 			{
-				let q=query(collection(firestore,"notes"),limit(10));
+				let q=query(collection(firestore,this.profile+"s"),limit(10));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
 				});
 			}
+			this.user=await FirebaseAuth.currentUser;
+			let k;
+			try{
+				k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+				
+				}
+				catch(e)
+				{
+				k=await getDoc(doc(firestore,"users",this.user.uid)); 
+				}
+
+
+			this.admin=(k.data().admin==null?false:k.data().admin);
 
 			this.dataReady=true;
 		},
@@ -75,20 +92,20 @@ import logo from "@/assets/logo";
 			async searching()
 			{
 				this.dataReady=false;
-				this.searchednotes=[];
+				this.searchednewspapers=[];
 				if(!(String(this.seaching_text).length>0)) return [];
-				let q=query(collection(firestore,"notes"),where("keywords","array-contains",[this.seaching_text]),limit(10));
+				let q=query(collection(firestore,this.profile+"s"),where("keywords","array-contains",[this.seaching_text]),limit(10));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
 				});
-				 q=query(collection(firestore,"notes"),where("author_name","<=",this.seaching_text),where("author_name",">=",this.seaching_text),limit(10));
+				 q=query(collection(firestore,this.profile+"s"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
 				});
 
-				q=query(collection(firestore,"notes"),where("note_name","<=",this.seaching_text),where("note_name",">=",this.seaching_text),limit(10));
+				q=query(collection(firestore,this.profile+"s"),where(this.profile+"_name","<=",this.seaching_text),where(this.profile+"_name",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
@@ -96,14 +113,18 @@ import logo from "@/assets/logo";
 
 				
 				this.dataReady=true;
-				console.log(this.searchednotes);
+				console.log(this.searchednewspapers);
 			},
 			gt(a){
 					return get_text(a);
 				},
 			check_element_exist(b){
-			 if(!this.searchednotes.includes(b)) this.searchednotes.push(b);
-			 }
+			 if(!this.searchednewspapers.includes(b)) this.searchednewspapers.push(b);
+			 },
+			  movetoadmin()
+			{
+				this.$router.push("/admin/"+this.profile+"s");
+			},
 		},
 		computed:
 		{

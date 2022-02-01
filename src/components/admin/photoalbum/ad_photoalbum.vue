@@ -82,7 +82,7 @@ export default {
     return{
       photoalbum:{
         photoalbum_name:"",
-        author_name:"",
+        author:"",
         keywords:[],
         page:"",
        
@@ -105,7 +105,7 @@ export default {
         description:"",
         photoalbum_name:"",
         first_page_as_cover:false,
-        author_name:"",
+        author:"",
         language_chooser:"",
         pdf_file:null,
         pages:[],
@@ -220,7 +220,7 @@ export default {
     },
     async changephoto()
     {
-      /*this.keyword_finder(this.photoalbum.author_name);
+      /*this.keyword_finder(this.photoalbum.author);
       this.keyword_finder(this.photoalbum.photoalbum_name);
       
       this.photoalbum.uploading_date=new Date();

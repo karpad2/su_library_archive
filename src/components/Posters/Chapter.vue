@@ -4,28 +4,28 @@
 <md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title"></div>
+          <div class="md-title"> <h1>{{chapter.chapter_name}}</h1></div>
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-				<div class="poster-container">
-				<div class="posteravatar">
-				<img  @click="enter_read(1)" class="poster_cover" alt="poster_cover" :src="poster_thumbnail" />
+				<div class="book-container">
+				<div class="bookavatar">
+				<img draggable="false"  @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
 				</div>
-		<div class="poster-info">
-			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(poster.author_name)" md-static>{{poster.author_name}}</md-chip></p>
-			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in poster.keywords" md-static>{{keyword}}</md-chip> </p>
+		<div class="book-info">
+			<p> {{gt("author")}}: <md-chip @click="keyword_link(book.author)" md-static>{{book.author}}</md-chip></p>
+			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
 		{{gt("information")}}:
-		<div v-html="poster.description">
+		<div v-html="book.description">
 			</div>
 			<div>
 			
-		<p>{{gt("upload_date")}}:{{poster.upload_date}}</p>
+		<p>{{gt("upload_date")}}:{{book.upload_date}}</p>
 		</div>
 		</div>
 		<div>
-			{{gt("page_number")}}: <md-chip>{{poster.page_number}}</md-chip>
+			{{gt("page_number")}}: <md-chip>{{book.page_number}}</md-chip>
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
@@ -41,6 +41,9 @@
 	</md-card>
 	<md-card v-if="(signed_in &&member||admin)||(signed_in&&promotion)">
 		 <md-card-content>
+			 
+
+			 
 		</md-card-content>	
 	</md-card>	
 	</div>
@@ -66,18 +69,18 @@ import flag from "@/components/parts/flag";
 		flag
 		},
 		
-		name: 'poster',
+		name: 'Book',
 		data: () => ({
-			poster:{},
+			book:{},
 			dataReady: false,
 			signed_in:false,
-			poster_thumbnail:"",
+			book_thumbnail:"",
 			admin:false,
 			member:false,
 			promotion:false,
 			is_favorite:false,
 			title_side:title_page(),
-			poster_id:"",
+			book_id:"",
 			generated_keywords:"",
 			user:{}
 			
@@ -89,26 +92,27 @@ import flag from "@/components/parts/flag";
 			}
 		},
 		async mounted() {
-			this.poster_id=this.$route.params.bid;
-			let poster_ref;
+			this.book_id=this.$route.params.bid;
+			let book_ref;
 
 			try{
-        poster_ref=await getDocFromCache(doc(firestore,"posters",this.poster_id));
-        this.poster=poster_ref.data();
+        book_ref=await getDocFromCache(doc(firestore,"books",this.book_id));
+        this.book=book_ref.data();
         }
         catch(e)
         {
-           poster_ref=await getDoc(doc(firestore,"posters",this.poster_id));
-           this.poster=poster_ref.data(); 
+           book_ref=await getDoc(doc(firestore,"books",this.book_id));
+           this.book=book_ref.data(); 
         }
-			this.poster=poster_ref.data();
+			this.book=book_ref.data();
 			
-			this.generated_keywords+=`${this.poster.poster_name},${this.poster.author_name},`;
-			this.poster.keywords.forEach(e=>
+
+			this.generated_keywords+=`${this.book.name},${this.book.author},`;
+			this.book.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;
 			});
-			setDoc(doc(firestore,"posters",this.poster_id),{popularity:this.poster.popularity+1},{merge:true});
+			setDoc(doc(firestore,"books",this.book_id),{popularity:this.book.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
 			
 			if(this.signed_in)
@@ -141,10 +145,10 @@ import flag from "@/components/parts/flag";
         }
 			this.promotion=get_under.data().promotion;
 
-			let ref_storage =ref(storage,`/posters/${this.poster_id}/thumbnail.jpg`);
-			this.poster_thumbnail= await getDownloadURL(ref_storage);
-			if(this.poster.hided) this.$router.push("/home");
-			this.title_side=title_page(this.poster.poster_name);
+			let ref_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
+			this.book_thumbnail= await getDownloadURL(ref_storage);
+			if(this.book.hided) this.$router.push("/home");
+			this.title_side=title_page(this.book.name);
 			if(this.signed_in)
 				{
 				let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
@@ -154,9 +158,9 @@ import flag from "@/components/parts/flag";
 				}
 				else
 				{
-					this.is_favorite=this.user.favorites.includes(this.poster_id);
+					this.is_favorite=this.user.favorites.includes(this.book_id);
 				}
-				//this.favorite=(this.user.favorites.indexOf(this.poster_id)>=0);
+				//this.favorite=(this.user.favorites.indexOf(this.book_id)>=0);
 				}
 
 			this.dataReady=true;
@@ -172,26 +176,26 @@ import flag from "@/components/parts/flag";
 			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
 			if(!this.signed_in) return;
 			if(this.is_favorite) {
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.poster_id)});
-			let fav= (await getDoc(doc(firestore,"posters",this.poster_id))).data().favorites;
-			await updateDoc(doc(firestore,"posters",this.poster_id),{favorites:this.poster.favorites+1},{merge:true}); 
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.book_id)});
+			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
+			await updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
 			}
 			else 
 			{
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.poster_id)});	
-			let fav= (await getDoc(doc(firestore,"posters",this.poster_id))).data().favorites;
-			await updateDoc(doc(firestore,"posters",this.poster_id),{favorites:this.poster.favorites-1},{merge:true}); 
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.book_id)});	
+			let fav= (await getDoc(doc(firestore,"books",this.book_id))).data().favorites;
+			await updateDoc(doc(firestore,"books",this.book_id),{favorites:this.book.favorites-1},{merge:true}); 
 				
 			}
 			
 			},
 			enter_read(i)
 			{
-				this.$router.push(`/poster/${this.poster_id}/${replace_white(this.poster.poster_name)}/page/${i}`);
+				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.name)}/page/${i}`);
 			},
 			keyword_link(i)
 			{
-				this.$router.push(`/posters/search/${i}`);
+				this.$router.push(`/books/search/${i}`);
 			}
 		}
 	}
@@ -199,7 +203,7 @@ import flag from "@/components/parts/flag";
 </script>
 
 <style lang="scss" >
-	.poster_cover{
+	.book_cover{
 		width: 350px;
 		height: 494px;
 		aspect-ratio: auto 350/494;
@@ -211,23 +215,23 @@ import flag from "@/components/parts/flag";
 		vertical-align: top;
 	}
 		
-.posteravatar{
+.bookavatar{
 	float: left;
     margin: 2 em;
 
 }
-.posteravatar img{
+.bookavatar img{
 	width: 350px;
 	height:494px;
 	aspect-ratio: auto 350/494; 
     
 
 }
-.poster-info{
+.book-info{
 	float:left;
 	 margin: 50px;
 }
-.poster-container
+.book-container
 {
 	overflow: auto;
 	margin-bottom: 25px;

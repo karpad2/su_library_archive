@@ -7,7 +7,7 @@
         <div v-if="serverside_finished">
           
     <b-form-file
-      v-model="book_pdf"
+      v-model="pdf_file"
       @change="upload_book"
       accept="application/pdf"
       :placeholder="gt('upload_book')"
@@ -20,12 +20,12 @@
       <md-step id="second" :md-label="gt('upload_book_info')" :md-done.sync="second">
 
         <md-field>
-            <label>{{gt('book_name')}}</label>
-            <md-input @change="change" v-model="book.book_name" md-counter="100"></md-input>
+            <label>{{gt('name')}}</label>
+            <md-input @change="change" v-model="book.name" md-counter="100"></md-input>
           </md-field>
           <md-field>
             <label>{{gt('book_author')}}</label>
-            <md-input @change="change" v-model="book.author_name" md-counter="100"></md-input>
+            <md-input @change="change" v-model="book.author" md-counter="100"></md-input>
           </md-field>
           <md-field>
             <label>{{gt('publisher')}}</label>
@@ -77,16 +77,20 @@
           </md-card-header>
           <md-card-content>
           <md-field>
-            <label>{{gt('book_name')}}</label>
-            <md-input @change="change" v-model="book.book_name" md-counter="100"></md-input>
+            <label>{{gt('name')}}</label>
+            <md-input @change="change" v-model="book.name" md-counter="100"></md-input>
           </md-field>
           <md-field>
             <label>{{gt('book_author')}}</label>
-            <md-input @change="change" v-model="book.author_name" md-counter="100"></md-input>
+            <md-input @change="change" v-model="book.author" md-counter="100"></md-input>
           </md-field>
           <md-field>
             <label>{{gt('publisher')}}</label>
             <md-input @change="change" v-model="book.publisher" md-counter="100"></md-input>
+          </md-field>
+          <md-field>
+            <label>{{gt('publishing_year')}}</label>
+            <md-input @change="change" v-model="book.year" md-counter="4"></md-input>
           </md-field>
         
             <md-field>
@@ -110,17 +114,24 @@
             <label></label>
             <md-switch  v-model="first_page_as_cover">{{gt('first_page_as_cover')}}</md-switch>
           </md-field>
-          
+          <img ref="bookcover" v-if="!first_page_as_cover" id="book_cover" draggable="false" class="book_cover"/>
 
           <md-field v-if="!first_page_as_cover">
             <label>{{gt("upload_book_cover")}}</label>
             <md-file md-change="upload_book_cover" v-model="book_cover" :placeholder="gt('upload_book_cover')" />
           </md-field>
 
-          <md-field>
-            <label>{{gt("upload_book")}}</label>
-            <md-file md-change="upload_book" v-model="book_pdf" :placeholder="gt('upload_book')" />
-          </md-field>
+         
+            
+
+             <b-form-file
+      v-model="book_pdf"
+      @change="upload_book"
+      :state="Boolean(book_pdf)"
+      :placeholder="gt('upload_book')"
+      :drop-placeholder="gt('upload_book')"
+    ></b-form-file>
+        
 
           <md-field>
             <label>{{gt('page_number')}}</label>
@@ -132,6 +143,9 @@
       </div>
 </md-card>
 <loading v-else />
+
+ <vue-pdf-app @pages-rendered="cucc" id="pdfreader" ref="pdfreader"  v-cloak :config="config"  :id-config="idConfig"  style="height:100vh;" :page-scale="page-actual" :pdf="pdf_file" ></vue-pdf-app>
+			
 </div>
 
 </template>
@@ -145,6 +159,7 @@ import loading from "@/components/parts/loading";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc } from "firebase/firestore";
 import flag from "@/components/parts/flag";
+import VuePdfApp from "vue-pdf-app";
 import { push } from '@firebase/database';
 
 export default {
@@ -152,8 +167,8 @@ export default {
     data(){
     return{
       book:{
-        book_name:"",
-        author_name:"",
+        name:"",
+        author:"",
         keywords:[],
         page:"",
         active:true,
@@ -168,10 +183,10 @@ export default {
         keywords:[],
         book_cover:null,
         description:"",
-        book_name:"",
+        name:"",
         serverside_finished:true,
-        first_page_as_cover:false,
-        author_name:"",
+        first_page_as_cover:true,
+        author:"",
         language_chooser:"",
         pdf_file:null,
         pages:[],
@@ -187,13 +202,18 @@ export default {
         file:null,
         first:"first",
         second:"second",
-        third:"third"
+        third:"third",
+			user:{},
+			 config:{toolbar: true},
+			idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId",numPages: "vuePdfAppNumPages",pageNumber: "vuePdfAppPageNumber" },
+			
     }
     },
     components:{
         quillEditor,
         loading,
-        flag
+        flag,
+        VuePdfApp
     },
     async mounted()
     {
@@ -228,7 +248,8 @@ export default {
       let book_refread=await getDoc(doc(firestore,"books",this.book_id));
       this.book=book_refread.data();
     }
-      
+     let ref_storage =ref(storage,`/books/${this.book_id}/book.pdf`);
+			this.pdf_file= await getDownloadURL(ref_storage);
       this.dataReady=true;
 
     },
@@ -243,7 +264,7 @@ export default {
     },
     open_book()
     {
-      this.$router.push(`/book/${this.book_id}/${this.book.book_name}`);
+      this.$router.push(`/book/${this.book_id}/${this.book.name}`);
     },
     async deletebook()
     {
@@ -253,8 +274,8 @@ export default {
 
     async change()
     {
-      this.keyword_finder(this.book.author_name);
-      this.keyword_finder(this.book.book_name);
+      this.keyword_finder(this.book.author);
+      this.keyword_finder(this.book.name);
 
        if(this.$route.params.bid=="new" && this.book_id==null)
       {
@@ -272,12 +293,18 @@ export default {
            
       
     },
+    cucc()
+    {
+
+    },
     async upload_book_cover()
     {
 
       const firststorageRef = ref(storage,`books/${this.book_id}/thumbnail.jpg`);
       const metadata = {contentType: 'image/jpeg'};
-      let uploadTask = await uploadBytes(firststorageRef, this.first_page, metadata);
+       uploadBytes(firststorageRef, this.first_page, metadata).then((snapshot)=>{
+         console.log("uploaded cover");
+       })
     },
 
     async upload_book()
@@ -297,7 +324,11 @@ export default {
       const firststorageRef = ref(storage,`books/${this.book_id}/book.pdf`);
       const metadata = {contentType: 'application/pdf'};
       this.dataReady=false;
-      let uploadTask = await uploadBytes(firststorageRef, this.pdf_file, metadata);
+      console.log(this.pdf_file);
+      let file = new File(this.pdf_file,"book.pdf");
+       await uploadBytes(firststorageRef,file, metadata).then((snapshot)=>{
+         console.log("uploaded cover");
+       })
       this.dataReady=true;
 
       /*setInterval( async ()=>{

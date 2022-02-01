@@ -2,9 +2,22 @@
 	<div>
 	<md-card>	
 		<md-card-header>
-		{{gt("search_for_books")}}
+		{{gt("search")}}
 		<md-field>
+			<label>{{gt("search_by_name")}}</label>
 			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
+		</md-field>
+		<md-field>
+			<label>{{gt("search_by_author")}}</label>
+			<md-input @change="searching" v-model="seaching_author" >{{gt("search_for_author")}}</md-input>
+		</md-field>
+		<md-field>
+			<label>{{gt("search_by_keywords")}}</label>
+			<md-input @change="searching" v-model="seaching_keywords" >{{gt("search_for_keywords")}}</md-input>
+		</md-field>
+		<md-field>
+			<label>{{gt("search_by_year")}}</label>
+			<md-input @change="searching" v-model="search_for_publising_year" >{{gt("search_for_publising_year")}}</md-input>
 		</md-field>
 		</md-card-header>
 		<md-card-content>
@@ -75,7 +88,7 @@ import logo from "@/assets/logo";
 		async mounted() {
 			if(this.$route.params.bsearch!=undefined)
 			{
-			this.seaching_text=this.$route.params.bsearch;
+			this.seaching_text=this.$router.params.bsearch;
 			await this.searching();
 			}
 			else 
@@ -100,7 +113,7 @@ import logo from "@/assets/logo";
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
 				});
-				 q=query(collection(firestore,"books"),where("author_name","<=",this.seaching_text),where("author_name",">=",this.seaching_text),limit(10));
+				 q=query(collection(firestore,"books"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
@@ -117,7 +130,7 @@ import logo from "@/assets/logo";
 				c.forEach(element => {
 				this.check_element_notes_exist({id:element.id});
 				});
-				 q=query(collection(firestore,"notes"),where("author_name","<=",this.seaching_text),where("author_name",">=",this.seaching_text),limit(10));
+				 q=query(collection(firestore,"notes"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_notes_exist({id:element.id});
@@ -141,7 +154,7 @@ import logo from "@/assets/logo";
 				c.forEach(element => {
 				this.check_element_photoalbums_exist({id:element.id});
 				});
-				 q=query(collection(firestore,"photoalbums"),where("author_name","<=",this.seaching_text),where("author_name",">=",this.seaching_text),limit(10));
+				 q=query(collection(firestore,"photoalbums"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_photoalbums_exist({id:element.id});
@@ -153,7 +166,7 @@ import logo from "@/assets/logo";
 				this.check_element_photoalbums_exist({id:element.id});
 				});
                 //newspapers
-				q=query(collection(firestore,"newspapers"),where("newspaper_name","<=",this.seaching_text),where("newspaper_name",">=",this.seaching_text),limit(10));
+				q=query(collection(firestore,"newspapers"),where("name","<=",this.seaching_text),where("name",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_newspapers_exist({id:element.id});
@@ -164,13 +177,13 @@ import logo from "@/assets/logo";
 				c.forEach(element => {
 				this.check_element_newspapers_exist({id:element.id});
 				});
-				 q=query(collection(firestore,"newspapers"),where("author_name","<=",this.seaching_text),where("author_name",">=",this.seaching_text),limit(10));
+				 q=query(collection(firestore,"newspapers"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_newspapers_exist({id:element.id});
 				});
 
-				q=query(collection(firestore,"newspapers"),where("newspaper_name","<=",this.seaching_text),where("newspaper_name",">=",this.seaching_text),limit(10));
+				q=query(collection(firestore,"newspapers"),where("name","<=",this.seaching_text),where("name",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_newspapers_exist({id:element.id});

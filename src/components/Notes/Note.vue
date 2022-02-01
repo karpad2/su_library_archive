@@ -130,7 +130,7 @@ import flag from "@/components/parts/flag";
 					this.sheets.push({data:as.data(),id:as.id});
 					});
 
-			this.generated_keywords+=`${this.note.note_name},${this.note.author_name},`;
+			this.generated_keywords+=`${this.note.note_name},${this.note.author},`;
 			this.note.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;

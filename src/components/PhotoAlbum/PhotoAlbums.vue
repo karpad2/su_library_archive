@@ -2,10 +2,11 @@
 	<div>
 	<md-card>	
 		<md-card-header>
-		{{gt("search_for_photoalbums")}}
+		{{gt(profile)+" "+gt("search_for")}}
 		<md-field>
 			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 		</md-field>
+		<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt("admin")+" "+gt(profile)}}</md-button>
 		</md-card-header>
 
 		<md-card-content>
@@ -20,7 +21,7 @@
 <script>
 import {signOut} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage,getDocFromCache} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
 import { getStorage, ref, listAll,get } from "firebase/storage";
 import loading from "@/components/parts/loading";
@@ -43,13 +44,16 @@ import logo from "@/assets/logo";
 		data: () => ({
 			profile_picture_url:"",
 			profile_name:"",
+			profile:"photoalbums",
 			seaching_text:"",
 			showSidepanel:false,
 			menuVisible: false,
 			searchedphotoalbums:[],
 			userTheme: "default",
 			loading_screen:false,
-			dataReady:false
+			dataReady:false,
+			user:{},
+			admin:false
 			
 		}),
 		async mounted() {
@@ -66,6 +70,19 @@ import logo from "@/assets/logo";
 				this.check_element_exist({id:element.id});
 				});
 			}
+			this.user=await FirebaseAuth.currentUser;
+			let k;
+			try{
+				k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+				
+				}
+				catch(e)
+				{
+				k=await getDoc(doc(firestore,"users",this.user.uid)); 
+				}
+
+
+			this.admin=(k.data().admin==null?false:k.data().admin);
 
 			this.dataReady=true;
 		},
@@ -87,7 +104,7 @@ import logo from "@/assets/logo";
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
 				});
-				 q=query(collection(firestore,"photoalbums"),where("author_name","<=",this.seaching_text),where("author_name",">=",this.seaching_text),limit(10));
+				 q=query(collection(firestore,"photoalbums"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
@@ -108,7 +125,11 @@ import logo from "@/assets/logo";
 				},
 			check_element_exist(b){
 			 if(!this.searchedphotoalbums.includes(b)) this.searchedphotoalbums.push(b);
-			 }
+			 },
+			 movetoadmin()
+			{
+				this.$router.push("/admin/photoalbums");
+			},
 		},
 		computed:
 		{

@@ -172,7 +172,7 @@ import logo from "@/assets/logo";
 
 			 this.book=book_ref.data();
 
-			 this.title_side=title_page(`${this.book.book_name} - ${this.gt("page")} ${this.page}`);
+			 this.title_side=title_page(`${this.book.name} - ${this.gt("page")} ${this.page}`);
 
 			
 
@@ -233,7 +233,7 @@ import logo from "@/assets/logo";
 
 			enter_read(i)
 			{
-				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.book_name)}/page/${i}`);
+				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.name)}/page/${i}`);
 			},
 			settings()
 			{

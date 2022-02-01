@@ -377,27 +377,45 @@ import firebaseui from 'firebaseui'
 					auth: true,
 				},
 				{
+					icon: 'search',
+					title: this.gt("Search"),
+					link: this.add_public('/search'),
+					auth: true,
+				},
+				{
 					icon: 'auto_stories',
 					title: this.gt("Books"),
-					link: this.add_public('/books'),
+					link: this.add_public('/views/books'),
 					auth: true,
 				},
 				{
 					icon: 'newspaper',
 					title: this.gt("newspapers"),
-					link: this.add_public('/newspapers'),
+					link: this.add_public('/views/newspapers'),
 					auth: true,
 				},
 				{
 					icon: 'photo_library',
 					title: this.gt("photoalbums"),
-					link: this.add_public('/photoalbums'),
+					link: this.add_public('/views/photoalbums'),
 					auth: true,
 				},
 				{
 					icon: 'library_music',
 					title: this.gt("notes"),
-					link: this.add_public('/notes'),
+					link: this.add_public('/views/notes'),
+					auth: true,
+				},
+				{
+					icon: 'ads_click',
+					title: this.gt("posters"),
+					link: this.add_public('/views/posters'),
+					auth: true,
+				},
+				{
+					icon: 'history_edu',
+					title: this.gt("manuscripts"),
+					link: this.add_public('/views/manuscripts'),
 					auth: true,
 				},
 		
@@ -415,53 +433,7 @@ import firebaseui from 'firebaseui'
 				
 					});
 				
-
-				this.menuTab.push({
-						
-					icon: 'library_add',
-					title: this.gt("admin_books"),
-					link: '/admin/books',
-					auth: true,
-					admin:true
 				
-					});	
-				this.menuTab.push({
-						
-					icon: 'feed',
-					title: this.gt("admin_newspaper"),
-					link: '/admin/newspapers',
-					auth: true,
-					admin:true
-				
-					});
-				this.menuTab.push({
-						
-					icon: 'add_to_photos',
-					title: this.gt("admin_photoalbums"),
-					link: '/admin/photoalbums',
-					auth: true,
-					admin:true
-				
-					});
-				this.menuTab.push({
-						
-					icon: 'art_track',
-					title: this.gt("admin_notes"),
-					link: '/admin/notes',
-					auth: true,
-					admin:true
-				
-					});
-			
-			this.menuTab.push({
-						
-					icon: 'art_track',
-					title: this.gt("admin_posters"),
-					link: '/admin/posters',
-					auth: true,
-					admin:true
-				
-					});
 			}
 			this.dataReady=true;
 		},

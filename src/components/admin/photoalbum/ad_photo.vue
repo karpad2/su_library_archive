@@ -62,7 +62,7 @@
           </md-field>
           <md-field>
             <label>{{gt('photo_author')}}</label>
-            <md-input @change="change" v-model="photo.author_name" md-counter="100"></md-input>
+            <md-input @change="change" v-model="photo.author" md-counter="100"></md-input>
           </md-field>
           
         
@@ -114,7 +114,7 @@ export default {
     return{
       photo:{
         photo_name:"",
-        author_name:"",
+        author:"",
         keywords:[],
         page:"",
         active:true,
@@ -132,7 +132,7 @@ export default {
         photo_name:"",
         serverside_finished:true,
         first_page_as_cover:false,
-        author_name:"",
+        author:"",
         language_chooser:"",
         pdf_file:null,
         pages:[],
@@ -211,7 +211,7 @@ export default {
 
     async change()
     {
-      this.keyword_finder(this.photo.author_name);
+      this.keyword_finder(this.photo.author);
       this.keyword_finder(this.photo.photo_name);
 
        if(this.$route.params.pid=="new" && this.photo_id==null)

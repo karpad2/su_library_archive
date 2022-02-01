@@ -55,7 +55,7 @@ export default {
     methods:{
         enter_read()
 			{
-				return `/book/${this.book_id}/${replace_white(this.book.book_name)}/page/${this.page}`;
+				return `/book/${this.book_id}/${replace_white(this.book.name)}/page/${this.page}`;
 			}
     }
 }

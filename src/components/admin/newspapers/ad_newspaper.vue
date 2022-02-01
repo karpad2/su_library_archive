@@ -4,12 +4,12 @@
     
       <div>
           <md-card-header>
-          <div class="md-title">{{gt('add_new_newspaper')}}</div>
+          <div class="md-title">{{gt('add_new_'+profile)}}</div>
           </md-card-header>
           <md-card-content>
           <md-field>
-            <label for="newspaper_name">{{gt('newspaper_name')}}</label>
-            <md-input id="newspaper_name" @change="change" v-model="newspaper.newspaper_name" md-counter="100"></md-input>
+            <label for="name">{{gt(profile+'_name')}}</label>
+            <md-input id="name" @change="change" v-model="newspaper.name" md-counter="100"></md-input>
           </md-field>
          
           <md-field>
@@ -47,8 +47,8 @@
         v-model="newspaper_cover"
         @change="upload_newspaper_cover"
         accept="image/jpeg"
-        :placeholder="gt('upload_newspaper_cover')"
-        :drop-placeholder="gt('upload_newspaper_cover')"></b-form-file>
+        :placeholder="gt('upload_'+profile+'_cover')"
+        :drop-placeholder="gt('upload_'+profile+'_cover')"></b-form-file>
 
         <md-table v-model="chapters" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
@@ -58,22 +58,22 @@
             </md-table-toolbar>
 
             <md-table-empty-state
-                :md-label="gt('newspaper_cant_found')"
+                :md-label="gt(profile+'_cant_found')"
                >
-                <md-button class="md-primary md-raised" @click="$router.push(`/admin/newspaper/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
+                <md-button class="md-primary md-raised" @click="$router.push(`/admin/${profile}/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
             </md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-                <md-table-cell :md-label="gt('newspapername')" md-sort-by="newspapername">{{ item.data.chapter_name }}</md-table-cell>
+                <md-table-cell :md-label="gt(profile+'name')" md-sort-by="newspapername">{{ item.data.chapter_name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publishing_date }}</md-table-cell>
-                <md-table-cell :md-label="gt('editnewspaper')" md-sort-by="editnewspaper"><md-button @click="$router.push(`/admin/newspaper/${newspaper_id}/chapter/${item.id}`)">{{gt("editchapter")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt('edit'+profile)" md-sort-by="editnewspaper"><md-button @click="$router.push(`/admin/${profile}/${newspaper_id}/chapter/${item.id}`)">{{gt("editchapter")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
-        <md-button class="md-primary md-raised" @click="$router.push(`/admin/newspaper/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
+        <md-button class="md-primary md-raised" @click="$router.push(`/admin/${profile}/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
             
 
-          <md-button class="md-raised md-primary" @click="delete_newspaper">{{gt("delete_newspaper")}}</md-button>
+          <md-button class="md-raised md-primary" @click="delete_newspaper">{{gt(`delete_${profile}`)}}</md-button>
           
           </md-card-content>   
       </div>
@@ -102,6 +102,7 @@ export default {
         flag
     },
      data:()=>({
+      profile:"newspaper", 
       newspaper:null,
       newspaper_id:null,
       newspaper_pdf:null,
@@ -110,7 +111,7 @@ export default {
       description:"",
       serverside_finished:true,
       first_page_as_cover:false,
-      author_name:"",
+      author:"",
       language_chooser:"",
       pdf_file:null,
       pages:[],
@@ -132,8 +133,8 @@ export default {
     async mounted()
     {
        this.newspaper={
-        newspaper_name:"",
-        author_name:"",
+        name:"",
+        author:"",
         keywords:[],
         chapters:[],
         page:"",
@@ -172,10 +173,10 @@ export default {
       {
         this.new_newspaper=false;
         this.newspaper_id=this.$route.params.bid;
-        let newspaper_refread=await getDoc(doc(firestore,"newspapers",this.newspaper_id));
+        let newspaper_refread=await getDoc(doc(firestore,this.profile+"s",this.newspaper_id));
         this.newspaper=newspaper_refread.data();
 
-        let chapters_refread=await getDocs(collection(firestore,`newspapers/${this.newspaper_id}/chapters`));
+        let chapters_refread=await getDocs(collection(firestore,`${this.profile}s/${this.newspaper_id}/chapters`));
         this.chapters=[];
         chapters_refread.forEach(as=>{
           this.chapters.push({data:as.data(),id:as.id});
@@ -196,30 +197,30 @@ export default {
     },
     open_newspaper()
     {
-      this.$router.push(`/newspaper/${this.newspaper_id}/${this.newspaper.newspaper_name}`);
+      this.$router.push(`/${this.profile}/${this.newspaper_id}/${this.newspaper.name}`);
     },
     async delete_newspaper()
     {
-       updateDoc(doc(firestore,"newspapers",this.newspaper_id),null);
+       updateDoc(doc(firestore,`${this.profile}`,this.newspaper_id),null);
        this.$router.go(-1); 
     },
 
     async change()
     {
-      this.keyword_finder(this.newspaper.newspaper_name);
+      this.keyword_finder(this.newspaper.name);
         this.flagready=false;
        if(this.$route.params.bid=="new" && this.newspaper_id==null)
       {
       
-      this.newspaper_ref=await addDoc(collection(firestore,"newspapers"),this.newspaper,{merge:true});
+      this.newspaper_ref=await addDoc(collection(firestore,`${this.profile}s`),this.newspaper,{merge:true});
       this.newspaper_id=this.newspaper_ref.id;
-      this.$router.push(`/admin/newspaper/${this.newspaper_id}`);
+      this.$router.push(`/admin/${this.profile}/${this.newspaper_id}`);
       }
       else
       {
         let l=new Date();
         this.newspaper.upload_date=`${l.getFullYear()}-${l.getMonth()}-${l.getUTCDay()}`;
-        this.newspaper_ref=setDoc(doc(firestore,"newspapers",this.newspaper_id),this.newspaper,{merge:true});
+        this.newspaper_ref=setDoc(doc(firestore,`${this.profile}s`,this.newspaper_id),this.newspaper,{merge:true});
       }
            this.flagready=true;
       
@@ -227,7 +228,7 @@ export default {
     async upload_newspaper_cover()
     {
 
-      const firststorageRef = ref(storage,`newspapers/${this.newspaper_id}/thumbnail.jpg`);
+      const firststorageRef = ref(storage,`${this.profile}s/${this.newspaper_id}/thumbnail.jpg`);
       
       let uploadTask = await uploadBytes(firststorageRef, this.newspaper_cover);
     },
@@ -238,12 +239,12 @@ export default {
        if(this.$route.params.nid=="new" && this.newspaper_id==null)
       {
       
-      this.newspaper_ref=await addDoc(collection(firestore,"newspapers"),this.newspaper,{merge:true});
+      this.newspaper_ref=await addDoc(collection(firestore,`${this.profile}s`),this.newspaper,{merge:true});
       this.newspaper_id=this.newspaper_ref.id;
       }  
 
 
-      const firststorageRef = ref(storage,`newspapers/${this.newspaper_id}/newspaper.pdf`);
+      const firststorageRef = ref(storage,`${this.profile}s/${this.newspaper_id}/book.pdf`);
       const metadata = {contentType: 'application/pdf'};
       this.dataReady=false;
       let uploadTask = await uploadBytes(firststorageRef, this.pdf_file, metadata);
@@ -251,7 +252,7 @@ export default {
 
       setInterval( async ()=>{
         if(this.serverside_finished) return;
-        ref(storage,`newspapers/${this.newspaper_id}/newspaper.json`);
+        ref(storage,`${this.profile}s/${this.newspaper_id}/book.json`);
         let url=await getDownloadURL(ref);
         let data=await axios.get(url).then(data=>
         {
@@ -286,7 +287,8 @@ export default {
     {
       this.second=true;
       this.active=this.third;
-    }
+    },
+    
 
     }
 }

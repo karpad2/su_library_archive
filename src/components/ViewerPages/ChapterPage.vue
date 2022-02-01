@@ -95,6 +95,7 @@ import logo from "@/assets/logo";
 		name: 'Page',
 		data () {
 			return{
+				profile:"newspaper",
 				chapter:{},
 				mpagechooser :false,
 				dataReady:false,
@@ -150,17 +151,17 @@ import logo from "@/assets/logo";
 			this.promotion=get_under.data().promotion;
 		if(!(this.member||this.admin||this.promotion)) this.back_to_home();
 
-			 let image_ref = ref(storage, `/newspapers/${this.$route.params.nid}/chapters/${this.$route.params.cid}/book.pdf`);// loading page from bucket
+			 let image_ref = ref(storage, `/${this.profile}s/${this.$route.params.nid}/chapters/${this.$route.params.cid}/book.pdf`);// loading page from bucket
 			 this.pdf_file= await getDownloadURL(image_ref);
 
 			 //this.$emit('fullscreen',true);
 			 let chapter_ref;
 			 try{
-			 chapter_ref=await getDocFromCache(doc(firestore,`newspapers/${this.$route.params.nid}/chapters`,this.chapter_id));
+			 chapter_ref=await getDocFromCache(doc(firestore,`/${this.profile}s/${this.$route.params.nid}/chapters`,this.chapter_id));
 			 }
 			 catch(e)
 			 {
-				 chapter_ref=await getDoc(doc(firestore,`newspapers/${this.$route.params.nid}/chapters`,this.chapter_id));
+				 chapter_ref=await getDoc(doc(firestore,`/${this.profile}s/${this.$route.params.nid}/chapters`,this.chapter_id));
 			 }
 
 			 this.chapter=chapter_ref.data();
@@ -186,7 +187,7 @@ import logo from "@/assets/logo";
 		methods: {
 			async add_page_to_load(lo)
 			{
-				let prev= ref(storage,`/newspapers/${this.$route.params.nid}/chapters/${this.$route.params.cid}/pages/${lo}.jpg`);
+				let prev= ref(storage,`/${this.profile}s/${this.$route.params.nid}/chapters/${this.$route.params.cid}/pages/${lo}.jpg`);
 				let l={
 						id:lo,
 						url: await getDownloadURL(prev)
@@ -211,7 +212,7 @@ import logo from "@/assets/logo";
 			},
 			back_to_home()
 			{
-				this.$router.push(`/newspaper/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}`);
+				this.$router.push(`/${this.profile}/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}`);
 				
 			},
 			zoom_in()
@@ -233,7 +234,7 @@ import logo from "@/assets/logo";
 
 			enter_read(i)
 			{
-				this.$router.push(`/newspaper/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}/chapter/${this.chapter_id}/page/${i}`);
+				this.$router.push(`/${this.profile}/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}/chapter/${this.chapter_id}/page/${i}`);
 			},
 			settings()
 			{

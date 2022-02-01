@@ -13,7 +13,7 @@
 				<img  @click="enter_read(1)" class="photoalbum_cover" alt="photoalbum_cover" :src="photoalbum_thumbnail" />
 				</div>
 		<div class="photoalbum-info">
-			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(photoalbum.author_name)" md-static>{{photoalbum.author_name}}</md-chip></p>
+			<p> {{gt("author")}}: <md-chip @click="keyword_link(photoalbum.author)" md-static>{{photoalbum.author}}</md-chip></p>
 			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in photoalbum.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
 		{{gt("information")}}:
@@ -100,7 +100,7 @@ import flag from "@/components/parts/flag";
 			this.photoalbum=photoalbum_ref.data();
 			
 
-			this.generated_keywords+=`${this.photoalbum.photoalbum_name},${this.photoalbum.author_name},`;
+			this.generated_keywords+=`${this.photoalbum.photoalbum_name},${this.photoalbum.author},`;
 			this.photoalbum.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;

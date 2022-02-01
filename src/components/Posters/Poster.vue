@@ -10,7 +10,7 @@
 		    <md-card-content>
 				<div class="poster-container">
 				<div class="posteravatar">
-				<img  draggable="false" @click="enter_read(1)" class="poster_cover" alt="poster_cover" :src="poster_thumbnail" />
+				<img  draggable="false"  class="poster_cover" alt="poster_cover" :src="poster_thumbnail" />
 				</div>
 		<div class="poster-info">
 			<p> {{gt("publisher")}}: <md-chip @click="keyword_link(poster.publisher)" md-static>{{poster.publisher}}</md-chip></p>
@@ -29,6 +29,7 @@
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
+			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt("edit_poster")}}</md-button>
 			</div>	
 		</div>
 		
@@ -39,24 +40,20 @@
         </md-card-content>
 	</md-card>
 	<md-card>
-		<md-table v-model="sheets" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+		<md-table v-model="chapters" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
-                <h1 class="md-title">{{gt("sheets")}}</h1>
+                <h1 class="md-title">{{gt("chapters")}}</h1>
                 </div>
             </md-table-toolbar>
 
-            <md-table-empty-state
-                :md-label="gt('poster_cant_found')"
-               >
-              
-            </md-table-empty-state>
+            <md-table-empty-state :md-label="gt('poster_cant_found')"></md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                
                 <md-table-cell :md-label="gt('postername')" md-sort-by="postername">{{ item.data.chapter_name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publishing_date }}</md-table-cell>
-                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/poster/${poster_id}/${gy(poster.poster_name)}/sheets/${item.id}/page/1`)">{{gt("readchapter")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/poster/${poster_id}/${gy(poster.poster_name)}/chapter/${item.id}/page/1`)">{{gt("readchapter")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
 	</md-card>
@@ -72,7 +69,7 @@ import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase"
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
-import NPages from "@/components/parts/posterpages";
+
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
 
@@ -86,11 +83,12 @@ import flag from "@/components/parts/flag";
 		name: 'poster',
 		data: () => ({
 			poster:{},
+			profile:"poster",
 			dataReady: false,
 			signed_in:false,
 			poster_thumbnail:"",
 			admin:false,
-			sheets:[],
+			chapters:[],
 			member:false,
 			promotion:false,
 			is_favorite:false,
@@ -123,14 +121,14 @@ import flag from "@/components/parts/flag";
         }
 			this.poster=poster_ref.data();
 			this.chapters=[];
-		let sheets_refread=await getDocs(collection(firestore,`posters/${this.poster_id}/sheets`));
+		let chapters_refread=await getDocs(collection(firestore,`posters/${this.poster_id}/chapters`));
 			
-		sheets_refread.forEach(as=>{
+		chapters_refread.forEach(as=>{
 			this.counted_chapters++;
-					this.sheets.push({data:as.data(),id:as.id});
+					this.chapters.push({data:as.data(),id:as.id});
 					});
 
-			this.generated_keywords+=`${this.poster.poster_name},${this.poster.author_name},`;
+			this.generated_keywords+=`${this.poster.poster_name},${this.poster.author},`;
 			this.poster.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;
@@ -169,7 +167,13 @@ import flag from "@/components/parts/flag";
 			this.promotion=get_under.data().promotion;
 
 			let ref_storage =ref(storage,`/posters/${this.poster_id}/thumbnail.jpg`);
+			try{
 			this.poster_thumbnail= await getDownloadURL(ref_storage);
+			}
+			catch
+			{
+				//
+			}
 			if(this.poster.hided) this.$router.push("/home");
 			this.title_side=title_page(this.poster.poster_name);
 			if(this.signed_in)
@@ -217,15 +221,20 @@ import flag from "@/components/parts/flag";
 			await updateDoc(doc(firestore,"posters",this.poster_id),{favorites:this.poster.favorites-1},{merge:true}); 
 				
 			}
+			
 			},
 			enter_read(i)
 			{
-				//this.$router.push(`/poster/${this.poster_id}/${replace_white(this.poster.poster_name)}/page/${i}`);
+				this.$router.push(`/poster/${this.poster_id}/${replace_white(this.poster.poster_name)}/page/${i}`);
 			},
 			keyword_link(i)
 			{
 				this.$router.push(`/posters/search/${i}`);
-			}
+			},
+			movetoadmin()
+			{
+				this.$router.push(`/admin/poster/${this.poster_id}`);
+			},
 		}
 	}
 	
@@ -234,8 +243,7 @@ import flag from "@/components/parts/flag";
 <style lang="scss" >
 	.poster_cover{
 		width: 350px;
-		height: 494px;
-		aspect-ratio: auto 350/494;
+		
 	}
 	.big_container
 	{

@@ -4,24 +4,24 @@
 <md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title"> <h1>{{note.note_name}}</h1></div>
+          <div class="md-title"> <h1>{{manuscript.manuscript_name}}</h1></div>
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-				<div class="note-container">
-				<div class="noteavatar">
-				<img  draggable="false" @click="enter_read(1)" class="note_cover" alt="note_cover" :src="note_thumbnail" />
+				<div class="manuscript-container">
+				<div class="manuscriptavatar">
+				<img  draggable="false"  class="manuscript_cover" alt="manuscript_cover" :src="manuscript_thumbnail" />
 				</div>
-		<div class="note-info">
-			<p> {{gt("publisher")}}: <md-chip @click="keyword_link(note.publisher)" md-static>{{note.publisher}}</md-chip></p>
-			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in note.keywords" md-static>{{keyword}}</md-chip> </p>
-			<p>{{gt("language")}}: <md-chip @click="keyword_link(note.language)" md-static><flag :flag="note.language" /></md-chip> </p>
+		<div class="manuscript-info">
+			<p> {{gt("publisher")}}: <md-chip @click="keyword_link(manuscript.publisher)" md-static>{{manuscript.publisher}}</md-chip></p>
+			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in manuscript.keywords" md-static>{{keyword}}</md-chip> </p>
+			<p>{{gt("language")}}: <md-chip @click="keyword_link(manuscript.language)" md-static><flag :flag="manuscript.language" /></md-chip> </p>
 		<div>
 		{{gt("information")}}:
-		<div v-html="note.description">
+		<div v-html="manuscript.description">
 		</div>
 		<div>
-			<p>{{gt("upload_date")}}:{{note.upload_date}}</p>
+			<p>{{gt("upload_date")}}:{{manuscript.upload_date}}</p>
 		</div>
 		</div>
 		<div>
@@ -29,6 +29,7 @@
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
+			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt("edit_manuscript")}}</md-button>
 			</div>	
 		</div>
 		
@@ -39,24 +40,20 @@
         </md-card-content>
 	</md-card>
 	<md-card>
-		<md-table v-model="sheets" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+		<md-table v-model="chapters" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
-                <h1 class="md-title">{{gt("sheets")}}</h1>
+                <h1 class="md-title">{{gt("chapters")}}</h1>
                 </div>
             </md-table-toolbar>
 
-            <md-table-empty-state
-                :md-label="gt('note_cant_found')"
-               >
-              
-            </md-table-empty-state>
+            <md-table-empty-state :md-label="gt('manuscript_cant_found')"></md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                
-                <md-table-cell :md-label="gt('notename')" md-sort-by="notename">{{ item.data.chapter_name }}</md-table-cell>
+                <md-table-cell :md-label="gt('manuscriptname')" md-sort-by="manuscriptname">{{ item.data.chapter_name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publishing_date }}</md-table-cell>
-                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/note/${note_id}/${gy(note.note_name)}/sheets/${item.id}/page/1`)">{{gt("readchapter")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/manuscript/${manuscript_id}/${gy(manuscript.manuscript_name)}/chapter/${item.id}/page/1`)">{{gt("readchapter")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
 	</md-card>
@@ -72,7 +69,7 @@ import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase"
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
-import NPages from "@/components/parts/notepages";
+
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
 
@@ -83,19 +80,20 @@ import flag from "@/components/parts/flag";
 		flag
 		},
 		
-		name: 'Note',
+		name: 'manuscript',
 		data: () => ({
-			note:{},
+			manuscript:{},
+			profile:"manuscript",
 			dataReady: false,
 			signed_in:false,
-			note_thumbnail:"",
+			manuscript_thumbnail:"",
 			admin:false,
-			sheets:[],
+			chapters:[],
 			member:false,
 			promotion:false,
 			is_favorite:false,
 			title_side:title_page(),
-			note_id:"",
+			manuscript_id:"",
 			generated_keywords:"",
 			counted_chapters:0,
 			user:{}
@@ -108,34 +106,34 @@ import flag from "@/components/parts/flag";
 			}
 		},
 		async mounted() {
-			this.note_id=this.$route.params.nid;
-			let note_ref;
+			this.manuscript_id=this.$route.params.nid;
+			let manuscript_ref;
 
 			try{
-        note_ref=await getDocFromCache(doc(firestore,"notes",this.note_id));
-        this.note=note_ref.data();
+        manuscript_ref=await getDocFromCache(doc(firestore,"manuscripts",this.manuscript_id));
+        this.manuscript=manuscript_ref.data();
 		
         }
         catch(e)
         {
-           note_ref=await getDoc(doc(firestore,"notes",this.note_id));
-           this.note=note_ref.data(); 
+           manuscript_ref=await getDoc(doc(firestore,"manuscripts",this.manuscript_id));
+           this.manuscript=manuscript_ref.data(); 
         }
-			this.note=note_ref.data();
+			this.manuscript=manuscript_ref.data();
 			this.chapters=[];
-		let sheets_refread=await getDocs(collection(firestore,`notes/${this.note_id}/sheets`));
+		let chapters_refread=await getDocs(collection(firestore,`manuscripts/${this.manuscript_id}/chapters`));
 			
-		sheets_refread.forEach(as=>{
+		chapters_refread.forEach(as=>{
 			this.counted_chapters++;
-					this.sheets.push({data:as.data(),id:as.id});
+					this.chapters.push({data:as.data(),id:as.id});
 					});
 
-			this.generated_keywords+=`${this.note.note_name},${this.note.author_name},`;
-			this.note.keywords.forEach(e=>
+			this.generated_keywords+=`${this.manuscript.manuscript_name},${this.manuscript.author},`;
+			this.manuscript.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;
 			});
-			setDoc(doc(firestore,"notes",this.note_id),{popularity:this.note.popularity+1},{merge:true});
+			setDoc(doc(firestore,"manuscripts",this.manuscript_id),{popularity:this.manuscript.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
 			
 			if(this.signed_in)
@@ -168,10 +166,16 @@ import flag from "@/components/parts/flag";
         }
 			this.promotion=get_under.data().promotion;
 
-			let ref_storage =ref(storage,`/notes/${this.note_id}/thumbnail.jpg`);
-			this.note_thumbnail= await getDownloadURL(ref_storage);
-			if(this.note.hided) this.$router.push("/home");
-			this.title_side=title_page(this.note.note_name);
+			let ref_storage =ref(storage,`/manuscripts/${this.manuscript_id}/thumbnail.jpg`);
+			try{
+			this.manuscript_thumbnail= await getDownloadURL(ref_storage);
+			}
+			catch
+			{
+				//
+			}
+			if(this.manuscript.hided) this.$router.push("/home");
+			this.title_side=title_page(this.manuscript.manuscript_name);
 			if(this.signed_in)
 				{
 				let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
@@ -184,9 +188,9 @@ import flag from "@/components/parts/flag";
 				}
 				else
 				{
-					this.is_favorite=this.user.favorites.includes(this.note_id);
+					this.is_favorite=this.user.favorites.includes(this.manuscript_id);
 				}
-				//this.favorite=(this.user.favorites.indexOf(this.note_id)>=0);
+				//this.favorite=(this.user.favorites.indexOf(this.manuscript_id)>=0);
 				}
 
 			this.dataReady=true;
@@ -206,36 +210,40 @@ import flag from "@/components/parts/flag";
 			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
 			if(!this.signed_in) return;
 			if(this.is_favorite) {
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.note_id)});
-			let fav= (await getDoc(doc(firestore,"notes",this.note_id))).data().favorites;
-			await updateDoc(doc(firestore,"notes",this.note_id),{favorites:this.note.favorites+1},{merge:true}); 
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.manuscript_id)});
+			let fav= (await getDoc(doc(firestore,"manuscripts",this.manuscript_id))).data().favorites;
+			await updateDoc(doc(firestore,"manuscripts",this.manuscript_id),{favorites:this.manuscript.favorites+1},{merge:true}); 
 			}
 			else 
 			{
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.note_id)});	
-			let fav= (await getDoc(doc(firestore,"notes",this.note_id))).data().favorites;
-			await updateDoc(doc(firestore,"notes",this.note_id),{favorites:this.note.favorites-1},{merge:true}); 
+			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.manuscript_id)});	
+			let fav= (await getDoc(doc(firestore,"manuscripts",this.manuscript_id))).data().favorites;
+			await updateDoc(doc(firestore,"manuscripts",this.manuscript_id),{favorites:this.manuscript.favorites-1},{merge:true}); 
 				
 			}
+			
 			},
 			enter_read(i)
 			{
-				//this.$router.push(`/note/${this.note_id}/${replace_white(this.note.note_name)}/page/${i}`);
+				this.$router.push(`/manuscript/${this.manuscript_id}/${replace_white(this.manuscript.manuscript_name)}/page/${i}`);
 			},
 			keyword_link(i)
 			{
-				this.$router.push(`/notes/search/${i}`);
-			}
+				this.$router.push(`/manuscripts/search/${i}`);
+			},
+			movetoadmin()
+			{
+				this.$router.push(`/admin/manuscript/${this.manuscript_id}`);
+			},
 		}
 	}
 	
 </script>
 
 <style lang="scss" >
-	.note_cover{
+	.manuscript_cover{
 		width: 350px;
-		height: 494px;
-		aspect-ratio: auto 350/494;
+		
 	}
 	.big_container
 	{
@@ -244,23 +252,23 @@ import flag from "@/components/parts/flag";
 		vertical-align: top;
 	}
 		
-.noteavatar{
+.manuscriptavatar{
 	float: left;
     margin: 2 em;
 
 }
-.noteavatar img{
+.manuscriptavatar img{
 	width: 350px;
 	height:494px;
 	aspect-ratio: auto 350/494; 
     
 
 }
-.note-info{
+.manuscript-info{
 	float:left;
 	 margin: 50px;
 }
-.note-container
+.manuscript-container
 {
 	overflow: auto;
 	margin-bottom: 25px;

@@ -6,7 +6,7 @@
         <md-table v-model="searchednewspapers" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
-                <h1 class="md-title">{{gt("newspapers")}}</h1>
+                <h1 class="md-title">{{gt(profile+"s")}}</h1>
                 </div>
 
                 <md-field md-clearable class="md-toolbar-section-end">
@@ -15,23 +15,23 @@
             </md-table-toolbar>
 
             <md-table-empty-state v-if="searching_text!=''"
-                :md-label="gt('newspaper_cant_found')"
-                :md-description="`${gt('no_newspaper_cant_be_found')} '${searching_text}'.`">
-                <md-button class="md-primary md-raised" @click="$router.push(`/admin/newspaper/new`)">{{gt('add_new_newspaper')}}</md-button>
+                :md-label="gt(profile+'_cant_found')"
+                :md-description="`${gt('no_'+profile+'_cant_be_found')} '${searching_text}'.`">
+                <md-button class="md-primary md-raised" @click="$router.push(`/admin/${profile}/new`)">{{gt('add_new_'+profile)}}</md-button>
             </md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-                <md-table-cell :md-label="gt('newspaper_name')" md-sort-by="newspapername">{{ item.data.newspaper_name }}</md-table-cell>
+                <md-table-cell :md-label="gt(profile+'_name')" md-sort-by="newspapername">{{ item.data.name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publisher }}</md-table-cell>
                 <md-table-cell :md-label="gt('language')" md-sort-by="language"><flag :flag="item.data.language"/></md-table-cell>
                 <md-table-cell :md-label="gt('keywords')" md-sort-by="keywords">{{ item.data.keywords }}</md-table-cell>
-                <md-table-cell :md-label="gt('editnewspaper')" md-sort-by="editnewspaper"><md-button @click="$router.push(`/admin/newspaper/${item.id}`)">{{gt("editnewspaper")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt('edit'+profile)" md-sort-by="editnewspaper"><md-button @click="$router.push(`/admin/${profile}/${item.id}`)">{{gt("editnewspaper")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
         </div>
 
-        <md-button @click="$router.push(`/admin/newspaper/new`)">{{gt("add_new_newspaper")}}</md-button>
+        <md-button @click="$router.push(`/admin/${profile}/new`)">{{gt("add_new_")+" "+gt(profile)}}</md-button>
         </div>
 
 
@@ -59,6 +59,7 @@ export default {
     components:{flag},
     data:()=>
     ({
+        profile:"newspaper",
         searching_text: "",
         searchednewspapers: [],
         newspapers:[],
@@ -67,7 +68,7 @@ export default {
     }),
     async mounted()
     {
-         const q = query(collection(firestore, "newspapers"),limit(10));
+         const q = query(collection(firestore, this.profile+"s"),limit(10));
             const querySnapshot = await getDocs(q);
             let b=[];
             querySnapshot.forEach((doc) => {
@@ -89,19 +90,19 @@ export default {
 				this.dataReady=false;
 				this.searchednewspapers=[];
 				//if(!(String(this.seaching_text).length>0)) return [];
-				let q=query(collection(firestore,"newspapers"),where("keywords","array-contains",[this.searching_text]),limit(10));
+				let q=query(collection(firestore,this.profile+"s"),where("keywords","array-contains",[this.searching_text]),limit(10));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
 				});
 
-				q=query(collection(firestore,"newspapers"),where("newspaper_name","<=",this.searching_text),where("newspaper_name",">=",this.searching_text),limit(10));
+				q=query(collection(firestore,this.profile+"s"),where(this.profile+"_name","<=",this.searching_text),where(this.profile+"_name",">=",this.searching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
 				});
 
-                q=query(collection(firestore,"newspapers"),where("language",">=",this.searching_text),limit(10));
+                q=query(collection(firestore,this.profile+"s"),where("language",">=",this.searching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});

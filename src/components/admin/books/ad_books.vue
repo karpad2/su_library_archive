@@ -23,8 +23,8 @@
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-                <md-table-cell :md-label="gt('bookname')" md-sort-by="bookname">{{ item.data.book_name }}</md-table-cell>
-                <md-table-cell :md-label="gt('Author')" md-sort-by="author">{{ item.data.author_name }}</md-table-cell>
+                <md-table-cell :md-label="gt('bookname')" md-sort-by="bookname">{{ item.data.name }}</md-table-cell>
+                <md-table-cell :md-label="gt('Author')" md-sort-by="author">{{ item.data.author }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="releaser">{{ item.data.publisher }}</md-table-cell>
                 <md-table-cell :md-label="gt('language')" md-sort-by="language"><flag :flag="item.data.language"/></md-table-cell>
                 <md-table-cell :md-label="gt('keywords')" md-sort-by="keywords">{{ item.data.keywords }}</md-table-cell>
@@ -96,13 +96,13 @@ export default {
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
 				});
-				 q=query(collection(firestore,"books"),where("author_name","<=",this.searching_text),where("author_name",">=",this.searching_text),limit(10));
+				 q=query(collection(firestore,"books"),where("author","<=",this.searching_text),where("author",">=",this.searching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
 				});
 
-				q=query(collection(firestore,"books"),where("book_name","<=",this.searching_text),where("book_name",">=",this.searching_text),limit(10));
+				q=query(collection(firestore,"books"),where("name","<=",this.searching_text),where("name",">=",this.searching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});

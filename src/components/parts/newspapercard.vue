@@ -10,10 +10,10 @@
 
         <md-card-area>
           <md-card-header>
-            <router-link  :to="get_link()"> <span  class="md-title">{{newspaper.newspaper_name}}</span> </router-link>
+            <router-link  :to="get_link()"> <span  class="md-title">{{newspaper.name}}</span> </router-link>
             
             
-            <span @click="open_newspaper" class="md-subhead">{{newspaper.author_name}}</span>
+            <span @click="open_newspaper" class="md-subhead">{{newspaper.author}}</span>
           </md-card-header>
 
           <md-card-actions>
@@ -122,11 +122,11 @@ export default {
 
       if(this.signedin())
       {
-        l=`/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.newspaper_name)}`;
+        l=`/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.name)}`;
       }
       else
       {
-        l=`/public/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.newspaper_name)}`;
+        l=`/public/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.name)}`;
       }
       this.$router.push(l);
 
@@ -141,11 +141,11 @@ export default {
 
       if(this.signedin)
       {
-        l=`/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.newspaper_name)}`;
+        l=`/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.name)}`;
       }
       else
       {
-        l=`/public/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.newspaper_name)}`;
+        l=`/public/newspaper/${this.newspaper_id}/${replace_white(this.newspaper.name)}`;
       }
     return l;
     }

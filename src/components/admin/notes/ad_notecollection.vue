@@ -82,7 +82,7 @@ export default {
     return{
       note:{
         note_name:"",
-        author_name:"",
+        author:"",
         keywords:[],
         page:"",
        
@@ -105,7 +105,7 @@ export default {
         description:"",
         note_name:"",
         first_page_as_cover:false,
-        author_name:"",
+        author:"",
         language_chooser:"",
         pdf_file:null,
         pages:[],
@@ -210,7 +210,7 @@ export default {
     },
     async changephoto()
     {
-      /*this.keyword_finder(this.note.author_name);
+      /*this.keyword_finder(this.note.author);
       this.keyword_finder(this.note.note_name);
       
       this.note.uploading_date=new Date();

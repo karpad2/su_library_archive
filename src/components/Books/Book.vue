@@ -4,16 +4,16 @@
 <md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title"> <h1>{{book.book_name}}</h1></div>
+          <div class="md-title"> <h1>{{book.name}}</h1></div>
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
 				<div class="book-container">
-				<div class="bookavatar">
-				<img  draggable="false" @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
+				<div class="bookavatar" @click="enter_read(1)">
+				<img ref="bookcover" id="book_cover" :src="jpg_file" draggable="false" class="book_cover"/>
 				</div>
 		<div class="book-info">
-			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" md-static>{{book.author_name}}</md-chip></p>
+			<p> {{gt("author")}}: <md-chip @click="keyword_link(book.author)" md-static>{{book.author}}</md-chip></p>
 			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
 			<p>{{gt("language")}}: <md-chip @click="keyword_link(book.language)" md-static><flag :flag="book.language" /></md-chip> </p>
 		<div>
@@ -26,10 +26,13 @@
 		</div>
 		</div>
 		<div>
-			{{gt("page_number")}}: <md-chip>{{book.page_number}}</md-chip>
+			{{gt("page_number")}}: <md-chip :id="idConfig.numPages"></md-chip>
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
+			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt("edit_book")}}</md-button>
+			<md-button class="md-raised md-primary"  @click="cucc">{{gt("refresh")}}</md-button>
+		
 			</div>	
 		</div>
 		
@@ -42,11 +45,15 @@
 	</md-card>
 	<md-card v-if="(signed_in &&member||admin)||(signed_in&&promotion)">
 		 <md-card-content>
-			 <Pages :bid="book_id"/>
+			 <div v-if="!pdf_hide">
+			 <vue-pdf-app @pages-rendered="cucc" id="pdfreader" ref="pdfreader"  v-cloak :config="config"  :id-config="idConfig"  style="height:100vh;" :page-scale="page-actual" :pdf="pdf_file" ></vue-pdf-app>
+			 </div>
 		</md-card-content>	
 	</md-card>	
 	</div>
 	 <loading v-else/>
+
+				
 	</div>
 
 </template>
@@ -57,13 +64,13 @@ import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase"
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
-import Pages from "@/components/parts/Pages";
+import VuePdfApp from "vue-pdf-app";
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
 
 	export default {
 		components: {
-		Pages,
+		VuePdfApp,
 		loading,
 		flag
 		},
@@ -74,14 +81,19 @@ import flag from "@/components/parts/flag";
 			dataReady: false,
 			signed_in:false,
 			book_thumbnail:"",
-			admin:false,
 			member:false,
 			promotion:false,
 			is_favorite:false,
 			title_side:title_page(),
 			book_id:"",
+			pdf_hide:false,
+			jpg_file:"",
 			generated_keywords:"",
-			user:{}
+			admin:false,
+			pdf_file:"",
+			user:{},
+			 config:{toolbar: false},
+			idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId",numPages: "vuePdfAppNumPages",pageNumber: "vuePdfAppPageNumber" },
 			
 		}),
 		metaInfo(){
@@ -106,7 +118,7 @@ import flag from "@/components/parts/flag";
 			this.book=book_ref.data();
 			
 
-			this.generated_keywords+=`${this.book.book_name},${this.book.author_name},`;
+			this.generated_keywords+=`${this.book.name},${this.book.author},`;
 			this.book.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;
@@ -144,10 +156,12 @@ import flag from "@/components/parts/flag";
         }
 			this.promotion=get_under.data().promotion;
 
-			let ref_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
-			this.book_thumbnail= await getDownloadURL(ref_storage);
+			let ref_storage =ref(storage,`/books/${this.book_id}/book.pdf`);
+			this.pdf_file= await getDownloadURL(ref_storage);
+			let ref_img_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
+			this.jpg_file= await getDownloadURL(ref_img_storage);
 			if(this.book.hided) this.$router.push("/home");
-			this.title_side=title_page(this.book.book_name);
+			this.title_side=title_page(this.book.name);
 			if(this.signed_in)
 				{
 				let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
@@ -161,8 +175,9 @@ import flag from "@/components/parts/flag";
 				}
 				//this.favorite=(this.user.favorites.indexOf(this.book_id)>=0);
 				}
-
+			//setTimeout(this.cucc(), 3000);
 			this.dataReady=true;
+		
 		},
 		methods: {
 			gt(a)
@@ -190,12 +205,44 @@ import flag from "@/components/parts/flag";
 			},
 			enter_read(i)
 			{
-				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.book_name)}/page/${i}`);
+				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.name)}/page/${i}`);
 			},
 			keyword_link(i)
 			{
 				this.$router.push(`/books/search/${i}`);
+			},
+			movetoadmin()
+			{
+				this.$router.push(`/admin/book/${this.book_id}`);
+			},
+			cucc()
+			{
+			var b="";
+			try{
+			var l= document.getElementById("pdfreader");
+			this.book.page_number= l.querySelectorAll("canvas").length;
+			let s=l.querySelectorAll("canvas")[0];
+			console.log(s);
+			l=this.$refs.bookcover;
+			l.src=s.toDataURL("img/png");
+			l=this.$refs.pdfreader;
+			l.style="display:none";
+			this.pdf_hide=true;
+			
+			
+			setTimeout(()=>{this.dataReady=true;}, 3000);
+			
+
 			}
+			catch(e)
+			{
+				//
+				console.log(e)
+			}
+			}
+		},
+		computed:{
+		
 		}
 	}
 	
@@ -213,7 +260,10 @@ import flag from "@/components/parts/flag";
 		width: 48%;
 		vertical-align: top;
 	}
-		
+	#viewer .page{
+    height: 100%;
+    width: 100%;
+  }	
 .bookavatar{
 	float: left;
     margin: 2 em;

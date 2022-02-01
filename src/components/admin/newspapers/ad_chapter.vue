@@ -62,7 +62,7 @@
           </md-field>
           <md-field>
             <label>{{gt('chapter_author')}}</label>
-            <md-input @change="change" v-model="chapter.author_name" md-counter="100"></md-input>
+            <md-input @change="change" v-model="chapter.author" md-counter="100"></md-input>
           </md-field>
           <md-field>
             <label>{{gt('publisher')}}</label>
@@ -131,8 +131,9 @@ export default {
     data(){
     return{
       chapter:{
+        profile:"newspaper",
         chapter_name:"",
-        author_name:"",
+        author:"",
         keywords:[],
         page:"",
         active:true,
@@ -150,7 +151,7 @@ export default {
         chapter_name:"",
         serverside_finished:true,
         first_page_as_cover:false,
-        author_name:"",
+        author:"",
         language_chooser:"",
         pdf_file:null,
         pages:[],
@@ -201,7 +202,7 @@ export default {
       {
         this.new_chapter=false;
         this.chapter_id=this.$route.params.cid;
-         let chapter_refread=await getDoc(doc(firestore,`newspapers/${this.$route.params.bid}/chapters`,this.chapter_id));
+         let chapter_refread=await getDoc(doc(firestore,`/${this.profile}s/${this.$route.params.bid}/chapters`,this.chapter_id));
         this.chapter=chapter_refread.data();
       }
       
@@ -220,25 +221,25 @@ export default {
     },
     open_chapter()
     {
-      this.$router.push(`/newspaper/${this.newspaper_id}/${this.newspaper_id}/${this.chapter_id}`);
+      this.$router.push(`/${this.profile}s/${this.newspaper_id}/${this.newspaper_id}/${this.chapter_id}`);
     },
     async deletechapter()
     {
-       updateDoc(doc(firestore,`newspapers/${this.$route.params.bid}/chapters`,this.chapter_id),null);
+       updateDoc(doc(firestore,`/${this.profile}s/${this.$route.params.bid}/chapters`,this.chapter_id),null);
        this.$router.go(-1); 
     },
 
     async change()
     {
-      this.keyword_finder(this.chapter.author_name);
+      this.keyword_finder(this.chapter.author);
       this.keyword_finder(this.chapter.chapter_name);
 
        if(this.$route.params.cid=="new" && this.chapter_id==null)
       {
       
-      this.chapter_ref=await addDoc(collection(firestore,`newspapers/${this.$route.params.bid}/chapters`),this.chapter,{merge:true});
+      this.chapter_ref=await addDoc(collection(firestore,`/${this.profile}s/${this.$route.params.bid}/chapters`),this.chapter,{merge:true});
       this.chapter_id=this.chapter_ref.id;
-      this.$router.push(`/admin/newspaper/${this.$route.params.bid}/chapter/${this.chapter_id}`);
+      this.$router.push(`/admin/${this.profile}/${this.$route.params.bid}/chapter/${this.chapter_id}`);
       }
       else
       {
@@ -263,12 +264,12 @@ export default {
        if(this.$route.params.cid=="new" && this.chapter_id==null)
       {
       
-      this.chapter_ref=await addDoc(collection(firestore,`newspapers/${this.$route.params.bid}/chapters`),this.chapter,{merge:true});
+      this.chapter_ref=await addDoc(collection(firestore,`/${this.profile}s/${this.$route.params.bid}/chapters`),this.chapter,{merge:true});
       this.chapter_id=this.chapter_ref.id;
       }  
 
 
-      const firststorageRef = ref(storage,`newspapers/${this.$route.params.bid}/chapters/${this.chapter_id}/book.pdf`);
+      const firststorageRef = ref(storage,`/${this.profile}s/${this.$route.params.bid}/chapters/${this.chapter_id}/book.pdf`);
       const metadata = {contentType: 'application/pdf'};
       this.dataReady=false;
       let uploadTask = await uploadBytes(firststorageRef, this.pdf_file, metadata);

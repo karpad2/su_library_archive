@@ -13,7 +13,7 @@
 				<img draggable="false"  @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
 				</div>
 		<div class="book-info">
-			<p> {{gt("author_name")}}: <md-chip @click="keyword_link(book.author_name)" md-static>{{book.author_name}}</md-chip></p>
+			<p> {{gt("author")}}: <md-chip @click="keyword_link(book.author)" md-static>{{book.author}}</md-chip></p>
 			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
 		{{gt("information")}}:
@@ -107,7 +107,7 @@ import flag from "@/components/parts/flag";
 			this.book=book_ref.data();
 			
 
-			this.generated_keywords+=`${this.book.book_name},${this.book.author_name},`;
+			this.generated_keywords+=`${this.book.name},${this.book.author},`;
 			this.book.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;
@@ -148,7 +148,7 @@ import flag from "@/components/parts/flag";
 			let ref_storage =ref(storage,`/books/${this.book_id}/thumbnail.jpg`);
 			this.book_thumbnail= await getDownloadURL(ref_storage);
 			if(this.book.hided) this.$router.push("/home");
-			this.title_side=title_page(this.book.book_name);
+			this.title_side=title_page(this.book.name);
 			if(this.signed_in)
 				{
 				let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
@@ -191,7 +191,7 @@ import flag from "@/components/parts/flag";
 			},
 			enter_read(i)
 			{
-				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.book_name)}/page/${i}`);
+				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.name)}/page/${i}`);
 			},
 			keyword_link(i)
 			{

@@ -139,8 +139,8 @@ await bucket.upload(tempLocalJSONFile, {destination: RemoteJSONFilePath,validati
   firestore().collection("books").doc(fileDir).set({
     "page_number":`${page_number}`,
     "uploading_date":new Date(),
-    "author_name":"",
-    "book_name":"",
+    "author":"",
+    "name":"",
     "keywords":keywords,
     "favorites":0,
     "language":"rs-RS"

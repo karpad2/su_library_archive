@@ -17,7 +17,7 @@
       "collectionGroup": "books",
       "fields": [
         {
-          "fieldPath": "book_name",
+          "fieldPath": "name",
           "order": "ASCENDING"
         },
         {

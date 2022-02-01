@@ -4,7 +4,7 @@
     "logout_error_pls_refresh":"Kijelentkezés sikertelen, kérem frissítse a weboldalt",
     "app-title":"Szabadkai Digitális Könyvtár",
     "login":"Bejelentkezés",
-    "books":"könyvek",
+    "books":"Könyvek",
     "email":"Email",
     "password":"jelszó",
     "login_with":"Bejelentkezés ",
@@ -53,8 +53,8 @@
     "upload_book_cover":"Könyv borító feltöltése",
     "upload_book":"Könyv feltöltése",
     "upload_book_keywords":"Könyv keresési kulcsszavai",
-    "book_name":"Könyv címe",
-    "author_name":"Szerző neve",
+    "name":"Cím",
+    "author":"Szerző neve",
     "first_page_as_cover":"A pdf legelső lapja legyen-e a borító?",
     "language":"Nyelv",
     "serbian":"Srpski",
@@ -123,7 +123,7 @@
     
     "register":"Register",
     "password_pls_write_again":"Ismételje meg a jelszót",
-    "newspapers":"Folyóírat",
+    "newspapers":"Folyóíratok",
     "upload_a_newspaper":"Folyóírat feltöltése",
     "add_new_newspaper":"Folyóírat hozzáadása",
     "photoalbums":"Fotóalbumok",
@@ -131,7 +131,7 @@
     "admin_photoalbums":"Fotóalbumok adminisztrálása",
     "newspaper_cant_found":"Folyóirat nemtalálható",
     "no_newspaper_cant_be_found":"Nem található kifejezés",
-    "newspaper_name":"Folyóirat neve",
+    
     "category":"Kategória",
     "seperator_name":"Elválasztó név",
     "chapters":"Számok",
@@ -162,7 +162,20 @@
     "upload_a_title_notes":"Kották adminisztrálása",
     "add_new_notes":"Kotta hozzáadása",
     "note_name":"Kotta neve",
-    "edit_notes":"Kotta szerkesztése"
+    "edit_notes":"Kotta szerkesztése",
+    "edit_book":"Könyv szerkesztése",
+    "manuscript":"kézírat",
+    "search_for":"keresése",
+    "edit":"szerkesztése",
+    "admin":"adminisztrálása",
+    "search_by_author":"Szerző alapú keresés",
+    "search_by_keywords":"Kulcsszó alapú keresés",
+    "search_by_year":"Év keresése",
+    "newspaper":"újság",
+    "open":"megnyitás",
+    "add_new":"Új hozzáadása",
+    "cant_found":"nem találhatóak"
+
 
 
 

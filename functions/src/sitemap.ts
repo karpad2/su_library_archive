@@ -46,7 +46,7 @@ export default (async (req:functions.https.Request,res:functions.Response)=>  {
       {
         let book=b.data();
         
-        sitemap+=`<url><loc>${address}/public/book/${b.id}/${book.book_name}</loc><lastmod>${day}</lastmod></url>\n`;
+        sitemap+=`<url><loc>${address}/public/book/${b.id}/${book.name}</loc><lastmod>${day}</lastmod></url>\n`;
   
       })
     });
@@ -69,7 +69,7 @@ export default (async (req:functions.https.Request,res:functions.Response)=>  {
     a.forEach( async (b:any)=>
       {
         let newspaper=b.data();
-        sitemap+=`<url><loc>${address}/public/newspaper/${newspaper.id}/${newspaper.newspaper_name}</loc><lastmod>${day}</lastmod></url>\n`;
+        sitemap+=`<url><loc>${address}/public/newspaper/${newspaper.id}/${newspaper.name}</loc><lastmod>${day}</lastmod></url>\n`;
   
       })
     });
