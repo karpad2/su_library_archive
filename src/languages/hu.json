@@ -160,8 +160,9 @@
     "notes":"Kották",
     "admin_notes":"Kották adminisztrálása",
     "upload_a_title_notes":"Kották adminisztrálása",
-    "add_new_notes":"Kotta hozzáadása",
+    "add_new_note":"Kotta hozzáadása",
     "note_name":"Kotta neve",
+<<<<<<< HEAD
     "edit_notes":"Kotta szerkesztése",
     "edit_book":"Könyv szerkesztése",
     "manuscript":"kézírat",
@@ -176,6 +177,9 @@
     "add_new":"Új hozzáadása",
     "cant_found":"nem találhatóak"
 
+=======
+    "edit_note":"Kotta szerkesztése"
+>>>>>>> main
 
 
 
