@@ -22,6 +22,9 @@
 		{
 			this.disablecookiebanner=true;
 		}
+		this.$material.locale.startYear=1500;
+		this.$material.locale.endYear=new Date().getFullYear();
+		this.$material.locale.firstDayOfAWeek=1;
 		},
 		data()
 		{

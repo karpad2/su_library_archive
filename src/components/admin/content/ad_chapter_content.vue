@@ -21,7 +21,7 @@
 
         <md-field>
             <label>{{gt('chapter_name')}}</label>
-            <md-input @change="change" v-model="chapter.chapter_name" md-counter="100"></md-input>
+            <md-input @change="change" v-model="chapter.name" md-counter="100"></md-input>
           </md-field>
           <md-field>
           <quillEditor class="ql-editor" @change="change" v-model="chapter.description" />
@@ -35,19 +35,34 @@
           <md-field>
             <md-switch @change="change" v-model="chapter.hided">{{gt("hided")}}</md-switch>
           </md-field>
+
+          <md-datepicker :md-closed="change" v-model="chapter.release_date">
+              <label>{{gt("release_date")}}</label>
+        </md-datepicker>
+
+         <md-field>
+            <label></label>
+            <md-switch  v-model="first_page_as_cover">{{gt('first_page_as_cover')}}</md-switch>
+          </md-field>
           
 
-          <md-field>
-            <label>{{gt('page_number')}}</label>
-            <md-input @change="change" v-model="chapter.page_number" md-counter="100"></md-input>
-          </md-field>
+          
+         <b-form-file
+          v-if="!first_page_as_cover"
+      
+      @change="upload_chapter_cover"
+      accept="image/jpeg"
+      :placeholder="gt('upload_chapter_cover')"
+      :drop-placeholder="gt('upload_chapter_cover')"></b-form-file>
+          
+
      
         <md-button @click="finish">{{gt("continue")}}</md-button>
       </md-step>
 
       <md-step id="third" :md-label="gt('upload_chapter_finish')" :md-done.sync="third">
       
-        <md-button @click="open_chapter">{{gt("open_chapter")}}</md-button>
+        <md-button @click="open_chapter">{{gt("open")+' '+gt("chapter")}}</md-button>
        </md-step>
     </md-steppers>
       </div>
@@ -58,7 +73,7 @@
           <md-card-content>
           <md-field>
             <label>{{gt('chapter_name')}}</label>
-            <md-input @change="change" v-model="chapter.chapter_name" md-counter="100"></md-input>
+            <md-input @change="change" v-model="chapter.name" md-counter="100"></md-input>
           </md-field>
           <md-field>
             <label>{{gt('chapter_author')}}</label>
@@ -92,21 +107,36 @@
           </md-field>
           
 
-          <md-field v-if="!first_page_as_cover">
-            <label>{{gt("upload_chapter_cover")}}</label>
-            <md-file md-change="upload_chapter_cover" v-model="chapter_cover" :placeholder="gt('upload_chapter_cover')" />
-          </md-field>
+          
+         <b-form-file
+          v-if="!first_page_as_cover"
+      
+      @change="upload_chapter_cover"
+      accept="image/jpeg"
+      :placeholder="gt('upload_chapter_cover')"
+      :drop-placeholder="gt('upload_chapter_cover')"></b-form-file>
 
-          <md-field>
-            <label>{{gt("upload_chapter")}}</label>
-            <md-file md-change="upload_chapter" v-model="chapter_pdf" :placeholder="gt('upload_chapter')" />
-          </md-field>
+      <b-form-file
+      v-model="chapter_pdf"
+      @change="upload_chapter"
+      accept="application/pdf"
+      :placeholder="gt('upload_chapter')"
+      :drop-placeholder="gt('upload_chapter')"></b-form-file>
+         
+          
+           <md-datepicker :md-closed="change" v-model="chapter.release_date">
+              <label>{{gt("release_date")}}</label>
+        </md-datepicker>
+          <md-datepicker  :md-closed="change" v-model="chapter.upload_date">
+              <label>{{gt("upload_date")}}</label>
+        </md-datepicker>
 
           <md-field>
             <label>{{gt('page_number')}}</label>
             <md-input @change="change" v-model="chapter.page_number" md-counter="100"></md-input>
           </md-field>
-          <md-button class="md-raised md-primary" @click="deletechapter">{{gt("deletechapter")}}</md-button>
+           <md-button class="md-raised md-primary" @click="change">{{gt("save")}}</md-button>
+          <md-button class="md-raised md-primary" @click="deletechapter">{{gt("delete")}}</md-button>
           
           </md-card-content>   
       </div>
@@ -116,13 +146,14 @@
 
 </template>
 <script>
-import {get_text} from "@/languages";
+import {get_text,title_page} from "@/languages";
+import langa from "../../../languages/languages";
 import { quillEditor } from 'vue-quill-editor';
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes,deleteObject } from "firebase/storage";
 import axios from "axios";
 import loading from "@/components/parts/loading";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc,deleteDoc } from "firebase/firestore";
 import flag from "@/components/parts/flag";
 import { push } from '@firebase/database';
 
@@ -132,7 +163,7 @@ export default {
     return{
       chapter:{
         profile:"newspaper",
-        chapter_name:"",
+        name:"",
         author:"",
         keywords:[],
         page:"",
@@ -148,7 +179,7 @@ export default {
         keywords:[],
         chapter_cover:null,
         description:"",
-        chapter_name:"",
+       
         serverside_finished:true,
         first_page_as_cover:false,
         author:"",
@@ -175,6 +206,12 @@ export default {
         loading,
         flag
     },
+    metaInfo(){
+			return{
+			title:title_page(this.chapter.name),
+			keywords:this.generated_keywords
+			}
+		},
     async mounted()
     {
       	if(this.$route.params.viewtype!=undefined)
@@ -183,20 +220,10 @@ export default {
 			}
       this.achapter=this.chapter;
       
-      this.languages=[
-          {
-            value:"rs-RS",text:this.gt("serbian")
-          },
-          {
-            value:"hu-HU",text:this.gt("hungarian")
-          },
-          {
-            value:"en-EN",text:this.gt("english")
-          },
-          {
-            value:"de-DE",text:this.gt("german")
-          }
-        ];
+     langa.language_books.forEach((a)=>
+     {
+       this.languages.push({"value":a.value,"text":this.gt(a.text)});
+     });
       if(this.$route.params.cid=="new")
       {
         this.new_chapter=true;
@@ -206,8 +233,12 @@ export default {
       {
         this.new_chapter=false;
         this.chapter_id=this.$route.params.cid;
-         let chapter_refread=await getDoc(doc(firestore,`/${this.profile}s/${this.$route.params.bid}/chapters`,this.chapter_id));
+         let chapter_refread=await getDoc(doc(firestore,`${this.profile}/${this.$route.params.bid}/chapters`,this.chapter_id));
         this.chapter=chapter_refread.data();
+        if(this.chapter.release_date==undefined)
+        {
+          this.chapter.release_date=null;
+        }
       }
       
       
@@ -225,59 +256,106 @@ export default {
     },
     open_chapter()
     {
-      this.$router.push(`/${this.profile}s/${this.newspaper_id}/${this.newspaper_id}/${this.chapter_id}`);
+      this.$router.push(`/view/${this.profile}/${this.$route.params.bid}/template/chapter/${this.chapter_id}`);
     },
     async deletechapter()
     {
-       updateDoc(doc(firestore,`/${this.profile}s/${this.$route.params.bid}/chapters`,this.chapter_id),null);
-       this.$router.go(-1); 
+      try{
+        try{
+       await deleteObject(ref(storage,`/${this.profile}/${this.$route.params.bid}/chapters/${this.chapter_id}`));
+        }
+         catch(ex)
+      {
+        console.error(ex);
+        this.$noty.error(this.gt("deleted"), {
+						killer: true,
+						timeout: 1500,
+					});
+      }
+
+       await deleteDoc(doc(firestore,`/${this.profile}/${this.$route.params.bid}/chapters`,this.chapter_id));
+       this.$noty.success(this.gt("deleted"), {
+						killer: true,
+						timeout: 1500,
+					});
+       this.$router.go(`/admin/content/${this.profile}/${this.$route.params.bid}`);    
+      }
+      catch(ex)
+      {
+        console.error(ex);
+        this.$noty.error(this.gt("deleted"), {
+						killer: true,
+						timeout: 1500,
+					});
+      }
+     
+       
     },
 
     async change()
     {
       this.keyword_finder(this.chapter.author);
-      this.keyword_finder(this.chapter.chapter_name);
+      this.keyword_finder(this.chapter.name);
 
        if(this.$route.params.cid=="new" && this.chapter_id==null)
       {
       
-      this.chapter_ref=await addDoc(collection(firestore,`/${this.profile}s/${this.$route.params.bid}/chapters`),this.chapter,{merge:true});
+      this.chapter_ref=await addDoc(collection(firestore,`/${this.profile}/${this.$route.params.bid}/chapters`),this.chapter,{merge:true});
       this.chapter_id=this.chapter_ref.id;
-      this.$router.push(`/admin/${this.profile}/${this.$route.params.bid}/chapter/${this.chapter_id}`);
+      this.$router.push(`/admin/content/${this.profile}/${this.$route.params.bid}/chapter/${this.chapter_id}`);
       }
-      else
-      {
+      
         let l=new Date();
         this.chapter.upload_date=`${l.getFullYear()}-${l.getMonth()}-${l.getUTCDay()}`;
-        this.chapter_ref=updateDoc(doc(firestore,`newspapers/${this.$route.params.bid}/chapters`,this.chapter_id),this.chapter,{merge:true});
-      }
+        this.chapter_ref=updateDoc(doc(firestore,`/${this.profile}/${this.$route.params.bid}/chapters`,this.chapter_id),this.chapter,{merge:true});
            
-      
+      this.$noty.success(this.gt("saved"), {
+						killer: true,
+						timeout: 1500,
+					});
     },
-    async upload_chapter_cover()
+    async upload_chapter_cover(event)
     {
 
-      const firststorageRef = ref(storage,`chapters/${this.chapter_id}/thumbnail.jpg`);
+      const firststorageRef = ref(storage,`${this.profile}/${this.$route.params.bid}/chapters/${this.chapter_id}/thumbnail.jpg`);
       const metadata = {contentType: 'image/jpeg'};
-      let uploadTask = await uploadBytes(firststorageRef, this.first_page, metadata);
+      console.log(event.target.files[0]);
+      uploadBytes(firststorageRef, event.target.files[0], metadata).then((a)=>
+      {
+        console.log("File uploaded");
+          this.$noty.success(this.gt("file_uploaded"), {
+						killer: true,
+						timeout: 1500,
+					});
+      })
     },
 
-    async upload_chapter()
+    async upload_chapter(event)
     {
       this.serverside_finished=false;
        if(this.$route.params.cid=="new" && this.chapter_id==null)
       {
       
-      this.chapter_ref=await addDoc(collection(firestore,`/${this.profile}s/${this.$route.params.bid}/chapters`),this.chapter,{merge:true});
+      this.chapter_ref=await addDoc(collection(firestore,`/${this.profile}/${this.$route.params.bid}/chapters`),this.chapter,{merge:true});
       this.chapter_id=this.chapter_ref.id;
       }  
 
 
-      const firststorageRef = ref(storage,`/${this.profile}s/${this.$route.params.bid}/chapters/${this.chapter_id}/book.pdf`);
+      const firststorageRef = ref(storage,`/${this.profile}/${this.$route.params.bid}/chapters/${this.chapter_id}/book.pdf`);
       const metadata = {contentType: 'application/pdf'};
       this.dataReady=false;
-      let uploadTask = await uploadBytes(firststorageRef, this.pdf_file, metadata);
-      this.dataReady=true;
+      if(this.chapter.name=="")
+      this.chapter.name=event.target.files[0].name;
+       console.log(event.target.files[0]);
+      uploadBytes(firststorageRef, event.target.files[0]).then((a)=>
+      {
+       this.$noty.success(this.gt("file_uploaded"), {
+						killer: true,
+						timeout: 1500,
+					});
+          this.dataReady=true;
+      });
+      
 
       /*setInterval( async ()=>{
         if(this.serverside_finished) return;

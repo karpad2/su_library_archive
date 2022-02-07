@@ -5,37 +5,47 @@
 		{{gt("search")}}
 		<md-field>
 			<label>{{gt("search_by_name")}}</label>
-			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
+			<md-input @change="searching" v-model="searching_text" >{{gt("search")}}</md-input>
 		</md-field>
 		<md-field>
 			<label>{{gt("search_by_author")}}</label>
-			<md-input @change="searching" v-model="seaching_author" >{{gt("search_for_author")}}</md-input>
+			<md-input @change="searching" v-model="searching_author" ></md-input>
 		</md-field>
+		<md-field>
+        <label for="categories">{{gt("categories")}}</label>
+        <md-select :md-selected="searching" v-model="selectedCategories" name="categories" id="categories" multiple>
+          <md-option v-for="category in categories" :key="category.name" :value="category.name">{{gt(category.name)}}</md-option>
+          
+        </md-select>
+      </md-field>
 		<md-field>
 			<label>{{gt("search_by_keywords")}}</label>
-			<md-input @change="searching" v-model="seaching_keywords" >{{gt("search_for_keywords")}}</md-input>
+			<md-input @change="searching" v-model="seaching_keywords" ></md-input>
 		</md-field>
-		<md-field>
-			<label>{{gt("search_by_year")}}</label>
-			<md-input @change="searching" v-model="search_for_publising_year" >{{gt("search_for_publising_year")}}</md-input>
-		</md-field>
+
+		<md-datepicker  :md-closed="searching"  v-model="fromdate">
+              <label>{{gt("from_date")}}</label>
+        </md-datepicker>
+		<md-datepicker  :md-closed="searching"  v-model="todate">
+              <label>{{gt("to_date")}}</label>
+        </md-datepicker>
+
+		<md-datepicker  :md-closed="searching" v-model="upload_date">
+              <label>{{gt("upload_date")}}</label>
+        </md-datepicker>
+		<md-button class="md-raised md-primary" @click="searching">{{gt(`search`)}}</md-button>
+          
+
+
+		
 		</md-card-header>
 		<md-card-content>
 		 
 		
 		<div class="section">
-			<bookcard v-for="book in searchedBooks" :key="book.id" :book_id="book.id"/>
+			<card :profile="p.profile" v-for="p in  searched" :key="p.id" :chapter="p.chapter" :id="p.id" />
 		</div>
-        <div class="section">
-			<newspapercard v-for="newspaper in newspapers" :key="newspaper.id" :newspaper_id="newspaper.id"/>
-		</div>
-        <div class="section">
-			<photoalbumscard v-for="photoalbum in photoalbums" :key="photoalbum.id" :photoalbum_id="photoalbum.id"/>
-		</div>
-
-        <div class="section">
-			<notecard v-for="note in notes" :key="note.id" :note_id="note.id"/>
-		</div>
+        <div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
 		</md-card-content>
 	</md-card>
 	</div>
@@ -45,13 +55,11 @@
 import {signOut} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit  } from "firebase/firestore";
+import acategories from "../firebase/categories";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, orderBy  } from "firebase/firestore";
 import { getStorage, ref, listAll,get } from "firebase/storage";
 import loading from "@/components/parts/loading";
-import bookcard from "@/components/parts/bookcard";
-import photoalbumscard from "@/components/parts/photoalbumscard";
-import notecard from "@/components/parts/notecard";
-import newspapercard from "@/components/parts/newspapercard";
+import card from "@/components/parts/card";
 
 import logo from "@/assets/logo";
 
@@ -59,10 +67,7 @@ import logo from "@/assets/logo";
 		
 	export default {
 		components: {
-		bookcard,
-        photoalbumscard,
-        notecard,
-        newspapercard
+		card
 
 		},
 		name: 'Search',
@@ -73,11 +78,19 @@ import logo from "@/assets/logo";
 		data: () => ({
 			profile_picture_url:"",
 			profile_name:"",
-			seaching_text:"",
+			loading_values:10,
+			fromdate:"",
+			todate:"",
+			upload_date:"",
+			searching_text:"",
+			searching_author:"",
 			showSidepanel:false,
 			menuVisible: false,
-			searchedBooks:[],
+			searched:[],
             photoalbums:[],
+			selectedCategories:[],
+			seaching_keywords:[],
+			categories:acategories.categories,
             notes:[],
             newspapers:[],
 			userTheme: "default",
@@ -86,128 +99,89 @@ import logo from "@/assets/logo";
 			
 		}),
 		async mounted() {
-			if(this.$route.params.bsearch!=undefined)
+			
+			if(this.$route.params.bsearch!=null)
 			{
 			this.seaching_text=this.$router.params.bsearch;
 			await this.searching();
-			}
-			else 
+			}else 
 			{
-				let q=query(collection(firestore,"books"),limit(10));
-				let c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_exist({id:element.id});
-				});
+				await this.searching();
 			}
+			
 
 			this.dataReady=true;
 		},
 		methods: {
 			async searching()
 			{
-				this.dataReady=false;
-				this.searchedBooks=[];
-				if(!(String(this.seaching_text).length>0)) return [];
-				let q=query(collection(firestore,"books"),where("keywords","array-contains",[this.seaching_text]),limit(10));
-				let c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_exist({id:element.id});
-				});
-				 q=query(collection(firestore,"books"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_exist({id:element.id});
-				});
-//notes
-				q=query(collection(firestore,"notes"),where("note_name","<=",this.seaching_text),where("note_name",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_notes_exist({id:element.id});
-				});
+			this.searched=[];
+			this.dataReady=false;
+			console.log(this.selectedCategories);
+			await acategories.categories.forEach(async (a)=>{
+			if(this.selectedCategories.length>0)	
+				if(this.selectedCategories.indexOf(a.name)<0) return;
+			let c=collection(firestore,`${a.name}`);
+			
+			let e=await getDocs(c);
+			e.forEach(async (bb)=>{
+				let d=collection(firestore,`${a.name}/${bb.id}/chapters`)
+				let queryv=d;
+				if(this.searching_text!=""&& this.searching_text.length>3){
+				queryv=await query(queryv,where("name","<=",this.searching_text),where("name",">=",this.searching_text));
+			}
 
-                q=query(collection(firestore,"notes"),where("keywords","array-contains",[this.seaching_text]),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_notes_exist({id:element.id});
-				});
-				 q=query(collection(firestore,"notes"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_notes_exist({id:element.id});
-				});
+			if(this.searching_author!="" && this.searching_author.length>3){
+				queryv=await query(queryv,where("name","<=",this.searching_author),where("name",">=",this.searching_author));
+			}
+			if(this.fromdate!="" && this.fromdate.length>3){
+				queryv=await query(queryv,where("release_date",">=",this.fromdate));
+			}
 
-				q=query(collection(firestore,"notes"),where("note_name","<=",this.seaching_text),where("note_name",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_notes_exist({id:element.id});
-				});
+			if(this.todate!="" && this.todate.length>3){
+				queryv=await query(queryv,where("release_date","<=",this.todate));
+			}
 
-//photoalbums
-				q=query(collection(firestore,"photoalbums"),where("photoalbum_name","<=",this.seaching_text),where("photoalbum_name",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_photoalbums_exist({id:element.id});
-				});
 
-                q=query(collection(firestore,"photoalbums"),where("keywords","array-contains",[this.seaching_text]),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_photoalbums_exist({id:element.id});
-				});
-				 q=query(collection(firestore,"photoalbums"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_photoalbums_exist({id:element.id});
-				});
+			if(this.upload_date!="" && this.upload_date.length>3){
+				queryv=await query(queryv,where("upload_date","==",this.searching_author));
+			}
 
-				q=query(collection(firestore,"photoalbums"),where("photoalbum_name","<=",this.seaching_text),where("photoalbum_name",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_photoalbums_exist({id:element.id});
-				});
-                //newspapers
-				q=query(collection(firestore,"newspapers"),where("name","<=",this.seaching_text),where("name",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_newspapers_exist({id:element.id});
-				});
+			queryv=await query(queryv,orderBy("name",'asc'),limit(this.loading_values));
+			let k= await getDocs(queryv);
+			k.forEach((b)=>{
+				if(this.searched.indexOf({profile:a.name,id:bb.id,chapter:b.id})<0)
+				this.searched.push({profile:a.name,id:bb.id,chapter:b.id})
+			});
+			})
+			
+			
+			
 
-                q=query(collection(firestore,"newspapers"),where("keywords","array-contains",[this.seaching_text]),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_newspapers_exist({id:element.id});
-				});
-				 q=query(collection(firestore,"newspapers"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_newspapers_exist({id:element.id});
-				});
+			
+			
+			
+			/*
+			if(this.searching_author==""){
+				queryv=await query(queryv,where("author","<=",this.searching_author));
+			}*/
 
-				q=query(collection(firestore,"newspapers"),where("name","<=",this.seaching_text),where("name",">=",this.seaching_text),limit(10));
-				c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_newspapers_exist({id:element.id});
-				});                 
 
-				
+			
+
+			
+			});
 				this.dataReady=true;
-				console.log(this.searchedBooks);
 			},
 			gt(a){
 					return get_text(a);
 				},
-			check_element_exist(b){
-			 if(!this.searchedBooks.includes(b)) this.searchedBooks.push(b);
-			 },
-             check_element_notes_exist(b){
-			 if(!this.notes.includes(b)) this.notes.push(b);
-			 },
-             check_element_photoalbums_exist(b){
-			 if(!this.photoalbums.includes(b)) this.photoalbums.push(b);
-			 },
-             check_element_newspapers_exist(b){
-			 if(!this.newspapers.includes(b)) this.newspapers.push(b);
-			 }
+			async loadmore()
+			{
+				this.loading_values+=3;
+				await this.searching();
+			}
+			
 		},
 		computed:
 		{

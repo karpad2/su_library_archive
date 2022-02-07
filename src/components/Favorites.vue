@@ -7,7 +7,7 @@
 		   </md-card-header-text>
 		   </md-card-header>
 		<md-card-content>
-          <bookcard v-for="fav in favorites" :key="fav" :book_id="fav" />
+          <card profile="books" v-for="fav in favorites" :key="fav" :id="fav" />
         </md-card-content>
 	</md-card>		
 		
@@ -20,12 +20,12 @@ import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,getDocFromCache} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
-import bookcard from "@/components/parts/bookcard";
+import card from "@/components/parts/card";
 
 
 	export default {
 		components: {
-			 bookcard
+			 card
 		},
 		metaInfo:{
 			title:title_page("","favorites"),
@@ -43,9 +43,6 @@ import bookcard from "@/components/parts/bookcard";
 			
 		}),
 		async mounted() {
-			
-			//let update_number=(await getDoc(collection(firestore,"books"),book_id)).data().favorites;
-			//collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
 
 			let user_ref;
 			try{

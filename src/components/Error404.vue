@@ -12,6 +12,7 @@
 				<div class="middle-center">
 					<logo />
 					<h3>{{gt("error404")}}</h3>
+						<md-button type="button" class="md-raised md-primary"  @click="goback">{{gt("go_back")}} <md-icon>history</md-icon></md-button>
 				</div>
 			</md-app-content>
 		</md-app>
@@ -39,6 +40,10 @@ import logo from '@/assets/logo';
 				{
 					return get_text(a);
 				},
+			goback()
+			{
+				this.$router.go(-1);
+			}
 		}
 	}
 </script>

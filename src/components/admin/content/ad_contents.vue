@@ -94,19 +94,19 @@ export default {
 				this.dataReady=false;
 				this.searchednewspapers=[];
 				//if(!(String(this.seaching_text).length>0)) return [];
-				let q=query(collection(firestore,this.profile),where("keywords","array-contains",[this.searching_text]),limit(10));
+				let q=query(collection(firestore,`/${this.profile}`),where("keywords","array-contains",[this.searching_text]),limit(10));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
 				});
 
-				q=query(collection(firestore,this.profile),where(this.profile+"_name","<=",this.searching_text),where(this.profile+"_name",">=",this.searching_text),limit(10));
+				q=query(collection(firestore,`/${this.profile}`),where("name","<=",this.searching_text),where("name",">=",this.searching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});
 				});
 
-                q=query(collection(firestore,this.profile),where("language",">=",this.searching_text),limit(10));
+                q=query(collection(firestore,`/${this.profile}`),where("language",">=",this.searching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id,data:element.data()});

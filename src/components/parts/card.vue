@@ -4,7 +4,7 @@
   <div v-if="dataReady">
       <md-card-media-cover md-solid>
         <md-card-media @click="open_newspaper" md-ratio="1:1">
-          <img draggable="false" v-if="imageload" class="cover" v-lazy="newspaper_cover" alt="thumb_newspaper_cover">
+          <img draggable="false" v-if="imageload" class="cover" :src="newspaper_cover" alt="thumb_newspaper_cover">
           <loading v-else/>
         </md-card-media>
 
@@ -12,12 +12,17 @@
           <md-card-header>
             <router-link  :to="get_link()"> <span  class="md-title">{{newspaper.name}}</span> </router-link>
             
+             
+            <span  v-if="newspaper.author!=null" @click="open_newspaper" class="md-subhead">{{newspaper.author}}</span>
+            <span  v-else-if="cat_name!=''" @click="open_newspaper" class="md-subhead">{{cat_name}}</span>
+            <span  v-else-if="newspaper.category!=null" @click="open_newspaper" class="md-subhead">{{newspaper.category}}</span>
+            <span  v-else-if="newspaper.publisher!=null" @click="open_newspaper" class="md-subhead">{{newspaper.publisher}}</span>
             
-            <span @click="open_newspaper" class="md-subhead">{{newspaper.author}}</span>
+
           </md-card-header>
 
           <md-card-actions>
-            <flag :flag="newspaper.language"/>
+            <flag :flag="language"/>
             <md-button v-if="signedin"  class="md-icon-button">
               <md-icon @click="add_favorite" v-if="is_favorite" style="color:red">favorite</md-icon>
               <md-icon @click="add_favorite" v-else>favorite</md-icon>
@@ -66,7 +71,22 @@ import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
 export default {
   name: 'MediaCover',
-  props:["id","profile"],
+
+  props:{
+    
+    id: {
+      type: String,
+    },
+    profile: {
+      type: String,
+      default: "",
+    },
+    chapter:{
+      type:String,
+      default:""
+    }
+    },
+  
   data()
   {
       return{
@@ -74,6 +94,8 @@ export default {
           imageload:false,
           newspaper:{},
           user:{},
+          language:"rs-RS",
+          cat_name:"",
           is_favorite:false,
           signedin:false,
           sharepopup:false,
@@ -87,8 +109,23 @@ export default {
   },
   async mounted()
   {
-    let newspaperref=await getDoc(doc(firestore,this.profile,this.id));
+    console.log(this.chapter);
+    let k=null;
+    if(this.chapter!="")
+    {
+      k=doc(firestore,`/${this.profile}/${this.id}/chapters`,this.chapter);
+      let tmp=await getDoc(doc(firestore,`/${this.profile}`,this.id));
+      this.cat_name=tmp.data().name;
+      this.language=tmp.data().language;
+    }
+    else
+    {
+       k=doc(firestore,`/${this.profile}`,this.id);
+    }
+
+    let newspaperref=await getDoc(k);
     this.newspaper=newspaperref.data();
+    this.language=this.newspaper.language;
 
     try {
     this.image_loading();
@@ -109,26 +146,35 @@ export default {
   },
   methods:
   {
-      async image_loading()
+    async image_loading()
+    {
+      let ref_thumbnail="";
+      if(this.chapter=="")
       {
-    let ref_thumbnail=ref(storage,`/${this.profile}/${this.id}/thumbnail.jpg`);
-    this.newspaper_cover=await getDownloadURL(ref_thumbnail);
+        ref_thumbnail=ref(storage,`/${this.profile}/${this.id}/thumbnail.jpg`);
+        this.newspaper_cover=await getDownloadURL(ref_thumbnail);
+      }
+      else{
+        try{
+        ref_thumbnail=ref(storage,`/${this.profile}/${this.id}/chapters/${this.chapter}/thumbnail.jpg`);
+        this.newspaper_cover=await getDownloadURL(ref_thumbnail);
+        }
+        catch(ex)
+        {
+          console.log(ex);
+          ref_thumbnail=ref(storage,`/${this.profile}/${this.id}/thumbnail.jpg`);
+          this.newspaper_cover=await getDownloadURL(ref_thumbnail);
+        }
+      }
+    
     this.imageload=true;
       },
 
     open_newspaper()
     {
-      let l="";
-
-      if(this.signedin())
-      {
-        l=`/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}`;
-      }
-      else
-      {
-        l=`/public/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}`;
-      }
-      this.$router.push(l);
+     
+     
+    
 
     },
     share()
@@ -139,18 +185,26 @@ export default {
     {
     let l="";
 
+
       if(this.signedin)
       {
+        if(this.chapter==undefined)
+      {
         l=`/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}`;
+      
       }
       else
       {
-        l=`/public/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}`;
+        l=`/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}/chapter/${this.chapter}`;
+      }
       }
     return l;
     },
-    add_favorite()
+   async add_favorite()
     {
+      let l=await getDoc(firestore,`users/${getAuth().currentUser.uid}/favorites/${this.profile}/${this.id}`);
+      if(!l.exists())
+      await setDoc(firestore,`users/${getAuth().currentUser.uid}/favorites/${this.profile}/${this.id}`,{ilikeit:true},{merge:true});
       
     }
 

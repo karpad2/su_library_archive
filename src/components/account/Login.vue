@@ -16,12 +16,16 @@
 		<md-button class="md-raised md-primary" @click="login">{{gt("login")}}</md-button>
 		
 		<md-button class="md-raised md-primary" @click="registerbutton">{{gt("register")}}</md-button>
-		<md-button class="md-raised md-primary" v-if="inlibrary" @click="libraryloginbutton">{{gt("libraryuser")}}</md-button>
+		<md-button class="md-raised md-primary" v-if="inlibrary" @click="libraryloginbutton">{{gt("libraryuser")}} <md-icon>computer</md-icon></md-button>
 		
 		</div>
 		<md-field>
-			<p>{{gt("login_with_google")}}</p>
-			<md-button type="button" class="md-raised md-primary" @click="loginwithgoogle">{{gt("login_with")}} <glogo/></md-button>
+			<p>{{gt("login_with")}} Google</p>
+			<md-button type="button" class="md-raised md-primary" @click="loginwithgoogle">{{gt("login_with")}} <md-icon>google</md-icon></md-button>
+		</md-field>
+		<md-field>
+			<p>{{gt("login_with")}} Facebook</p>
+			<md-button type="button" class="md-raised md-primary" style="background-color:#385898; color:white" @click="loginwithfacebook">{{gt("login_with")}} <md-icon>facebook</md-icon></md-button>
 		</md-field>
 		<p style="color:red;">{{errorMessage}}</p>
 
@@ -29,10 +33,10 @@
 </template>
 
 <script>
-import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider,getAuth } from "firebase/auth";
+import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider,FacebookAuthProvider,getAuth } from "firebase/auth";
 	import {FirebaseAuth,firestore} from "@/firebase";
 	import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
-	import glogo from "@/assets/glogo";
+	
 	import axios from "axios";
 	import firebaseCredentials from '../../firebase/credentials';
 	import {get_text,title_page} from "@/languages";
@@ -41,7 +45,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 	export default {
 		name: "AccountLogin",
 		components: {
-    		glogo
+    		
   			},
 	 metaInfo:{
 			title:title_page("","login"),
@@ -135,6 +139,31 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				{	
 				
 				const credential = await GoogleAuthProvider.credentialFromResult(result);
+				const token = credential.accessToken;
+				// The signed-in user info.
+				const user = result.user;
+				this.$router.replace('/home');	
+				this.set_user_data_local();
+				
+				await setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName},{merge:true});
+
+				}).catch((error) => {
+						if (error.code === 'auth/wrong-password') {
+							_this.errorMessage = "Password wrong";
+						} else {
+							_this.errorMessage = "Check email and password";
+							console.log(error);
+						}
+					});
+			},
+			loginwithfacebook: async function()
+			{
+				let _this = this;
+				let provider= new FacebookAuthProvider();
+				signInWithPopup(await FirebaseAuth,provider).then(async (result)=>
+				{	
+				
+				const credential = await FacebookAuthProvider.credentialFromResult(result);
 				const token = credential.accessToken;
 				// The signed-in user info.
 				const user = result.user;

@@ -3,6 +3,7 @@
   "description": "Gradska digitalna biblioteka Subotica",
   "version": "0.1.0-alpha-prerelease",
   "author": "karpad2",
+  "author_homepage": "https://karpad2.github.io",
   "private": true,
   "main": "electron/main.js",
   "scripts": {
@@ -39,6 +40,7 @@
     "appId": "com.github.karpad2.su_library_archive"
   },
   "dependencies": {
+    "@react-pdf-viewer/thumbnail": "^3.1.0",
     "@vue/cli-plugin-pwa": "^4.5.15",
     "axios": "^0.22.0",
     "babel-plugin-remove-comments": "^2.0.0",
@@ -53,6 +55,7 @@
     "electron-notarize": "^1.1.1",
     "electron-updater": "^4.6.1",
     "express": "^4.17.1",
+    "facebook-sdk": "^0.3.3",
     "file-saver": "^2.0.5",
     "firebase": "^9.0.0-beta.7",
     "firebase-admin": "^10.0.0",
@@ -61,6 +64,7 @@
     "firebase-tools": "^9.16.5",
     "firebaseui": "^6.0.0",
     "fork-me-on-github-vue": "^1.0.7",
+    "html5-qrcode": "^2.1.6",
     "ionic": "^5.4.16",
     "latin-to-cyrillic": "^1.0.1",
     "lzma": "^2.3.2",
@@ -68,9 +72,13 @@
     "moment-duration-format": "^2.3.2",
     "ng2-pdf-viewer": "^7.0.2",
     "pdf-image": "^2.0.0",
+    "pdf-thumbnail": "^1.0.6",
+    "pdf-thumbnails-generator": "^1.0.6",
     "pdf2pic": "^2.1.4",
     "pdfjs": "^2.4.7",
+    "pdfjs-dist": "2.5.207",
     "react-native-firebase": "^5.6.0",
+    "react-pdf-thumbnail": "^0.1.0",
     "register-service-worker": "^1.7.2",
     "sass-loader": "^12.4.0",
     "tf-idf": "^1.0.0",
@@ -101,7 +109,8 @@
     "vueditor": "^0.3.1",
     "vuejs-noty": "^0.1.3",
     "vuetify": "^2.5.10",
-    "yarn": "^1.22.11"
+    "yarn": "^1.22.11",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",

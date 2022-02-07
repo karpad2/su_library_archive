@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter  from 'vue-router';
+import {createWebHashHistory}  from 'vue-router';
 import {FirebaseAuth,isAdmin} from '../firebase';
 Vue.use(VueRouter);
 
@@ -35,7 +36,6 @@ import Support from "@/components/Support";
 
 const router = new VueRouter ({
 	mode: 'history',
-	base: '/',
 	routes: [
 		
 		
@@ -56,7 +56,7 @@ const router = new VueRouter ({
 		
 		{
 			path: 'search',
-			name: 'Searchwithoutlogin',
+			name: 'Searchpublicwithoutlogin',
 			component: Search
 		},
 		{
@@ -75,7 +75,7 @@ const router = new VueRouter ({
 		{
 			path: '/',
 			component: Index,
-			meta: {requiresAuth: true},
+			meta: {requiresAuth: false},
 			children: [
 				{
 					path: '/',
@@ -100,7 +100,7 @@ const router = new VueRouter ({
 				},
 				{
 					path: 'search/:bmode/:bsearch',
-					name: 'Search_aa_withoutlogin',
+					name: 'Search_a_withoutlogin',
 					component: Search
 				},
 			
@@ -117,7 +117,7 @@ const router = new VueRouter ({
 				
 				{
 					path: 'view/:viewtype/:bmode/:psearch',
-					name: 'viewwithoutlogin',
+					name: 'viewwithsearchlogin',
 					component: template_view
 				},
 				{
@@ -178,6 +178,11 @@ const router = new VueRouter ({
 					name: 'admin-info',
 					component: Admin_Dashboard,
 				},
+				{
+					path: 'admin/dashboard',
+					name: 'admin-info-dashboard',
+					component: Admin_Dashboard,
+				},
 				]
 		},
 		
@@ -211,34 +216,16 @@ const router = new VueRouter ({
 
 	]
 });
-
 router.beforeEach((to, from, next) => {
 	let currentUser = FirebaseAuth.currentUser;
 	let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-
 	if(!to.path.includes("/page/"))
 	{
 		localStorage.setItem("fullscreen",false);
 	}
-//	if(String(to.path)=="/home") next("/home"); 
+	if(requiresAuth && !currentUser) next('/account/login');
+	else next();
+})
 
-/*
- 	if (String(to.path).indexOf("admin")>=0 && !isAdmin()) {
-		next("/")
-	}*/
-	//let requireAdmin = to.matched.some(record=>record.meta.requireAdmin);
-	//console.log(from);
-	if(requiresAuth && !currentUser) next('/account/login');
-	//if(requireAdmin && currentUser) next('/admin/login');
-	else next();
-	//next();
-});
-/*
-router.beforeEach((to, from, next) => {
-	let currentUser = FirebaseAuth.currentUser;
-	let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-	if(requiresAuth && !currentUser) next('/account/login');
-	else next();
-})*/
 
 export default router;

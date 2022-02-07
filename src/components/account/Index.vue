@@ -40,6 +40,7 @@ import imagelogo from "@/assets/icons/android-chrome-512x512.png";
 import {showAt, hideAt} from 'vue-breakpoints';
 import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider,getAuth } from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
+import langa from "../../languages/languages";
 import Biglogo from '@/assets/biglogo.vue';
 	export default {
 		components: {
@@ -50,7 +51,7 @@ import Biglogo from '@/assets/biglogo.vue';
 		name: "AccountIndex",
 		data: () => ({
 			userTheme: "default",
-			languages:[{value:"rs-RS",text:"Srpski"},{value:"sr-SR",text:"Српски"},{value:"hu-HU",text:"Magyar"},{value:"hr-HR",text:"Hrvatski"},{value:"en-EN",text:"English"}],
+			languages:langa.languages,
 			language:"",
 			dataReady:false,
 

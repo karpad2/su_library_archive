@@ -7,7 +7,6 @@
 					<md-icon>menu</md-icon>
 				</md-button>
 				
-				
 				<hide-at  breakpoint="small">
 				<router-link class="router-link" to="/home">
 					<logo class="bar-logo" />
@@ -151,11 +150,12 @@
 						@md-confirm="check_code" />
 					
 					
-
-				<undermaintenance v-if="undermaintenance_flag && !admin" />
+				<nointernetconnection v-if="!internet_connection" />
+				<undermaintenance v-else-if="undermaintenance_flag && !admin" />
 				<router-view  :fullscreen="fullscreen" v-else-if="!loading_screen"/>
 				<loading v-else />
 			</md-app-content>
+
 
 			
 		</md-app>
@@ -167,6 +167,8 @@
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider } from "firebase/auth";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
+import langa from "../languages/languages";
+import cat from "../firebase/categories";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,functions} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,getDocFromCache  } from "firebase/firestore";
 import {showAt, hideAt} from 'vue-breakpoints';
@@ -174,10 +176,9 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import firebaseCredentials from "@/firebase/credentials";
 import loading from "@/components/parts/loading";
 import undermaintenance from "@/components/parts/undermaintenance";
+import nointernetconnection from "@/components/parts/nointernetconnection";
 import logo from "@/assets/logo";
-import firebaseui from 'firebaseui'
-
-
+import * as firebaseui from 'firebaseui';
 
 	export default {
 		components: {
@@ -185,7 +186,8 @@ import firebaseui from 'firebaseui'
 		loading,
 		hideAt, 
 		showAt,
-		undermaintenance 
+		undermaintenance,
+		nointernetconnection 
 		},
 		name: 'Index',
 		title:"",
@@ -207,8 +209,7 @@ import firebaseui from 'firebaseui'
 			code:"",
 			fullscreen:false,
 			enter_code:false,
-			languages:[{value:"rs-RS",text:"Srpski"},{value:"sr-SR",text:"Српски"},{value:"hu-HU",text:"Magyar"},{value:"hr-HR",text:"Hrvatski"},{value:"en-EN",text:"English"}],
-			language:"",
+			languages:langa.languages,
 			searchedBooks:[],
 			dataReady: false,
 			aterms:true,
@@ -222,6 +223,7 @@ import firebaseui from 'firebaseui'
 			promotion_hide:false,
 			signed_in:false,
 			menuVisible1: false,
+			internet_connection:false,
 			menuVisible2: false,
 			userTheme: "default",
 			loading_screen:false,
@@ -256,6 +258,7 @@ import firebaseui from 'firebaseui'
 			{
 				this.fullscreen=JSON.parse(localStorage.getItem("fullscreen"));
 				//logger(JSON.parse(localStorage.getItem("fullscreen")));
+				 this.internet_connection=window.navigator.onLine;
 			},500);
 			
 			this.$router.afterEach(()=>{
@@ -373,53 +376,25 @@ import firebaseui from 'firebaseui'
 				{
 					icon: 'home',
 					title: this.gt("Home"),
-					link: this.add_public('/home'),
+					link: '/home',
 					auth: true,
 				},
 				{
 					icon: 'search',
 					title: this.gt("Search"),
-					link: this.add_public('/search'),
+					link: '/search',
 					auth: true,
-				},
-				{
-					icon: 'auto_stories',
-					title: this.gt("Books"),
-					link: this.add_public('/views/books'),
-					auth: true,
-				},
-				{
-					icon: 'newspaper',
-					title: this.gt("newspapers"),
-					link: this.add_public('/views/newspapers'),
-					auth: true,
-				},
-				{
-					icon: 'photo_library',
-					title: this.gt("photoalbums"),
-					link: this.add_public('/views/photoalbums'),
-					auth: true,
-				},
-				{
-					icon: 'library_music',
-					title: this.gt("notes"),
-					link: this.add_public('/views/notes'),
-					auth: true,
-				},
-				{
-					icon: 'ads_click',
-					title: this.gt("posters"),
-					link: this.add_public('/views/posters'),
-					auth: true,
-				},
-				{
-					icon: 'history_edu',
-					title: this.gt("manuscripts"),
-					link: this.add_public('/views/manuscripts'),
-					auth: true,
-				},
+				}
 		
 			];
+			cat.categories.forEach((a)=>{
+				this.menuTab.push({
+					icon: a.icon,
+					title: this.gt(a.name),
+					link: `/views/${a.name}`,
+					auth: true,
+				})
+			})
 			if(this.admin && this.signed_in)
 			{
 
@@ -460,7 +435,7 @@ import firebaseui from 'firebaseui'
 				}
 				else
 				{
-					l=`/public${k}`;
+					l=`/public/${k}`;
 				}
 				return l;
 			},
@@ -554,6 +529,11 @@ import firebaseui from 'firebaseui'
 					
 					_this.$noty.error(this.gt("logout_error_pls_refresh"));
 				});
+			},
+			computed:{
+				
+					
+				
 			}
 		}
 	}
@@ -563,57 +543,6 @@ import firebaseui from 'firebaseui'
 <style lang="scss">
 	@import "../../src/style/variables.scss";
  
-
- /*
-
- <show-at breakpoint="mediumAndBelow" >
-				<md-app-drawer :md-active.sync="menuVisible2">
-							<md-toolbar class="md-transparent" md-elevation="3">
-								<span>Navigation</span>
-								<div class="md-toolbar-section-end">
-									<md-button class="md-icon-button md-dense" @click="toggleMenu">
-										<md-icon>keyboard_arrow_left</md-icon>
-									</md-button>
-								</div>
-							</md-toolbar>
-
-							<md-list>
-								<div v-for="tab in menuTab" :key="tab.title">
-									<router-link :to="tab.link">
-										<md-list-item v-if="tab.auth" :class="{'active': $route.fullPath.includes(tab.link)}">
-											<md-icon class="md-icon">{{tab.icon}}</md-icon>
-											<span class="md-list-item-text">{{tab.title}}</span>
-										</md-list-item>
-										
-									</router-link>
-								</div>
-								<md-divider></md-divider>
-								<md-list-item v-if="!member" @click="enter_code=1">
-											<md-icon class="md-icon">vpn_key</md-icon>
-											<span class="md-list-item-text">{{gt("enter_code")}}</span>
-								</md-list-item>
-								<md-list-item v-if="signed_in" @click="changeTheme">
-											<md-icon class="md-icon">settings_brightness</md-icon>
-											<span class="md-list-item-text">{{gt("ctheme")}}</span>
-								</md-list-item>
-								<show-at breakpoint="mediumAndAbove">
-								</show-at>
-								<md-list-item v-if="signed_in" @click="$router.push('/user')">
-											<md-icon class="md-icon">translate</md-icon>
-											<span class="md-list-item-text">{{gt("language")}}</span>
-								</md-list-item>
-								<md-divider></md-divider>
-								<md-list-item v-if="signed_in" @click="logout">
-											<md-icon class="md-icon">logout</md-icon>
-											<span class="md-list-item-text">{{gt("logout")}}</span>
-								</md-list-item>
-
-								
-								
-							</md-list>
-				</md-app-drawer>
-		</show-at>
- */
 	#vue-js-index-container {
 		.md-app {
 			height: 100vh;

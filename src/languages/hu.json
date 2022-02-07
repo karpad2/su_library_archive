@@ -14,11 +14,11 @@
     "Photoalbums":"Fotó albumok",
     "username":"Felhasználó név",
     "useremail":"Felhasználói email",
-    "valid_until":"Érvényes:",
+    "valid_until":"Érvényes",
     "error404":"Error Four-oh-Fouahh This links need a medic bag",
     "delete":"törlés",
     "Delete":"Törlés",
-    "upload_a_title_book":"Könyvek adminisztrálása:",
+    "upload_a_title_book":"Könyvek adminisztrálása",
     "upload":"Feltöltés",
     "like":"Tetszik",
     "user":"felhasználó",
@@ -31,6 +31,7 @@
     "account":"Felhasználó",
     "cookie_text":"A weboldal süti(cookie) technológiát használ.",
     "search_for_books":"Könyvek keresése",
+    
     "search":"Keresés",
     "search_by_name":"Keresés név alapján...",
     "users_cant_found":"Felhasználó nem található",
@@ -43,7 +44,7 @@
     "app_info":"Alkalmazás információk",
     "latest_version":"Jelenlegi verzió",
     "app_made_by":"App made by",
-    "profile_expiration_txt":"Az ön profilja lejár:",
+    "profile_expiration_txt":"Az ön profilja lejár",
     "Profile":"Profil",
     "add_new_book":"Könyv hozzáadása",
     "not_verified_user":"Nem érvényesített profil, kérem email-ben fogadja el.",
@@ -70,8 +71,8 @@
     "popular_ones":"Nézegetettek",
     "recent_uploads":"Új feltöltés",
     "send_email":"Küldjön emailt újra",
-    "page_number":"Oldalszám:",
-    "uploading_date":"Feltöltés dátuma:",
+    "page_number":"Oldalszám",
+    "uploading_date":"Feltöltés dátuma",
     "switch":"Első lap mint borító",
     "favorites":"Kedvencek",
 
@@ -121,7 +122,7 @@
     "page":"Oldal",
     "deletebook":"Könyv törlése",
     
-    "register":"Register",
+    "register":"Registráció",
     "password_pls_write_again":"Ismételje meg a jelszót",
     "newspapers":"Folyóíratok",
     "upload_a_newspaper":"Folyóírat feltöltése",
@@ -143,7 +144,7 @@
     "upload_a_photoalbums":"",
     "photoalbums_cant_found":"Fotóalbum nem található",
     "no_photoalbums_cant_be_found":"Nem található kifejezés",
-    "released_numbers":"Feltöltött kötetettek száma:",
+    "released_numbers":"Feltöltött kötetettek száma",
     "user_name":"Felhasználó neve",
     "user_email":"Felhasználó email",
     "editnewspaper":"Folyóírat szerkesztése",
@@ -162,7 +163,6 @@
     "upload_a_title_notes":"Kották adminisztrálása",
     "add_new_note":"Kotta hozzáadása",
     "note_name":"Kotta neve",
-<<<<<<< HEAD
     "edit_notes":"Kotta szerkesztése",
     "edit_book":"Könyv szerkesztése",
     "manuscript":"kézírat",
@@ -175,11 +175,26 @@
     "newspaper":"újság",
     "open":"megnyitás",
     "add_new":"Új hozzáadása",
-    "cant_found":"nem találhatóak"
+    "cant_found":"nem találhatóak",
+    "edit_note":"Kotta szerkesztése",
+    "Search":"Keresés",
+    "upload_cover":"Borító feltöltése",
+    "categories":"Kategóriák",
+    "posters":"Poszterek és kiskötettek",
+    "manuscripts":"Kézíratok",
+    "go_back":"Vissza",
+    "saved":"Mentve",
+    "upload_chapter":"Fájl feltöltése",
+    "upload_chapter_info":"Fájl információk",
+    "upload_chapter_finish":"Fájl feltöltés befejezése",
+    "libraryuser":"Helyi gépről való bejelentkezés",
+    "no_internet_connection":"Nincs internetkapcsolat",
+    "release_date":"Kiadás dátuma",
+    "from_date":"tól",
+    "to_date":"ig",
+    "upload_chapter_cover":"Borító feltöltése"
 
-=======
-    "edit_note":"Kotta szerkesztése"
->>>>>>> main
+
 
 
 

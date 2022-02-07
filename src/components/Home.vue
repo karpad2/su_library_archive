@@ -8,9 +8,8 @@
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-          <bookcard v-for="p in  popular_one" :key="p.id" :book_id="p.id" />
-
-		  <photoalbumscard v-for="p in  popular_one_photoalbum" :key="p.id" :photoalbum_id="p.id" />
+         	<card :profile="p.profile" v-for="p in  popular_ones" :key="p.id" :id="p.id" />
+		 
         </md-card-content>
 	</md-card>	
 </div>
@@ -22,7 +21,8 @@
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-          <bookcard v-for="p in  newest_one" :key="p.id" :book_id="p.id" />
+          
+		  <card :profile="p.profile" v-for="p in  newest_ones" :key="p.id" :id="p.id" />
 		  <div class="section">
 		  <div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
 		  </div>
@@ -35,11 +35,10 @@
 
 <script>
 import {FireDb,FirebaseAuth,userId,firestore} from "@/firebase";
-import bookcard from "@/components/parts/bookcard";
-import photoalbumscard from "@/components/parts/photoalbumscard";
+import cat from "../firebase/categories";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getDocsFromCache  } from "firebase/firestore";
-
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getDocsFromCache,OrderByDirection  } from "firebase/firestore";
+import card from "@/components/parts/card";
 
 	export default {
 		name: "Home_Page",
@@ -52,15 +51,11 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getD
 			active:0,
 			inactive:0,
 			devices:{},
-			loading_values:10,
+			loading_values:3,
 			events:[],
-			popular_one:[],
-			popular_one_photoalbum:[],
-			popular_ones_newspapers:[],
-			newest_one:[],
-			newest_ones_pas:[],
-			newest_ones_nps:[],
-
+			popular_ones:[],
+			newest_ones:[],
+		
 			date: new Date(),
 			
 		}),
@@ -68,8 +63,7 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getD
 			title:title_page("","Home"),
 		},
 		components:{
-			bookcard,
-			photoalbumscard
+			card
     		
 		},
 		computed: {
@@ -109,17 +103,17 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getD
 		},
 		async mounted()
 		{
+			await cat.categories.forEach(async (a)=>{
+			let c=collection(firestore,`${a.name}`);
+			let queryv=await query(c,orderBy("popularity","desc"),limit(1));
+			let k= await getDocs(queryv);
+			k.forEach(b=>{
+				this.popular_ones.push({profile:a.name,id:b.id})
+			});
+			});
 			
+			await this.newest_refresh_ones();
 			
-			//this.get_name();
-			//this.events=get_data_from_allroomdb("events");
-			
-			this.popular_one=await this.popular_ones();
-			this.popular_ones_newspapers=await this.fpopular_ones_newspapers();
-			this.popular_ones_photoalbums=await this.popular_ones_photoalbums();
-			this.newest_one= await this.newest_books();
-			this.newest_ones_nps= await this.newest_newspapers();
-			this.newest_ones_pas= await this.newest_photoalbums();
 			
 				
 			this.dataReady=true;	
@@ -138,162 +132,21 @@ import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,orderBy,getD
 					timeout: 1500,
 				});
 			},
-			async popular_ones()
+			async newest_refresh_ones()
 			{
-				let a=[];
-				
-				let q=query(collection(firestore,"books"),orderBy("popularity"),limit(5));
-				let c;
-				try
-				{
-					c=await getDocsFromCache(q);
-				}
-				catch(e)
-				{
-					c= await getDocs(q);
-				}
-				if(c.empty)
-				{
-					c= await getDocs(q);	
-				}
-				c.forEach(element => {
-				a.push({
-					id:element.id
-				})
-				
-				});
-				return  a;
+			await cat.categories.forEach(async (a)=>{
+			let c=collection(firestore,`${a.name}`);
+			let queryv=await query(c,orderBy("upload_date","desc"),limit(this.loading_values));
+			let k= await getDocs(queryv);
+			k.forEach(b=>{
+				this.newest_ones.push({profile:a.name,id:b.id})
+			});
+			});
 			},
-			async popular_ones_photoalbums()
-			{
-				let a=[];
-				
-				let q=query(collection(firestore,"photoalbums"),orderBy("popularity"),limit(5));
-				let c;
-				try
-				{
-					c=await getDocsFromCache(q);
-				}
-				catch(e)
-				{
-					c= await getDocs(q);
-				}
-				if(c.empty)
-				{
-					c= await getDocs(q);	
-				}
-				c.forEach(element => {
-				a.push({
-					id:element.id
-				})
-				
-				});
-				return  a;
-			},
-			async fpopular_ones_newspapers()
-			{
-				let a=[];
-				
-				let q=query(collection(firestore,"photoalbums"),orderBy("popularity"),limit(5));
-				let c;
-				try
-				{
-					c=await getDocsFromCache(q);
-				}
-				catch(e)
-				{
-					c= await getDocs(q);
-				}
-				if(c.empty)
-				{
-					c= await getDocs(q);	
-				}
-				c.forEach(element => {
-				a.push({
-					id:element.id
-				})
-				
-				});
-				return  a;
-			},
-			async newest_books()
-			{
-				let a=[];
-				let q=query(collection(firestore,"books"),orderBy("uploading_date"),limit(this.loading_values));
-				let c;
-				try
-				{
-					c=await getDocsFromCache(q);
-				}
-				catch(e)
-				{
-					c= await getDocs(q);
-				}
-				if(c.empty)
-				{
-					c= await getDocs(q);	
-				}
-				c.forEach(element => {
-				a.push({
-					id:element.id
-				})
-				
-				});
-				return  a;
-			},
-			async newest_photoalbums()
-			{
-				let a=[];
-				let q=query(collection(firestore,"photoalbums"),orderBy("uploading_date"),limit(this.loading_values));
-				let c;
-				try
-				{
-					c=await getDocsFromCache(q);
-				}
-				catch(e)
-				{
-					c= await getDocs(q);
-				}
-				if(c.empty)
-				{
-					c= await getDocs(q);	
-				}
-				c.forEach(element => {
-				a.push({
-					id:element.id
-				})
-				
-				});
-				return  a;
-			},
-			async newest_newspapers()
-			{
-				let a=[];
-				let q=query(collection(firestore,"newspapers"),orderBy("uploading_date"),limit(this.loading_values));
-				let c;
-				try
-				{
-					c=await getDocsFromCache(q);
-				}
-				catch(e)
-				{
-					c= await getDocs(q);
-				}
-				if(c.empty)
-				{
-					c= await getDocs(q);	
-				}
-				c.forEach(element => {
-				a.push({
-					id:element.id
-				})
-				
-				});
-				return  a;
-			},
+		
 			async loadmore()
 			{
-				this.loading_values+=10;
+				this.loading_values+=3;
 				await this.newest_books();
 			}
 		},

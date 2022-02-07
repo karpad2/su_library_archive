@@ -9,25 +9,23 @@
 	
 	
 	<hide-at breakpoint="small"> 
-	<md-button @click="mpagechooser=true" class="pages">{{gt("pages")}} {{this.page}} / {{this.chapter.page_number}}</md-button>
 	</hide-at>
 	<div class="md-toolbar-section-end">
 	<hide-at breakpoint="small"> 
 		<div>
 		<md-button :id="idConfig.zoomOut" ><md-icon>zoom_out</md-icon></md-button>
-		
 		<md-button :id="idConfig.zoomIn"><md-icon>zoom_in</md-icon></md-button>
 		</div>
 	</hide-at>
 	<md-button @click="fullscreen_toggle" class="small"><md-icon>fullscreen</md-icon></md-button>
-	<md-button v-if="page<chapter.page_number" class="small" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
+	
 	<hide-at breakpoint="small"> 
 		<md-button @click="settings"><md-icon>settings</md-icon></md-button>
 	</hide-at>
 	</div>
 </md-toolbar> 
 <div class="section">
-	<vue-pdf-app :config="config"  :id-config="idConfig" style="height: 100vh;" :page-number="page" :pdf="pdf_file" ></vue-pdf-app>
+	<vue-pdf-app style="height: 100vh;" :page-number="page" :pdf="pdf_file" ></vue-pdf-app>
 
 	
 </div>
@@ -35,9 +33,9 @@
 	<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
 	<md-button v-if="page>1" @click="last_page"><md-icon>navigate_before</md-icon></md-button>
 	<hide-at breakpoint="small"> 
-	<md-button @click="mpagechooser=true" class="pages">{{gt("pages")}} {{this.page}} / {{this.chapter.page_number}}</md-button>
-	</hide-at>
+</hide-at>
 	<div class="md-toolbar-section-end">
+
 	<hide-at breakpoint="small"> 
 		<div>
 		<md-button :id="idConfig.zoomOut" ><md-icon>zoom_out</md-icon></md-button>
@@ -100,8 +98,10 @@ import logo from "@/assets/logo";
 				mpagechooser :false,
 				dataReady:false,
 				image:"",
-				config:{toolbar: false},
-				idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId" },
+				config:{
+       			 toolbar: false
+      			},
+				idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId",numPages: "vuePdfAppNumPages",pageNumber: "vuePdfAppPageNumber", print: "vuePdfAppPrint" },
 				pdf_file:"",
 				chapter_id:"",
 				zoom_scale:1,
@@ -191,7 +191,7 @@ import logo from "@/assets/logo";
 		methods: {
 			async add_page_to_load(lo)
 			{
-				let prev= ref(storage,`/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/pages/${lo}.jpg`);
+				let prev= ref(storage,`${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/pages/${lo}.jpg`);
 				let l={
 						id:lo,
 						url: await getDownloadURL(prev)
@@ -216,7 +216,7 @@ import logo from "@/assets/logo";
 			},
 			back_to_home()
 			{
-				this.$router.push(`/${this.profile}/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}`);
+				this.$router.push(`/view/${this.profile}/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}/chapter/${this.$route.params.cid}`);
 				
 			},
 			zoom_in()
@@ -238,7 +238,7 @@ import logo from "@/assets/logo";
 
 			enter_read(i)
 			{
-				this.$router.push(`/${this.profile}/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}/chapter/${this.chapter_id}/page/${i}`);
+				this.$router.push(`/view/${this.profile}/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}/chapter/${this.chapter_id}/page/${i}`);
 			},
 			settings()
 			{
@@ -254,7 +254,7 @@ import logo from "@/assets/logo";
 			},
 			setup_shortcuts()
 			{
-				window.addEventListener("keydown",this.escapeListener);
+				//window.addEventListener("keydown",this.escapeListener);
 			},
 			escapeListener(event)
 			{

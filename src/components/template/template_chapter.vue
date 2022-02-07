@@ -4,16 +4,17 @@
 <md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title"> <h1>{{chapter.chapter_name}}</h1></div>
+          <div class="md-title"> <h1>{{chapter.name}}</h1></div>
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
 				<div class="book-container">
-				<div class="bookavatar">
-				<img draggable="false"  @click="enter_read(1)" class="book_cover" alt="book_cover" :src="book_thumbnail" />
+				<div @click="enter_read(1)" class="bookavatar">
+				<img  v-if="book_thumbnail_jpg" draggable="false" style="width:250px; border:1px "  class="book_cover" alt="book_cover" :src="book_thumbnail" />
+					<PDFThumbnail v-else :pdfurl="pdf_file" :page="1" />
 				</div>
 		<div class="book-info">
-			<p> {{gt("author")}}: <md-chip @click="keyword_link(book.author)" md-static>{{book.author}}</md-chip></p>
+			<p> {{gt("name")}}: <md-chip @click="gotoparent(book.name)" md-static>{{book.name}}</md-chip></p>
 			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
 		{{gt("information")}}:
@@ -22,13 +23,16 @@
 			<div>
 			
 		<p>{{gt("upload_date")}}:{{book.upload_date}}</p>
+		<p>{{gt("release_date")}}:{{book.release_date}}</p>
 		</div>
 		</div>
 		<div>
-			{{gt("page_number")}}: <md-chip>{{book.page_number}}</md-chip>
+			{{gt("page_number")}}: <md-chip>{{numPages}}</md-chip>
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
+			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(profile.split(0,profile.length-2))+" "+gt("edit")}}</md-button>
+		
 			</div>	
 		</div>
 		
@@ -38,11 +42,14 @@
 		</div>
 		</div>
         </md-card-content>
+	
 	</md-card>
 	<md-card v-if="(signed_in &&member||admin)||(signed_in&&promotion)">
-		 <md-card-content>
-			 
-
+		<md-card-content>
+			
+			<PDFThumbnail :pdfurl="pdf_file" @click="enter_read(page)" v-for="page in pagenumbers" :key="page"  :page="page" />	 
+		
+		<div class="middle-center"> <md-button v-if="!hide" @click="loadmore">{{gt("load_more")}}</md-button></div>
 			 
 		</md-card-content>	
 	</md-card>	
@@ -58,14 +65,18 @@ import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase"
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
-import Pages from "@/components/parts/Pages";
+import VuePdfApp from "vue-pdf-app";
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
+import PDFThumbnail from "@/components/parts/PDFThumbnail";
+
 
 	export default {
 		components: {
 		
 		loading,
+		PDFThumbnail
+		
 		
 		},
 		
@@ -73,9 +84,15 @@ import flag from "@/components/parts/flag";
 		data: () => ({
 			book:{},
 			chapter_id:"",
+			chapter_ref:"",
+			loading_values:10,
+			numPages:0,
+			chapter:{},
+			hide:false,
 			dataReady: false,
 			signed_in:false,
 			book_thumbnail:"",
+			book_thumbnail_jpg:true,
 			admin:false,
 			member:false,
 			promotion:false,
@@ -83,7 +100,12 @@ import flag from "@/components/parts/flag";
 			title_side:title_page(),
 			book_id:"",
 			generated_keywords:"",
-			user:{}
+			user:{},
+			config:{
+				toolbar: false},
+		
+				idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId",numPages: "vuePdfAppNumPages",pageNumber: "vuePdfAppPageNumber", print: "vuePdfAppPrint" },
+				
 			
 		}),
 		metaInfo(){
@@ -93,7 +115,12 @@ import flag from "@/components/parts/flag";
 			}
 		},
 		async mounted() {
-			this.book_id=this.$route.params.bid;
+			this.book_id=this.$route.params.nid;
+			this.chapter_id=this.$route.params.cid;
+			if(this.$route.params.viewtype!=undefined)
+			{
+				this.profile=this.$route.params.viewtype;
+			}
 			let book_ref;
 
 			try{
@@ -105,8 +132,21 @@ import flag from "@/components/parts/flag";
            book_ref=await getDoc(doc(firestore,`${this.profile}`,this.book_id));
            this.book=book_ref.data(); 
         }
+
+		try{
+        this.chapter_ref=await getDocFromCache(doc(firestore,`${this.profile}/${this.book_id}/chapters`,this.chapter_id));
+        this.chapter=this.chapter_ref.data();
+        }
+        catch(e)
+        {
+           this.chapter_ref=await getDoc(doc(firestore,`${this.profile}/${this.book_id}/chapters`,this.chapter_id));
+           this.chapter=this.chapter_ref.data(); 
+        }
 			this.book=book_ref.data();
-			
+
+			let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/book.pdf`);// loading page from bucket
+			 this.pdf_file= await getDownloadURL(image_ref);
+
 
 			this.generated_keywords+=`${this.book.name},${this.book.author},`;
 			this.book.keywords.forEach(e=>
@@ -116,6 +156,10 @@ import flag from "@/components/parts/flag";
 			setDoc(doc(firestore,`${this.profile}`,this.book_id),{popularity:this.book.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
 			
+			if(this.chapter.name==null)
+			{
+				setDoc(doc(firestore,`${this.profile}/${this.book_id}/chapters/${this.chapter_id}`,),{name:this.chapter.chapter_name},{merge:true});
+			}
 			if(this.signed_in)
 			{
 			this.user= getAuth().currentUser;
@@ -145,9 +189,15 @@ import flag from "@/components/parts/flag";
            
         }
 			this.promotion=get_under.data().promotion;
-
-			let ref_storage =ref(storage,`/${this.profile}s/${this.book_id}/chapter/${this.chapter_id}/thumbnail.jpg`);
+try{
+			let ref_storage =ref(storage,`${this.profile}/${this.book_id}/chapters/${this.chapter_id}/thumbnail.jpg`);
 			this.book_thumbnail= await getDownloadURL(ref_storage);
+}
+catch(ex)
+{
+	console.error(ex);
+	this.book_thumbnail_jpg=false;
+}
 			if(this.book.hided) this.$router.push("/home");
 			this.title_side=title_page(this.book.name);
 			if(this.signed_in)
@@ -178,25 +228,57 @@ import flag from "@/components/parts/flag";
 			if(!this.signed_in) return;
 			if(this.is_favorite) {
 			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.book_id)});
-			let fav= (await getDoc(doc(firestore,`${this.profile}`,this.book_id))).data().favorites;
-			await updateDoc(doc(firestore,`${this.profile}`,this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
+			let fav= (await getDoc(doc(firestore,`/${this.profile}`,this.book_id))).data().favorites;
+			await updateDoc(doc(firestore,`/${this.profile}`,this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
 			}
 			else 
 			{
 			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.book_id)});	
-			let fav= (await getDoc(doc(firestore,`${this.profile}`,this.book_id))).data().favorites;
-			await updateDoc(doc(firestore,`${this.profile}`,this.book_id),{favorites:this.book.favorites-1},{merge:true}); 
+			let fav= (await getDoc(doc(firestore,`/${this.profile}`,this.book_id))).data().favorites;
+			await updateDoc(doc(firestore,`/${this.profile}`,this.book_id),{favorites:this.book.favorites-1},{merge:true}); 
 				
 			}
 			
 			},
 			enter_read(i)
 			{
-				this.$router.push(`/book/${this.book_id}/${replace_white(this.book.name)}/page/${i}`);
+				this.$router.push(`/view/${this.profile}/${this.book_id}/${replace_white(this.book.name)}/chapter/${this.chapter_id}/page/${i}`);
 			},
 			keyword_link(i)
 			{
-				this.$router.push(`/books/search/${i}`);
+				this.$router.push(`/search/${i}`);
+			},
+			movetoadmin()
+			{
+				this.$router.push(`/admin/content/${this.profile}/${this.book_id}/chapter/${this.chapter_id}`);
+			},
+			pagesRendered()
+			{
+				console.log(document.getElementById("canvas"));
+
+
+			},
+			loadmore()
+			{
+				this.loading_values+=10;
+			},
+			
+			gotoparent()
+			{
+			
+				this.$router.push(`/view/${this.profile}/${this.book_id}/${replace_white(this.book.name)}`);
+			
+			}
+		},
+		computed:{
+			pagenumbers()
+			{
+				let l=[];
+				for(let i=0;i<this.loading_values;i++)
+				{
+					if(i<this.numPages) l.push(i+1);
+				}
+				return l;
 			}
 		}
 	}
@@ -206,7 +288,7 @@ import flag from "@/components/parts/flag";
 <style lang="scss" >
 	.book_cover{
 		width: 350px;
-		height: 494px;
+		
 		aspect-ratio: auto 350/494;
 	}
 	.big_container
@@ -223,7 +305,7 @@ import flag from "@/components/parts/flag";
 }
 .bookavatar img{
 	width: 350px;
-	height:494px;
+
 	aspect-ratio: auto 350/494; 
     
 

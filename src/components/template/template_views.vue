@@ -15,6 +15,7 @@
 		<div class="section">
 			<card :profile="profile" v-for="newspaper in searchednewspapers" :key="newspaper.id" :id="newspaper.id"/>
 		</div>
+		<div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
 		</md-card-content>
 	</md-card>
 	</div>
@@ -54,6 +55,7 @@ import logo from "@/assets/logo";
 			showSidepanel:false,
 			menuVisible: false,
 			searchednewspapers:[],
+			loading_values:10,
 			userTheme: "default",
 			loading_screen:false,
 			dataReady:false,
@@ -74,11 +76,7 @@ import logo from "@/assets/logo";
 			}
 			else 
 			{
-				let q=query(collection(firestore,this.profile),limit(10));
-				let c=await getDocs(q);
-				c.forEach(element => {
-				this.check_element_exist({id:element.id});
-				});
+				await this.load_basic();
 			}
 			if(this.$route.params.viewtype!=undefined)
 			{
@@ -106,19 +104,21 @@ import logo from "@/assets/logo";
 			{
 				this.dataReady=false;
 				this.searchednewspapers=[];
-				if(!(String(this.seaching_text).length>0)) return [];
-				let q=query(collection(firestore,this.profile+"s"),where("keywords","array-contains",[this.seaching_text]),limit(10));
+				if(!(String(this.seaching_text).length>0)){
+					this.load_basic();
+				}
+				let q=query(collection(firestore,`/${this.profile}`),where("keywords","array-contains",[this.seaching_text]),limit(10));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
 				});
-				 q=query(collection(firestore,this.profile+"s"),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
+				 q=query(collection(firestore,`/${this.profile}`),where("author","<=",this.seaching_text),where("author",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
 				});
 
-				q=query(collection(firestore,this.profile+"s"),where(this.profile+"_name","<=",this.seaching_text),where(this.profile+"_name",">=",this.seaching_text),limit(10));
+				q=query(collection(firestore,`/${this.profile}`),where("name","<=",this.seaching_text),where("name",">=",this.seaching_text),limit(10));
 				c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
@@ -128,9 +128,22 @@ import logo from "@/assets/logo";
 				this.dataReady=true;
 				console.log(this.searchednewspapers);
 			},
+			async load_basic()
+			{
+				let q=query(collection(firestore,`/${this.profile}`),limit(this.loading_values));
+				let c=await getDocs(q);
+				c.forEach(element => {
+				this.check_element_exist({id:element.id});
+				});
+			},
 			gt(a){
 					return get_text(a);
 				},
+			async loadmore()
+			{
+				this.loading_values+=3;
+				await this.searching();
+			},
 			check_element_exist(b){
 			 if(!this.searchednewspapers.includes(b)) this.searchednewspapers.push(b);
 			 },

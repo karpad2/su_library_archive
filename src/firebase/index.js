@@ -2,7 +2,8 @@ import {getAuth,setPersistence,inMemoryPersistence,browserSessionPersistence,bro
 const { initializeAppCheck, ReCaptchaV3Provider } = require("firebase/app-check");
 import {getDatabase,ref,set, onValue,onDisconnect,child} from 'firebase/database';
 import { initializeApp } from "firebase/app";
-import { getMessaging,getToken } from "firebase/messaging";
+import { getMessaging,getToken,onMessage } from "firebase/messaging";
+import { onBackgroundMessage } from "firebase/messaging/sw";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage,getDownloadURL } from "firebase/storage";
@@ -21,7 +22,7 @@ const appCheck = initializeAppCheck(app, {
 
 
 
-const messaging = getMessaging();
+const messaging = getMessaging(app);
 const perf = getPerformance(app);
 const storage = getStorage(app);
 const firestore = getFirestore(app);
@@ -30,6 +31,13 @@ const functions = getFunctions(app);
 
 logEvent(analytics, 'notification_received');
 
+onMessage(messaging, (payload) => {
+	console.log('Message received. ', payload);
+	// ...
+  });
+
+ 
+  
 // key for recatchpa3 
 //const appcheck=firebase.appCheck()
 

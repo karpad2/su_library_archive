@@ -10,13 +10,17 @@
 		    <md-card-content>
 				<div class="newspaper-container">
 				<div class="newspaperavatar">
-				<img  draggable="false"  class="newspaper_cover" alt="newspaper_cover" :src="newspaper_thumbnail" />
+				<img v-if="!loading_fail" draggable="false"  class="newspaper_cover" alt="newspaper_cover" :src="newspaper_thumbnail" />
+				<PDFThumbnail v-else :pdfurl="pdf_file" :page="1" />
+				
 				</div>
 		<div class="newspaper-info">
-			<p> {{gt("publisher")}}: <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>
-			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in newspaper.keywords" md-static>{{keyword}}</md-chip> </p>
-			<p>{{gt("language")}}: <md-chip @click="keyword_link(newspaper.language)" md-static><flag :flag="newspaper.language" /></md-chip> </p>
-		<div>
+			<p v-if="newspaper.publisher!=null"> {{gt("publisher")}}: <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>
+			<p v-if="newspaper.keywords!=null">{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in newspaper.keywords" md-static>{{keyword}}</md-chip> </p>
+			<p v-if="newspaper.language!=null">{{gt("language")}}: <md-chip @click="keyword_link(newspaper.language)" md-static><flag :flag="newspaper.language" /></md-chip> </p>
+			<p v-if="newspaper.cobiss!=null">{{"Cobiss link"}}: <md-chip @click="open_cobiss(newspaper.cobiss)" md-static>Cobiss</md-chip> </p>
+		
+		<div v-if="newspaper.description!=null">
 		{{gt("information")}}:
 		<div v-html="newspaper.description">
 		</div>
@@ -29,7 +33,7 @@
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
-			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(profile)+" "+gt("edit")}}</md-button>
+			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(profile.split(0,profile.length-1))+" "+gt("edit")}}</md-button>
 			</div>	
 		</div>
 		
@@ -43,19 +47,20 @@
 		<md-table v-model="chapters" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
             <md-table-toolbar>
                 <div class="md-toolbar-section-start">
-                <h1 class="md-title">{{gt("chapters")}}</h1>
+                <h1 class="md-title"></h1>
                 </div>
             </md-table-toolbar>
 
-            <md-table-empty-state :md-label="gt(profile)+' '+gt('cant_found')"></md-table-empty-state>
+            <md-table-empty-state :md-label="gt(profile.split(0,profile.length-1))+' '+gt('cant_found')"></md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                
-                <md-table-cell :md-label="gt(profile.split(0,profile.length-1))+' '+gt('name')" md-sort-by="newspapername">{{ item.data.chapter_name }}</md-table-cell>
+                <md-table-cell :md-label="gt(profile.split(0,profile.length-1))+' '+gt('name')" md-sort-by="newspapername">{{ item.data.name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publishing_date }}</md-table-cell>
-                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}/page/1`)">{{gt("open")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}`)">{{gt("open")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
+		<div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
 	</md-card>
 	</div>
 	 <loading v-else/>
@@ -66,15 +71,16 @@
 <script>
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove, orderBy} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
+import PDFThumbnail from "@/components/parts/PDFThumbnail";
 
 	export default {
 		components: {
-		
+		PDFThumbnail,
 		loading,
 		flag
 		},
@@ -87,6 +93,7 @@ import flag from "@/components/parts/flag";
 			signed_in:false,
 			newspaper_thumbnail:"",
 			admin:false,
+			loading_fail:false,
 			chapters:[],
 			member:false,
 			promotion:false,
@@ -95,6 +102,7 @@ import flag from "@/components/parts/flag";
 			newspaper_id:"",
 			generated_keywords:"",
 			counted_chapters:0,
+			loading_values:10,
 			user:{}
 			
 		}),
@@ -112,31 +120,29 @@ import flag from "@/components/parts/flag";
 				this.profile=this.$route.params.viewtype;
 			}
 			try{
-        newspaper_ref=await getDocFromCache(doc(firestore,`${this.profile}`,this.newspaper_id));
+        newspaper_ref=await getDocFromCache(doc(firestore,this.profile,this.newspaper_id));
         this.newspaper=newspaper_ref.data();
 		console.log( this.newspaper);
 		
         }
         catch(e)
         {
-           newspaper_ref=await getDoc(doc(firestore,`${this.profile}`,this.newspaper_id));
+           newspaper_ref=await getDoc(doc(firestore,`/${this.profile}`,this.newspaper_id));
            this.newspaper=newspaper_ref.data(); 
         }
 			this.newspaper=newspaper_ref.data();
-			this.chapters=[];
-		let chapters_refread=await getDocs(collection(firestore,`${this.profile}/${this.newspaper_id}/chapters`));
 			
-		chapters_refread.forEach(as=>{
-			this.counted_chapters++;
-					this.chapters.push({data:as.data(),id:as.id});
-					});
+			await this.load_chapters();
+				let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`))
+			let chapters_refread=await getDocs(querya);
+			this.counted_chapters=chapters_refread.size;
 
 			this.generated_keywords+=`${this.newspaper.name},${this.newspaper.author},`;
 			this.newspaper.keywords.forEach(e=>
 			{
 				this.generated_keywords+=`${e},`;
 			});
-			setDoc(doc(firestore,`${this.profile}s`,this.newspaper_id),{popularity:this.newspaper.popularity+1},{merge:true});
+			setDoc(doc(firestore,`/${this.profile}`,this.newspaper_id),{popularity:this.newspaper.popularity+1},{merge:true});
 			this.signed_in=!(await getAuth().currentUser==null);
 			
 			if(this.signed_in)
@@ -176,6 +182,15 @@ import flag from "@/components/parts/flag";
 			catch
 			{
 				//
+				this.loading_fail=true;
+				try{
+				ref_storage =ref(storage,`/${this.profile}/${this.newspaper_id}/chapters/${this.chapters[0]}/book.pdf`);
+				this.pdf_file=await getDownloadURL(ref_storage);
+				
+				}catch(ex)
+			{
+				console.error(ex);
+			}
 			}
 			if(this.newspaper.hided) this.$router.push("/home");
 			this.title_side=title_page(this.newspaper.name);
@@ -207,20 +222,31 @@ import flag from "@/components/parts/flag";
 			{
 				return replace_white(a);
 			},	
+			
+			async load_chapters()
+			{
+			this.chapters=[];
+			let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`),orderBy("upload_date","desc"),limit(this.loading_values))
+			let chapters_refread=await getDocs(querya);
+			
+				chapters_refread.forEach(as=>{
+					this.chapters.push({data:as.data(),id:as.id});
+					});
+			},
 			async add_favorite(){
 			this.is_favorite=!this.is_favorite;
 			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
 			if(!this.signed_in) return;
 			if(this.is_favorite) {
 			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.newspaper_id)});
-			let fav= (await getDoc(doc(firestore,`${this.profile}`,this.newspaper_id))).data().favorites;
-			await updateDoc(doc(firestore,`${this.profile}`,this.newspaper_id),{favorites:this.newspaper.favorites+1},{merge:true}); 
+			let fav= (await getDoc(doc(firestore,`/${this.profile}`,this.newspaper_id))).data().favorites;
+			await updateDoc(doc(firestore,`/${this.profile}`,this.newspaper_id),{favorites:this.newspaper.favorites+1},{merge:true}); 
 			}
 			else 
 			{
 			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.newspaper_id)});	
-			let fav= (await getDoc(doc(firestore,`${this.profile}`,this.newspaper_id))).data().favorites;
-			await updateDoc(doc(firestore,`${this.profile}`,this.newspaper_id),{favorites:this.newspaper.favorites-1},{merge:true}); 
+			let fav= (await getDoc(doc(firestore,`/${this.profile}`,this.newspaper_id))).data().favorites;
+			await updateDoc(doc(firestore,`/${this.profile}`,this.newspaper_id),{favorites:this.newspaper.favorites-1},{merge:true}); 
 				
 			}
 			
@@ -231,11 +257,19 @@ import flag from "@/components/parts/flag";
 			},
 			keyword_link(i)
 			{
-				this.$router.push(`${this.profile}/search/${i}`);
+				this.$router.push(`/search/${this.profile}/${i}`);
+			},
+			open_cobiss(i){
+				window.open(i,"_blank");
 			},
 			movetoadmin()
 			{
-				this.$router.push(`/admin/${this.profile}/${this.newspaper_id}`);
+				this.$router.push(`/admin/content/${this.profile}/${this.newspaper_id}`);
+			},
+			async loadmore()
+			{
+			this.loading_values+=3;
+			await  this.load_chapters();
 			},
 		}
 	}
@@ -261,7 +295,7 @@ import flag from "@/components/parts/flag";
 }
 .newspaperavatar img{
 	width: 350px;
-	height:494px;
+	
 	aspect-ratio: auto 350/494; 
     
 
