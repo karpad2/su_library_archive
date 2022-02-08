@@ -11,7 +11,7 @@
 				<div class="newspaper-container">
 				<div class="newspaperavatar">
 				<img v-if="!loading_fail" draggable="false"  class="newspaper_cover" alt="newspaper_cover" :src="newspaper_thumbnail" />
-				<PDFThumbnail v-else :pdfurl="pdf_file" :page="1" />
+				
 				
 				</div>
 		<div class="newspaper-info">
@@ -33,7 +33,7 @@
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
-			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(profile.split(0,profile.length-1))+" "+gt("edit")}}</md-button>
+			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`edit_${profile.split(0,profile.length-1)}`)}}</md-button>
 			</div>	
 		</div>
 		
@@ -51,13 +51,13 @@
                 </div>
             </md-table-toolbar>
 
-            <md-table-empty-state :md-label="gt(profile.split(0,profile.length-1))+' '+gt('cant_found')"></md-table-empty-state>
+            <md-table-empty-state :md-label="gt(`cant_found`)"></md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                
-                <md-table-cell :md-label="gt(profile.split(0,profile.length-1))+' '+gt('name')" md-sort-by="newspapername">{{ item.data.name }}</md-table-cell>
+                <md-table-cell :md-label="gt(`${profile.slice(0,profile.length-1)}_name`)" md-sort-by="newspapername">{{ item.data.name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publishing_date }}</md-table-cell>
-                <md-table-cell :md-label="gt('open_chapter')" md-sort-by="open_chapter"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}`)">{{gt("open")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="''" md-sort-by="open_chapter"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}`)">{{gt("open")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
 		<div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
@@ -76,11 +76,11 @@ import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
-import PDFThumbnail from "@/components/parts/PDFThumbnail";
+
 
 	export default {
 		components: {
-		PDFThumbnail,
+		
 		loading,
 		flag
 		},

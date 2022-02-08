@@ -18,12 +18,6 @@ function  get_text(indicator)
     if(code==null)
     {
         localStorage.setItem("language",get_defaultlanguage());
-        /*let user=getAuth().currentUser;
-        let query_language= await getDoc(doc(firestore,"users",user.uid));
-        query_language.then((a)=>{
-            
-        });*/
-        
         
     }
     else if(code==null &&!signed_in)
@@ -63,7 +57,7 @@ function contains_the_array(array,word)
 function title_page(a,type="")
 {   let b=a;
     if(a=="undefined"||a==undefined) b="";
-    return `${b} ${get_text(type)==undefined?"":get_text(type)} » ${get_text("app-title")}`;
+    return `${b} ${get_text(type)==undefined?"":get_text(type).slice(0,1).toUpperCase()+get_text(type).slice(1,get_text(type).length)} » ${get_text("app-title")}`;
 }
 
 const languages =[
@@ -101,6 +95,30 @@ function replace_under(i="")
 {
     return i.replaceAll('_',' ');
 }
+function get_text_by_language(a,b)
+{
+    let l="";
+    let code="en-EN";
+    let signed_in=!(getAuth().currentUser==null);
+
+    code=localStorage.getItem("language");
+    if(code==null)
+    {
+        localStorage.setItem("language",get_defaultlanguage());
+        
+    }
+
+    switch(code)
+    {
+        case "en-EN":{l=`${get_text(a)} ${get_text(b)}`;} break;
+        case "hu-HU":{l=`${get_text(b)} ${get_text(a)}`;} break;
+        case "rs-RS":{l=`${get_text(a)} ${get_text(b)}`;} break;
+        case "sr-SR":{l=`${get_text(a)} ${get_text(b)}`;} break;
+        case "hr-HR":{l=`${get_text(a)} ${get_text(b)}`;} break;
+    }
+    return l;
+
+}
 export
 {
     get_text,
@@ -109,5 +127,6 @@ export
     title_page,
     get_defaultlanguage,
     replace_white,
-    replace_under
+    replace_under,
+    get_text_by_language
 }

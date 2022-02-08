@@ -25,33 +25,11 @@
 	</div>
 </md-toolbar> 
 <div class="section">
-	<vue-pdf-app style="height: 100vh;" :page-number="page" :pdf="pdf_file" ></vue-pdf-app>
+	<vue-pdf-app style="height: 79vh;" :page-number="page" :pdf="pdf_file" ></vue-pdf-app>
 
 	
 </div>
-<md-toolbar class="md-primary">
-	<md-button @click="back_to_home"><md-icon>reply</md-icon></md-button>
-	<md-button v-if="page>1" @click="last_page"><md-icon>navigate_before</md-icon></md-button>
-	<hide-at breakpoint="small"> 
-</hide-at>
-	<div class="md-toolbar-section-end">
 
-	<hide-at breakpoint="small"> 
-		<div>
-		<md-button :id="idConfig.zoomOut" ><md-icon>zoom_out</md-icon></md-button>
-		
-		<md-button :id="idConfig.zoomIn"><md-icon>zoom_in</md-icon></md-button>
-		</div>
-	</hide-at>
-	<md-button @click="fullscreen_toggle"><md-icon>fullscreen</md-icon></md-button>
-	
-	
-	<md-button v-if="page<chapter.page_number" @click="next_page"><md-icon>navigate_next</md-icon></md-button>
-	<hide-at breakpoint="small"> 
-		<md-button @click="settings"><md-icon>settings</md-icon></md-button>
-	</hide-at>
-	</div>
-</md-toolbar> 
 
 
 <md-dialog-alert
@@ -334,4 +312,13 @@ import logo from "@/assets/logo";
 @media screen  {
 	
 }
+
+#download,#openFile,#secondaryToolbarToggle,#viewBookmark,#sidebarToggle
+{
+  display: none;
+}
+#thumbnailView{
+	min-width: 170px;
+}
+
 </style>

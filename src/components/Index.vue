@@ -78,7 +78,7 @@
 											<span class="md-list-item-text">{{gt("language")}}</span>
 								</md-list-item>
 								<md-divider></md-divider>
-								<md-list-item v-if="signed_in && !library_user" @click="logout">
+								<md-list-item v-if="signed_in" @click="logout">
 											<md-icon class="md-icon">logout</md-icon>
 											<span class="md-list-item-text">{{gt("logout")}}</span>
 								</md-list-item>
@@ -559,7 +559,7 @@ import * as firebaseui from 'firebaseui';
 			}
 
 			.md-app-drawer {
-				max-width: 300px !important;
+				max-width: 350px !important;
 			}
 			.md-primary
 			{
@@ -600,8 +600,8 @@ import * as firebaseui from 'firebaseui';
 			}
 		}
 		 .md-drawer {
-		width: 230px;
-		max-width: calc(100vw - 125px);
+		width: 350px;
+		//max-width: calc(100vw - 125px);
  		 }
 		  
 	}
@@ -614,7 +614,17 @@ import * as firebaseui from 'firebaseui';
   .desktop {
 	display:block;
   }
-
+  #vue-js-index-container .md-drawer
+  {
+	  width: 350px;
+  }
+  #vue-js-index-container .md-app .md-app-drawer {
+    max-width: 330px !important;
+}
+#vue-js-index-container .md-drawer
+{
+	width: 350px;
+}
   @media only screen and (max-width: 600px) { 
   .desktop {
 	display:none;

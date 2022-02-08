@@ -62,7 +62,7 @@
 
       <md-step id="third" :md-label="gt('upload_chapter_finish')" :md-done.sync="third">
       
-        <md-button @click="open_chapter">{{gt("open")+' '+gt("chapter")}}</md-button>
+        <md-button @click="open_chapter">{{gt("open_"+profile.slice(0,profile.length-1))}}</md-button>
        </md-step>
     </md-steppers>
       </div>

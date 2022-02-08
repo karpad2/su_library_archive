@@ -15,23 +15,23 @@
             </md-table-toolbar>
 
             <md-table-empty-state v-if="searching_text!=''"
-                :md-label="gt(profile+'_cant_found')"
-                :md-description="`${gt('no_'+profile+'_cant_be_found')} '${searching_text}'.`">
-                <md-button class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/new`)">{{gt('add_new'+profile)}}</md-button>
+                :md-label="gt('cant_found')"
+                :md-description="`${gt('cant_be_found')} '${searching_text}'.`">
+                <md-button class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/new`)">{{gt('add_new_'+profile)}}</md-button>
             </md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-                <md-table-cell :md-label="gt(profile)+' '+gt('name')" md-sort-by="newspapername">{{ item.data.name }}</md-table-cell>
+                <md-table-cell :md-label="gt(profile.slice(0,profile.length-1)+'_name')" md-sort-by="newspapername">{{ item.data.name }}</md-table-cell>
                 <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publisher }}</md-table-cell>
                 <md-table-cell :md-label="gt('language')" md-sort-by="language"><flag :flag="item.data.language"/></md-table-cell>
                 <md-table-cell :md-label="gt('keywords')" md-sort-by="keywords">{{ item.data.keywords }}</md-table-cell>
-                <md-table-cell :md-label="gt(profile)+' '+gt('edit')" md-sort-by="editnewspaper"><md-button @click="$router.push(`/admin/content/${profile}/${item.id}`)">{{gt(profile)}} {{gt("edit")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt('edit_'+profile)" md-sort-by="editnewspaper"><md-button @click="$router.push(`/admin/content/${profile}/${item.id}`)"> {{gt("edit_"+profile)}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
         </div>
 
-        <md-button @click="$router.push(`/admin/content/${profile}/new`)">{{gt("add_new")+" "+gt(profile)}}</md-button>
+        <md-button @click="$router.push(`/admin/content/${profile}/new`)">{{gt("add_new_"+profile.slice(0,profile.length-1))}}</md-button>
         </div>
 
 

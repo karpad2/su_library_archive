@@ -22,7 +22,9 @@
     	</md-field>
 
 		<md-field>
-		 <b-form-select @change="lang_change" v-model="language" :options="options"></b-form-select>
+		 
+		  	<b-form-select @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
+					
     	</md-field>
 		
 
@@ -55,6 +57,7 @@ import moment from "moment";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,getDocFromCache  } from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
+import langa from "../../languages/languages";
 
 
 	export default {
@@ -77,6 +80,7 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 				photoURL:"",
 				email:""
 			},
+			languages:langa.languages,
 			dataReady: false,
 			library_user:false
 			
@@ -89,8 +93,10 @@ import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 			this.language=get_defaultlanguage();
 			this.library_user=await getAuth().currentUser.email=="libraryuser@su-library-archive.web.app";
 			//console.log(this.language);
-			const lang=languages;
-			lang.forEach((a)=>
+			const lang=this.languages;
+			
+			
+			langa.languages.forEach((a)=>
 			{
 				this.options.push({value:a.code,text:a.name});
 			});

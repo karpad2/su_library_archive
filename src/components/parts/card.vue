@@ -1,3 +1,4 @@
+
 <template>
 
 <md-card >
@@ -62,6 +63,7 @@
 </style>
 
 <script>
+/* eslint-disable */
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
@@ -117,15 +119,34 @@ export default {
       let tmp=await getDoc(doc(firestore,`/${this.profile}`,this.id));
       this.cat_name=tmp.data().name;
       this.language=tmp.data().language;
+      let newspaperref;
+      try{
+      newspaperref=await getDocFromCache(k);
+      console.log("from cache")
+      }
+      catch(ex)
+      {
+        newspaperref=await getDoc(k);
+      }
+      this.newspaper=newspaperref.data();
     }
     else
     {
        k=doc(firestore,`/${this.profile}`,this.id);
-    }
-
-    let newspaperref=await getDoc(k);
+       let newspaperref;
+      try{
+      newspaperref=await getDocFromCache(k);
+      console.log("from cache")
+      }
+      catch(ex)
+      {
+        newspaperref=await getDoc(k);
+      }
     this.newspaper=newspaperref.data();
     this.language=this.newspaper.language;
+    }
+
+    
 
     try {
     this.image_loading();
@@ -188,14 +209,15 @@ export default {
 
       if(this.signedin)
       {
-        if(this.chapter==undefined)
+        if(this.chapter!="")
       {
-        l=`/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}`;
+        
+        l=`/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}/chapter/${this.chapter}`;
       
       }
       else
       {
-        l=`/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}/chapter/${this.chapter}`;
+        l=`/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}`;
       }
       }
     return l;

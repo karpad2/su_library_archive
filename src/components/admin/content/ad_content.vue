@@ -4,11 +4,11 @@
     
       <div>
           <md-card-header>
-          <div class="md-title">{{gt('add_new')+' '+gt(profile)}}</div>
+          <div class="md-title">{{gt("add_new_"+profile.slice(0,profile.length-1))}}</div>
           </md-card-header>
           <md-card-content>
           <md-field>
-            <label for="name">{{gt(profile+'_name')}}</label>
+            <label for="name">{{gt(profile.slice(0,profile.length-1)+"_name")}}</label>
             <md-input id="name" @change="change" v-model="newspaper.name" md-counter="100"></md-input>
           </md-field>
          
@@ -70,9 +70,9 @@
             </md-table-toolbar>
 
             <md-table-empty-state
-                :md-label="gt(profile)+' '+'cant_found'"
+                :md-label="gt(profile.slice(0,profile.length-1)+'_cant_found')"
                >
-                <md-button class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt('add_new')}} {{gt("chapter")}}</md-button>
+                <md-button class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt('chapter_add_new')}}</md-button>
             </md-table-empty-state>
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">

@@ -9,10 +9,15 @@
 		   </md-card-header>
 		    <md-card-content>
 				<div class="book-container">
-				<div @click="enter_read(1)" class="bookavatar">
-				<img  v-if="book_thumbnail_jpg" draggable="false" style="width:250px; border:1px "  class="book_cover" alt="book_cover" :src="book_thumbnail" />
-					<PDFThumbnail v-else :pdfurl="pdf_file" :page="1" />
-				</div>
+					<md-card @click="enter_read(1)" style="width:250px; display:inline; float:left">
+				<img  v-if="!loading_images" @click="enter_read(page)" draggable="false"  :alt="'page_'+page" :src="thumbnails[0].thumbnail"/> 
+				 <md-card-media-cover v-else md-solid>
+        <md-card-media md-ratio="1:1">
+          <loading/>
+        </md-card-media>
+      </md-card-media-cover>
+			</md-card>
+			
 		<div class="book-info">
 			<p> {{gt("name")}}: <md-chip @click="gotoparent(book.name)" md-static>{{book.name}}</md-chip></p>
 			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in book.keywords" md-static>{{keyword}}</md-chip> </p>
@@ -31,7 +36,7 @@
 			<div v-if="signed_in">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
-			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(profile.split(0,profile.length-2))+" "+gt("edit")}}</md-button>
+			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`edit_${profile.split(0,profile.length-1)}`)}}</md-button>
 		
 			</div>	
 		</div>
@@ -46,10 +51,18 @@
 	</md-card>
 	<md-card v-if="(signed_in &&member||admin)||(signed_in&&promotion)">
 		<md-card-content>
+			<div>
+			<md-card @click="enter_read(page)" style="width:250px; display:inline" v-for="page in pagenumbers" :key="page">
+				<img  v-if="!loading_images" @click="enter_read(page)" draggable="false"  :alt="'page_'+page" :src="thumbnails[page-1].thumbnail"/> 
+				 <md-card-media-cover v-else md-solid>
+        <md-card-media md-ratio="1:1">
+          <loading/>
+        </md-card-media>
+      </md-card-media-cover>
+			</md-card>
 			
-			<PDFThumbnail :pdfurl="pdf_file" @click="enter_read(page)" v-for="page in pagenumbers" :key="page"  :page="page" />	 
-		
 		<div class="middle-center"> <md-button v-if="!hide" @click="loadmore">{{gt("load_more")}}</md-button></div>
+			 </div>
 			 
 		</md-card-content>	
 	</md-card>	
@@ -65,17 +78,18 @@ import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase"
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
+import {generatePdfPageNumber,generatePdfThumbnails} from 'pdf-thumbnails-generator-k2';
 import VuePdfApp from "vue-pdf-app";
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
-import PDFThumbnail from "@/components/parts/PDFThumbnail";
+
 
 
 	export default {
 		components: {
 		
 		loading,
-		PDFThumbnail
+		
 		
 		
 		},
@@ -89,10 +103,12 @@ import PDFThumbnail from "@/components/parts/PDFThumbnail";
 			numPages:0,
 			chapter:{},
 			hide:false,
+			loading_images:true,
 			dataReady: false,
 			signed_in:false,
 			book_thumbnail:"",
 			book_thumbnail_jpg:true,
+			book_thumbnail_pdf:"",
 			admin:false,
 			member:false,
 			promotion:false,
@@ -147,6 +163,9 @@ import PDFThumbnail from "@/components/parts/PDFThumbnail";
 			let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/book.pdf`);// loading page from bucket
 			 this.pdf_file= await getDownloadURL(image_ref);
 
+			 this.render();
+			 
+			
 
 			this.generated_keywords+=`${this.book.name},${this.book.author},`;
 			this.book.keywords.forEach(e=>
@@ -262,7 +281,14 @@ catch(ex)
 			{
 				this.loading_values+=10;
 			},
-			
+			async render()
+			{
+			 this.numPages=await generatePdfPageNumber(this.pdf_file);
+			 this.thumbnails=await generatePdfThumbnails(this.pdf_file,300);
+			 this.book_thumbnail_pdf=this.thumbnails[0].thumbnail;
+			 this.loading_images=false;
+			},
+
 			gotoparent()
 			{
 			
@@ -277,6 +303,7 @@ catch(ex)
 				for(let i=0;i<this.loading_values;i++)
 				{
 					if(i<this.numPages) l.push(i+1);
+					//else {this.hide=true;}
 				}
 				return l;
 			}

@@ -2,11 +2,11 @@
 	<div>
 	<md-card>	
 		<md-card-header>
-		{{gt(profile)+" "+gt("search_for")}}
+		{{gt(`search_for_${profile}`)}}
 		<md-field>
 			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 		</md-field>
-		<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(profile)+" "+gt("admin")}}</md-button>
+		<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`admin_${profile}`)}}</md-button>
 		</md-card-header>
 
 		<md-card-content>
@@ -23,7 +23,7 @@
 
 <script>
 import {signOut} from "firebase/auth";
-import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
+import {get_text,languages,get_defaultlanguage,title_page,get_text_by_language} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,getDocFromCache  } from "firebase/firestore";
 import { getStorage, ref, listAll,get } from "firebase/storage";
@@ -136,8 +136,9 @@ import logo from "@/assets/logo";
 				this.check_element_exist({id:element.id});
 				});
 			},
-			gt(a){
-					return get_text(a);
+			gt(a,b=null){
+				if(b==null)return get_text(a);
+				else return get_text_by_language(a,b);
 				},
 			async loadmore()
 			{

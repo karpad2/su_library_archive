@@ -74,6 +74,7 @@
     "pdf-image": "^2.0.0",
     "pdf-thumbnail": "^1.0.6",
     "pdf-thumbnails-generator": "^1.0.6",
+    "pdf-thumbnails-generator-k2": "^1.0.6",
     "pdf2pic": "^2.1.4",
     "pdfjs": "^2.4.7",
     "pdfjs-dist": "2.5.207",

@@ -52,6 +52,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import {signOut} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage,title_page} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";

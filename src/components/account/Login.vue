@@ -119,7 +119,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 			{
 				axios.get("https://api.ipify.org?format=json")
 				.then(resp => {
-					if(resp.data.ip==firebaseCredentials.public_profile.ip)
+					if(resp.data.ip==firebaseCredentials.public_profile.ip||resp.data.ip==firebaseCredentials.public_profile.ip2)
 					{
 						this.inlibrary=true;
 					}

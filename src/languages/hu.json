@@ -127,6 +127,7 @@
     "newspapers":"Folyóíratok",
     "upload_a_newspaper":"Folyóírat feltöltése",
     "add_new_newspaper":"Folyóírat hozzáadása",
+
     "photoalbums":"Fotóalbumok",
     "admin_newspaper":"Folyóiratok adminisztrálása",
     "admin_photoalbums":"Fotóalbumok adminisztrálása",
@@ -158,7 +159,7 @@
     "photo_cant_found":"Fénykép nem található",
     "add_new_photo":"Fénykép hozzáadása",
     "photo_name":"Fotó név",
-    "notes":"Kották",
+    
     "admin_notes":"Kották adminisztrálása",
     "upload_a_title_notes":"Kották adminisztrálása",
     "add_new_note":"Kotta hozzáadása",
@@ -192,7 +193,94 @@
     "release_date":"Kiadás dátuma",
     "from_date":"tól",
     "to_date":"ig",
-    "upload_chapter_cover":"Borító feltöltése"
+    "upload_chapter_cover":"Borító feltöltése",
+    "chapter_add_new":"Új rész hozzáadása",
+    "photoalbums":"Fotóalbum",
+        "admin_newspaper":"Folyóírat adminisztrációja",
+        "admin_newspapers":"Folyóírat adminisztrációja",
+        "admin_photoalbums":"Fotóalbum adminisztrációja",
+        "newspaper_cant_found":"Folyóírat nem található",
+        "no_newspaper_cant_be_found":"Folyóírat nem található",
+        "name":"Ime",
+        "category":"Kategorija",
+        "seperator_name":"Elválasztó neve",
+        "chapters":"Részek",
+        "add_new_chapter":"Új hozzáadása",
+        "delete_newspaper":"Törlés",
+        "upload_newspaper_cover":"Borító feltöltése",
+        "add_new_photoalbums":"Fotóalbum hozzáadása",
+        "upload_a_title_photoalbums":"Fotóalbum adminisztrációja",
+        
+        "upload_a_photoalbums":"",
+        "photoalbums_cant_found":"Fotoalbum nem található",
+        "no_photoalbums_cant_be_found":"Izraz se ne može pronaći",
+        "released_numbers":"Feltöltött számok:",
+        "user_name":"Felhasználó név",
+        "user_email":"Felhasználó email",
+        "editnewspaper":"Folyóírat szerkesztése",
+        "add_new_photoalbum":"Fotóalbum hozzáadása",
+        "photoalbum_name":"Fotóalbum neve",
+        "upload_photoalbum_cover":"Fotóalbum borító feltöltése",
+        "upload_photoalbum":"Fotóaébum feltölése",
+        "search_for_photoalbums":"Fotóalbum keresése",
+        "search_for":"Keresés",
+        "Search":"Keresés",
+        "photos":"Fotóalbum",
+        "photo_cant_found":"Fotóalbum nem található",
+        "add_new_photo":"Fotóalbum hozzáadása",
+        "photo_name":"Fotó megnevezése",
+        "notes":"Zeneműtár",
+        "search_for_notes":"Zeneművek keresése",
+        "navigation":"Navigáció",
+        "upload_date":"Feltöltés dátuma",
+        "manuscripts":"Kézirattár",
+        "posters":"Plakát és kisnyomtatványtár",
+        "search_for_newspapers":"Folyóíratok keresése",
+        "search_for_newspaper":"Folyóíratok keresése",
+        "search_by_author":"Keresés szerző alapján",
+        "categories":"Kategóriák",
+        "search_by_keywords":"Keresés kulcsszó alapján",
+       
+        "newspaper_edit":"Folyóirat szerkesztése",
+        "edit_newspapers":"Folyóirat szerkesztése",
+        "edit":"Szerkesztés",
+        "edit_photoalbums":"Fotóalbum szerkesztése",
+       
+        "search_for_manuscripts":"Kézíratok keresése",
+        "admin_manuscripts":"Kézíratok adminisztrációja",
+    
+        "search_for_posters":"Plakát és kisnyomtatványtár keresése",
+        "admin_posters":"Plakát és kisnyomtatványtár adminisztrációja",
+    
+        "add_new_poster":"Új plakát hozzáadása",
+        "edit_posters":"Plakát szerkesztése",
+        "add_new_manuscripts":"Új kézírat hozzáadása",
+       
+
+        
+        "newspapers_name":"Folyóírat neve",
+        "add_news_newspapers":"Új folyóírat hozzáadása",
+       
+       
+        "book_name":"Könyv neve",
+        "newspaper_name":"Folyóírat neve",
+        "photoalbum_cant_found":"Fotóalbum nem található",
+        "note_cant_found":"Kották nem találhatóak",
+        "poster_name":"Plakát neve",
+        "poster_cant_found":"Plakátok és kisnyomtatványok nem találhatóak",
+        "continue":"Folytatás",
+        "open_poster":"Plakát megnyitása",
+        "open_note":"Kotta megnyitása",
+        
+        "open_newspaper":"Folyóírat megnyitása",
+        "open_manuscipt":"Kézírattár megnyitása",
+        "chapter_name":"Név",
+        "chapter_author":"Szerző",
+        "edit_manuscripts":"Kézírat szerkesztése",
+        "manuscript_name":"Kézírat neve",
+        "manuscript_cant_found":"Kézírat nem található"
+       
+
 
 
 
