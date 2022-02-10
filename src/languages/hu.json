@@ -6,7 +6,7 @@
     "login":"Bejelentkezés",
     "books":"Könyvgyűjtemény",
     "email":"Email",
-    "password":"jelszó",
+    "password":"Jelszó",
     "login_with":"Bejelentkezés ",
     "login_with_google":"Bejelentkezés Google-vel",
     "Books":"Könyvgyűjtemény",
@@ -122,7 +122,7 @@
     "page":"Oldal",
     "deletebook":"Könyv törlése",
     
-    "register":"Registráció",
+    "register":"Regisztráció",
     "password_pls_write_again":"Ismételje meg a jelszót",
     "newspapers":"Folyóírat gyűjtemény",
     "upload_a_newspaper":"Folyóírat feltöltése",
