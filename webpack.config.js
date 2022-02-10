@@ -1,3 +1,4 @@
+module.exports = { baseUrl: '/', devServer: { disableHostCheck: true, } } 
 /*const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");

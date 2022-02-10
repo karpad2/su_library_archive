@@ -13,7 +13,8 @@ export default (async (user:functions.auth.UserRecord,context:functions.EventCon
         admin:false,
         name:user.displayName,
         h4cker:false,
-        language:"rs-RS"
+        language:"rs-RS",
+        oath:true
     };
     link.create(userdata);
 

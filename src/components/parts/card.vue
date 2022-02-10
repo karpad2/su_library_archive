@@ -14,9 +14,9 @@
             <router-link  :to="get_link()"> <span  class="md-title">{{newspaper.name}}</span> </router-link>
             
              
-            <span  v-if="newspaper.author!=null" @click="open_newspaper" class="md-subhead">{{newspaper.author}}</span>
+            <span  v-if="newspaper.author!=''" @click="open_newspaper" class="md-subhead">{{newspaper.author}}</span>
+             <span  v-if="newspaper.category!=''" @click="open_newspaper" class="md-subhead">{{newspaper.category}}</span>
             <span  v-else-if="cat_name!=''" @click="open_newspaper" class="md-subhead">{{cat_name}}</span>
-            <span  v-else-if="newspaper.category!=null" @click="open_newspaper" class="md-subhead">{{newspaper.category}}</span>
             <span  v-else-if="newspaper.publisher!=null" @click="open_newspaper" class="md-subhead">{{newspaper.publisher}}</span>
             
 
@@ -174,6 +174,7 @@ export default {
       {
         ref_thumbnail=ref(storage,`/${this.profile}/${this.id}/thumbnail.jpg`);
         this.newspaper_cover=await getDownloadURL(ref_thumbnail);
+         
       }
       else{
         try{
@@ -187,7 +188,13 @@ export default {
           this.newspaper_cover=await getDownloadURL(ref_thumbnail);
         }
       }
-    
+    const newCache = await caches.open('su-library-archive');
+			 let response= await newCache.match(this.newspaper_cover);
+			 if(!response||!response.ok)
+			 {
+				 await newCache.add(this.newspaper_cover);
+				 response= await newCache.match(this.newspaper_cover);
+			 }
     this.imageload=true;
       },
 

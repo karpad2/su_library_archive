@@ -4,7 +4,7 @@
 	
 <md-toolbar class="md-primary">
 	<md-button @click="back_to_home" class="small"><md-icon>reply</md-icon></md-button>
-	<md-button v-if="page>1" @click="last_page"><md-icon>navigate_before</md-icon></md-button>
+
 	
 	
 	
@@ -135,6 +135,15 @@ import logo from "@/assets/logo";
 
 			 let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/book.pdf`);// loading page from bucket
 			 this.pdf_file= await getDownloadURL(image_ref);
+
+			// this.pdf_file_url= await getDownloadURL(image_ref);
+			 const newCache = await caches.open('su-library-archive');
+			 let response= await newCache.match(this.pdf_file);
+			 if(!response||!response.ok)
+			 {
+				 await newCache.add(this.pdf_file);
+				 response= await newCache.match(this.pdf_file);
+			 }
 
 			 //this.$emit('fullscreen',true);
 			 let chapter_ref;

@@ -134,6 +134,7 @@ import card from "@/components/parts/card";
 			},
 			async newest_refresh_ones()
 			{
+				this.newest_ones=[];
 			await cat.categories.forEach(async (a)=>{
 			let c=collection(firestore,`${a.name}`);
 			let queryv=await query(c,orderBy("upload_date","desc"),limit(this.loading_values));
@@ -147,7 +148,7 @@ import card from "@/components/parts/card";
 			async loadmore()
 			{
 				this.loading_values+=3;
-				await this.newest_books();
+				await this.newest_refresh_ones();
 			}
 		},
 		

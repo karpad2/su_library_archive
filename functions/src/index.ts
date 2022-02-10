@@ -1,12 +1,18 @@
 import * as functions from "firebase-functions";
 //import pdfimage from "./pdfimage";
 import sitemap from "./sitemap";
+import sitemapgenerator from "./sitemapgenerator";
 import createuser from "./createuser";
 import deletebook from "./deletebook";
 
 exports.buildSitemap = functions.https.onRequest((request: functions.https.Request,response: functions.Response)=>
 {
  sitemap(request,response);
+});
+
+exports.buildSitemapGenerator = functions.pubsub.schedule('every 48 hours').onRun((context)=>
+{
+ sitemapgenerator();
 });
  
 exports.createUserGoogle = functions.auth.user()

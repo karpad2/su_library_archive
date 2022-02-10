@@ -55,9 +55,9 @@
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                
-                <md-table-cell :md-label="gt(`${profile.slice(0,profile.length-1)}_name`)" md-sort-by="newspapername">{{ item.data.name }}</md-table-cell>
-                <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publishing_date }}</md-table-cell>
-                <md-table-cell :md-label="''" md-sort-by="open_chapter"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}`)">{{gt("open")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt(`${profile.slice(0,profile.length-1)}_name`)" md-sort-by="name">{{ item.data.name }}</md-table-cell>
+                <md-table-cell :md-label="gt('release_date')" md-sort-by="release_date">{{ item.data.release_date }}</md-table-cell>
+                <md-table-cell :md-label="''"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}`)">{{gt("open")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
 		<div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
@@ -74,6 +74,7 @@ import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase"
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove, orderBy} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
+import moment from "moment";
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
 
@@ -226,7 +227,7 @@ import flag from "@/components/parts/flag";
 			async load_chapters()
 			{
 			this.chapters=[];
-			let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`),orderBy("upload_date","desc"),limit(this.loading_values))
+			let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`),orderBy("name","asc"),limit(this.loading_values))
 			let chapters_refread=await getDocs(querya);
 			
 				chapters_refread.forEach(as=>{
@@ -268,9 +269,14 @@ import flag from "@/components/parts/flag";
 			},
 			async loadmore()
 			{
-			this.loading_values+=3;
+			this.loading_values+=10;
 			await  this.load_chapters();
 			},
+			to_date_format(a)
+			{
+				console.log(Date(a));
+				return	moment(Date(a)).format("YYYY-MM-DD");
+			}
 		}
 	}
 	

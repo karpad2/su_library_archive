@@ -31,6 +31,15 @@ const functions = getFunctions(app);
 
 logEvent(analytics, 'notification_received');
 
+
+var _console = {log:function(e){
+	logEvent(analytics,e);
+}};
+
+//window.console = _console;
+
+
+
 onMessage(messaging, (payload) => {
 	console.log('Message received. ', payload);
 	// ...

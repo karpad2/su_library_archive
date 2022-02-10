@@ -10,7 +10,7 @@
 		    <md-card-content>
 				<div class="book-container">
 					<md-card @click="enter_read(1)" style="width:250px; display:inline; float:left">
-				<img  v-if="!loading_images" @click="enter_read(page)" draggable="false"  :alt="'page_'+page" :src="thumbnails[0].thumbnail"/> 
+				<img  v-if="!loading_images" @click="enter_read(1)" draggable="false"  :alt="'page_'+1" :src="thumbnails[0].thumbnail"/> 
 				 <md-card-media-cover v-else md-solid>
         <md-card-media md-ratio="1:1">
           <loading/>
@@ -80,6 +80,7 @@ import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import {generatePdfPageNumber,generatePdfThumbnails} from 'pdf-thumbnails-generator-k2';
 import VuePdfApp from "vue-pdf-app";
+import moment from "moment";
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
 
@@ -161,8 +162,16 @@ import flag from "@/components/parts/flag";
 			this.book=book_ref.data();
 
 			let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/book.pdf`);// loading page from bucket
-			 this.pdf_file= await getDownloadURL(image_ref);
-
+			 this.pdf_file_url= await getDownloadURL(image_ref);
+			 const newCache = await caches.open('su-library-archive');
+			 let response= await newCache.match(this.pdf_file_url);
+			 if(!response||!response.ok)
+			 {
+				 await newCache.add(this.pdf_file_url);
+				 response= await newCache.match(this.pdf_file_url);
+			 }
+			//this.pdf_file=response.blob();
+			 
 			 this.render();
 			 
 			
@@ -283,8 +292,8 @@ catch(ex)
 			},
 			async render()
 			{
-			 this.numPages=await generatePdfPageNumber(this.pdf_file);
-			 this.thumbnails=await generatePdfThumbnails(this.pdf_file,300);
+			 this.numPages=await generatePdfPageNumber(this.pdf_file_url);
+			 this.thumbnails=await generatePdfThumbnails(this.pdf_file_url,300);
 			 this.book_thumbnail_pdf=this.thumbnails[0].thumbnail;
 			 this.loading_images=false;
 			},
@@ -294,6 +303,10 @@ catch(ex)
 			
 				this.$router.push(`/view/${this.profile}/${this.book_id}/${replace_white(this.book.name)}`);
 			
+			},
+			to_date_format(a)
+			{
+				return	moment(Date(a)).format("YYYY-MM-DD");
 			}
 		},
 		computed:{

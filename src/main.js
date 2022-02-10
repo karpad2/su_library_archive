@@ -82,7 +82,7 @@ onAuthStateChanged(auth, (user) => {
 			render: h => h(App),
 			created()
 			{
-			this.$router.push('/')
+			//this.$router.push('/')
 			}
 			
 		});

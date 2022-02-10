@@ -1,3 +1,4 @@
-Useragent: *
-Allow: /*.index.html$
 Sitemap:https://us-central1-su-library-archive.cloudfunctions.net/buildSitemap
+User-agent: *
+Disallow:
+

@@ -78,7 +78,7 @@
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
                 <md-table-cell :md-label="gt(profile)+' '+gt('name')" md-sort-by="newspapername">{{ item.data.name }}</md-table-cell>
-                <md-table-cell :md-label="gt('publisher')" md-sort-by="publisher">{{ item.data.publishing_date }}</md-table-cell>
+                <md-table-cell :md-label="gt('release_date')" md-sort-by="release_date">{{ item.data.release_date }}</md-table-cell>
                 <md-table-cell :md-label="gt('edit')" md-sort-by="editnewspaper"><md-button @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/${item.id}`)">{{gt("edit")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>

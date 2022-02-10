@@ -36,6 +36,7 @@ import Support from "@/components/Support";
 
 const router = new VueRouter ({
 	mode: 'history',
+	base: process.env.BASE_URL,
 	routes: [
 		
 		

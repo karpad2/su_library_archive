@@ -8,13 +8,14 @@
     ],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "source": "/sitemap.xml",
+        "function": "buildSitemap"
       },
       {
-        "source": "sitemap.xml",
-        "function": "buildSitemap"
+        "source": "**",
+        "destination": "/index.html"
       }
+      
     ],
     "headers": [
       {

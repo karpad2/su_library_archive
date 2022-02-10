@@ -123,10 +123,10 @@
     </md-drawer>
 
 			<md-app-content>
-				    <b-alert v-if="signed_in && !email_verified && !library_user" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
+				    <b-alert v-if="signed_in && !email_verified && !library_user &&(!member||!admin||!oath)" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
 
-					<b-alert v-if="promotion && !library_user && !promotion_hide &&(!member||!admin)" variant="success" show>{{gt("promotion_text")}}</b-alert>
-					<b-alert v-if="!promotion && !library_user && !promotion_hide && (!member||!admin)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
+					<b-alert v-if="promotion && !library_user && !promotion_hide &&(!member||!admin||!oath)" variant="success" show>{{gt("promotion_text")}}</b-alert>
+					<b-alert v-if="!promotion && !library_user && !promotion_hide && (!member||!admin||!oath)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
 
 					 <md-dialog-confirm
 						:md-active.sync="terms"
@@ -196,6 +196,7 @@ import * as firebaseui from 'firebaseui';
 			profile_picture_url:"",
 			profile_name:"",
 			admin:true,
+			oath:true,
 			member:true,
 			library_user:false,
 			valid_until:new Date(),
@@ -288,6 +289,7 @@ import * as firebaseui from 'firebaseui';
 
 
 			this.admin=(k.data().admin==null?false:k.data().admin);
+			this.oath=(k.data().oath==null?false:k.data().oath);
 			this.member=(k.data().member==null?false:k.data().member);
 			this.aterms=(k.data().terms==null?false:k.data().terms);
 

@@ -61,8 +61,8 @@
       </md-step>
 
       <md-step id="third" :md-label="gt('upload_chapter_finish')" :md-done.sync="third">
-      
         <md-button @click="open_chapter">{{gt("open_"+profile.slice(0,profile.length-1))}}</md-button>
+        <md-button @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt("add_new_chapter")}}</md-button>
        </md-step>
     </md-steppers>
       </div>
@@ -188,6 +188,7 @@ export default {
         pages:[],
         hided:true,
         dataReady:false,
+        release_date:null,
         first_page:null,
         page_number:0,
         achapter:null,
@@ -235,10 +236,15 @@ export default {
         this.chapter_id=this.$route.params.cid;
          let chapter_refread=await getDoc(doc(firestore,`${this.profile}/${this.$route.params.bid}/chapters`,this.chapter_id));
         this.chapter=chapter_refread.data();
+       
         if(this.chapter.release_date==undefined)
         {
           this.chapter.release_date=null;
         }
+        else{
+this.release_date=new Date();
+        }
+         
       }
       
       
@@ -306,7 +312,9 @@ export default {
       }
       
         let l=new Date();
-        this.chapter.upload_date=`${l.getFullYear()}-${l.getMonth()}-${l.getUTCDay()}`;
+        this.chapter.upload_date=l.toISOString().substring(0,10);
+        l=new Date(this.chapter.release_date)
+        this.chapter.release_date=l.toISOString().substring(0,10);
         this.chapter_ref=updateDoc(doc(firestore,`/${this.profile}/${this.$route.params.bid}/chapters`,this.chapter_id),this.chapter,{merge:true});
            
       this.$noty.success(this.gt("saved"), {
@@ -314,6 +322,8 @@ export default {
 						timeout: 1500,
 					});
     },
+    
+
     async upload_chapter_cover(event)
     {
 

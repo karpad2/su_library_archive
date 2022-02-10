@@ -43,8 +43,13 @@
 		 
 		
 		<div class="section">
-			<card :profile="p.profile" v-for="p in  searched" :key="p.id" :chapter="p.chapter" :id="p.id" />
-		</div>
+			<div style="width:auto; height:auto; display:inline;"  v-for="p in  searched" :key="p.chapter">
+				<card :profile="p.profile" v-if="p.chapter!=null"  :chapter="p.chapter" :id="p.id" />
+				</div>
+			
+			<div style="width:auto; height:auto; display:inline;" :v-if="searched.length==0" v-for="p in  searchedcategories" :key="p.id">
+				<card :profile="p.profile"   :id="p.id" /></div>
+			</div>
         <div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
 		</md-card-content>
 	</md-card>
@@ -88,6 +93,7 @@ import logo from "@/assets/logo";
 			showSidepanel:false,
 			menuVisible: false,
 			searched:[],
+			searchedcategories:[],
             photoalbums:[],
 			selectedCategories:[],
 			seaching_keywords:[],
@@ -117,16 +123,17 @@ import logo from "@/assets/logo";
 			async searching()
 			{
 			this.searched=[];
+			this.searchedcategories=[];
 			this.dataReady=false;
-			console.log(this.selectedCategories);
+			//console.log(this.selectedCategories);
 			await acategories.categories.forEach(async (a)=>{
-			if(this.selectedCategories.length>0)	
-				if(this.selectedCategories.indexOf(a.name)<0) return;
+			if(this.selectedCategories.length>0)		
+			if(this.selectedCategories.indexOf(a.name)<0) return;
 			let c=collection(firestore,`${a.name}`);
 			
 			let e=await getDocs(c);
 			e.forEach(async (bb)=>{
-				let d=collection(firestore,`${a.name}/${bb.id}/chapters`)
+				let d=collection(firestore,`${a.name}/${bb.id}/chapters`);
 				let queryv=d;
 				if(this.searching_text!=""&& this.searching_text.length>3){
 				queryv=await query(queryv,where("name","<=",this.searching_text),where("name",">=",this.searching_text));
@@ -136,16 +143,16 @@ import logo from "@/assets/logo";
 				queryv=await query(queryv,where("name","<=",this.searching_author),where("name",">=",this.searching_author));
 			}
 			if(this.fromdate!="" && this.fromdate.length>3){
-				queryv=await query(queryv,where("release_date",">=",this.fromdate));
+				queryv=await query(queryv,where("release_date",">=",Date(this.fromdate).toISOString().substring(0,10)));
 			}
 
 			if(this.todate!="" && this.todate.length>3){
-				queryv=await query(queryv,where("release_date","<=",this.todate));
+				queryv=await query(queryv,where("release_date","<=", Date(this.todate).toISOString().substring(0,10)));
 			}
 
 
 			if(this.upload_date!="" && this.upload_date.length>3){
-				queryv=await query(queryv,where("upload_date","==",this.searching_author));
+				queryv=await query(queryv,where("upload_date","==",Date(this.upload_date).toISOString().substring(0,10)));
 			}
 
 			queryv=await query(queryv,orderBy("name",'asc'),limit(this.loading_values));
@@ -154,7 +161,26 @@ import logo from "@/assets/logo";
 				if(this.searched.indexOf({profile:a.name,id:bb.id,chapter:b.id})<0)
 				this.searched.push({profile:a.name,id:bb.id,chapter:b.id})
 			});
-			})
+
+			
+			{
+				console.log("Search in main categories");
+				let f;
+				if(this.searching_text!="" && this.searching_text.length>3)
+				{
+					f= await query(c,where('name','==',this.searching_text));
+				}
+
+				let k= await getDocs(f);
+				k.forEach((b)=>{
+				if(this.searchedcategories.indexOf({profile:a.name,id:b.id})<0)
+				{
+				this.searchedcategories.push({profile:a.name,id:b.id})
+				}
+			});
+			}
+			});
+			
 			
 			
 			
