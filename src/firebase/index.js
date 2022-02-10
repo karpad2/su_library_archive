@@ -32,9 +32,7 @@ const functions = getFunctions(app);
 logEvent(analytics, 'notification_received');
 
 
-var _console = {log:function(e){
-	logEvent(analytics,e);
-}};
+
 
 //window.console = _console;
 
@@ -138,6 +136,7 @@ async function loadimage(link)
 
 export {
 	FirebaseAuth,
+	_console,
 	storage,
 	FireDb,
 	firestore,

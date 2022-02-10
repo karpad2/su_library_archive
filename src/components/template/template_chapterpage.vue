@@ -104,7 +104,13 @@ import logo from "@/assets/logo";
 			{
 				this.profile=this.$route.params.viewtype;
 			}
+			try{
 			this.user= getAuth().currentUser;
+			}
+			catch (ex)
+			{
+			 this.$router.push("/");	
+			}
 			let k;
 			try{
         k=await getDocFromCache(doc(firestore,"users",this.user.uid));
@@ -118,6 +124,7 @@ import logo from "@/assets/logo";
 
 			this.admin=(k.data().admin==null?false:k.data().admin);
 			this.member=(k.data().member==null?false:k.data().member);
+			if(!this.member||!this.admin)  this.$router.push("/");
 			
 			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
 			

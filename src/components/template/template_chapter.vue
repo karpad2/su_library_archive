@@ -220,6 +220,14 @@ import flag from "@/components/parts/flag";
 try{
 			let ref_storage =ref(storage,`${this.profile}/${this.book_id}/chapters/${this.chapter_id}/thumbnail.jpg`);
 			this.book_thumbnail= await getDownloadURL(ref_storage);
+
+			 const newCache = await caches.open('su-library-archive');
+			 let response= await newCache.match(this.book_thumbnail);
+			 if(!response||!response.ok)
+			 {
+				 await newCache.add(this.book_thumbnail);
+				 response= await newCache.match(this.book_thumbnail);
+			 }
 }
 catch(ex)
 {
