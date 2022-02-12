@@ -26,7 +26,7 @@ const messaging = getMessaging(app);
 const perf = getPerformance(app);
 const storage = getStorage(app);
 const firestore = getFirestore(app);
-const analytics = getAnalytics();
+const analytics = getAnalytics(app);
 const functions = getFunctions(app);
 
 logEvent(analytics, 'notification_received');
@@ -133,15 +133,22 @@ async function loadimage(link)
 
 }
 
+ function logerror(b)
+{
+	
+	 logEvent(analytics,"exception",b);
+}
+
 
 export {
 	FirebaseAuth,
-	_console,
+	
 	storage,
 	FireDb,
 	firestore,
 	change_Theme_Fb,
 	user,
+	logerror,
 	userId,
 	get_user_language,
 	isAdmin,

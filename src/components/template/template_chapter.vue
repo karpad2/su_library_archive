@@ -61,7 +61,7 @@
       </md-card-media-cover>
 			</md-card>
 			
-		<div class="middle-center"> <md-button v-if="!hide" @click="loadmore">{{gt("load_more")}}</md-button></div>
+		<div class="middle-center"> <md-button v-if="!hide&&signed_in" @click="loadmore">{{gt("load_more")}}</md-button></div>
 			 </div>
 			 
 		</md-card-content>	
@@ -125,10 +125,12 @@ import flag from "@/components/parts/flag";
 				
 			
 		}),
+		
 		metaInfo(){
 			return{
-			title:this.title_side,
-			keywords:this.generated_keywords
+			title:title_page(this.chapter.name),
+			keywords:this.book.keywords,
+			content:this.book.description
 			}
 		},
 		async mounted() {

@@ -249,7 +249,10 @@
         "edit_manuscripts":"Kézírat szerkesztése",
         "manuscript_name":"Kézírat neve",
         "manuscript_cant_found":"Kézírat nem található",
-        "save":"Mentés"
+        "save":"Mentés",
+        "generate_sitemap":"Honlap térkép generálása",
+        "problem_report":"Probléma bejelentése",
+        "upload_screenshot":"Képernyőkép feltöltése"
        
 
 

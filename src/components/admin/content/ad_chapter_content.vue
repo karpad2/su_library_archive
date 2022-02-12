@@ -62,7 +62,7 @@
 
       <md-step id="third" :md-label="gt('upload_chapter_finish')" :md-done.sync="third">
         <md-button @click="open_chapter">{{gt("open_"+profile.slice(0,profile.length-1))}}</md-button>
-        <md-button @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt("add_new_chapter")}}</md-button>
+        <md-button @click="reload">{{gt("add_new_chapter")}}</md-button>
        </md-step>
     </md-steppers>
       </div>
@@ -152,9 +152,10 @@ import { quillEditor } from 'vue-quill-editor';
 import { getDownloadURL, getStorage, ref, uploadBytes,deleteObject } from "firebase/storage";
 import axios from "axios";
 import loading from "@/components/parts/loading";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc,deleteDoc } from "firebase/firestore";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage,logerror} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc,deleteDoc,getDocFromCache } from "firebase/firestore";
 import flag from "@/components/parts/flag";
+import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import { push } from '@firebase/database';
 
 export default {
@@ -199,7 +200,11 @@ export default {
         file:null,
         first:"first",
         second:"second",
-        third:"third"
+        third:"third",
+        count:0,
+         cuuser:null,
+      admin:false,
+      member:false,
     }
     },
     components:{
@@ -215,6 +220,24 @@ export default {
 		},
     async mounted()
     {
+       this.cuuser= getAuth().currentUser;
+			let k;
+			try{
+        k=await getDocFromCache(doc(firestore,"users",this.cuuser.uid));
+        
+        }
+        catch(e)
+        {
+           k=await getDoc(doc(firestore,"users",this.cuuser.uid)); 
+        }
+
+
+			this.admin=(k.data().admin==null?false:k.data().admin);
+			this.member=(k.data().member==null?false:k.data().member);
+
+      if(!this.admin) this.$router.go("/home");
+
+      if(FirebaseAuth.currentUser==null) return;
       	if(this.$route.params.viewtype!=undefined)
 			{
 				this.profile=this.$route.params.viewtype;
@@ -406,6 +429,11 @@ this.release_date=new Date();
     {
       this.second=true;
       this.active=this.third;
+
+    },
+    reload()
+    {
+      window.location.reload();
     }
 
     }

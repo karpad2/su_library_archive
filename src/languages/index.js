@@ -1,4 +1,4 @@
-import {FirebaseAuth} from "@/firebase";
+import {FirebaseAuth,logerror} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,  } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import {convertWordToCyrillic} from "./transliteration"
@@ -46,6 +46,7 @@ function contains_the_array(array,word)
 
     if(array[word]==undefined)
       { console.log(word);
+        logerror(`lang:${localStorage.getItem("language")} err word missing,word:${word}`);
         return word;   
         //return english[word];
       }

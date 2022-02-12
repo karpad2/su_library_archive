@@ -98,6 +98,8 @@ import logo from "@/assets/logo";
 			}
 		},
 		async mounted() {
+			if(FirebaseAuth.currentUser==null) return;
+			
 			this.chapter_id= this.$route.params.cid;
 			this.page = Number(this.$route.params.pid);
 			if(this.$route.params.viewtype!=undefined)

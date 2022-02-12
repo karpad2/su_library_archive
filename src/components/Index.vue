@@ -78,7 +78,7 @@
 											<span class="md-list-item-text">{{gt("language")}}</span>
 								</md-list-item>
 								<md-divider></md-divider>
-								<md-list-item v-if="signed_in" @click="logout">
+								<md-list-item v-if="signed_in && (!library_user|| library_user_logout)" @click="logout">
 											<md-icon class="md-icon">logout</md-icon>
 											<span class="md-list-item-text">{{gt("logout")}}</span>
 								</md-list-item>
@@ -228,6 +228,8 @@ import * as firebaseui from 'firebaseui';
 			menuVisible2: false,
 			userTheme: "default",
 			loading_screen:false,
+			generated_keywords:"",
+			library_user_logout:false,
 			menuTab:[{
 					icon: 'event',
 					title: 'Calendar',
@@ -242,8 +244,13 @@ import * as firebaseui from 'firebaseui';
       }	
 
 		}),
-		metaInfo:{
+		metaInfo(){
+			return{
 			title:title_page("",""),
+			keywords:this.generated_keywords,
+			content:title_page("",""),
+			description:title_page("","")
+			}
 		},
 		async mounted() {
 
@@ -272,6 +279,7 @@ import * as firebaseui from 'firebaseui';
 			{
 			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
 			this.profile_name=await FirebaseAuth.displayName;
+			
 			this.email_verified=await getAuth().currentUser.emailVerified;
 			this.library_user=await getAuth().currentUser.email==firebaseCredentials.public_profile.u;
 			//this.language= await this.get_user_language();
@@ -286,14 +294,17 @@ import * as firebaseui from 'firebaseui';
         {
            k=await getDoc(doc(firestore,"users",this.user.uid)); 
         }
-
+			if(this.user.displayName!=k.data().name)
+			{
+				await updateDoc(firestore,{name:this.user.displayName},{merge:true});	
+			}
 
 			this.admin=(k.data().admin==null?false:k.data().admin);
 			this.oath=(k.data().oath==null?false:k.data().oath);
 			this.member=(k.data().member==null?false:k.data().member);
 			this.aterms=(k.data().terms==null?false:k.data().terms);
 
-			/*if(k.data().h4cker==null)
+			if(k.data().h4cker==null||!k.data().h4cker)
 			{
 				console.log("validated");
 			}
@@ -307,7 +318,7 @@ import * as firebaseui from 'firebaseui';
 						timeout: 1500,
 					});
 				this.$router.push("/account/login");
-			}*/
+			}
 			
 			if(this.library_user){
 			this.language=get_defaultlanguage();
@@ -341,7 +352,12 @@ import * as firebaseui from 'firebaseui';
 			this.undermaintenance_flag= get_under.data().undermaintenance;
 			this.promotion=get_under.data().promotion;
 			this.promotion_hide=get_under.data().promotion_hide;
-			
+			this.library_user_logout=get_under.data().library_user_logout;
+			let keywords= get_under.data().keywords;
+			keywords.forEach(as=>{
+				this.generated_keywords+=`${as},`;
+			})
+
 			//this.language=await getAuth().languageCode;
 			}
 			else 

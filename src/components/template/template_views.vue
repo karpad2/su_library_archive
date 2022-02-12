@@ -39,10 +39,13 @@ import logo from "@/assets/logo";
 		card
 		},
 		name: "template_views",
+	
 		metaInfo(){
 			return{
-			title:title_page("",this.$route.params.viewtype),
-			keywords:this.generated_keywords
+			title:title_page("",this.profile),
+			keywords:title_page("",this.profile),
+			content:title_page("",this.profile),
+			description:title_page("",this.profile)
 			}
 		},
 		

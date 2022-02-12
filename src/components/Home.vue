@@ -59,8 +59,12 @@ import card from "@/components/parts/card";
 			date: new Date(),
 			
 		}),
-		metaInfo:{
+		metaInfo(){
+			return{
 			title:title_page("","Home"),
+			keywords:title_page("","Home"),
+			content:title_page("","Home"),
+			}
 		},
 		components:{
 			card

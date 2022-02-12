@@ -3,7 +3,7 @@ import router from './router';
 //import ForkeMeOnGithub from 'fork-me-on-github-vue';
 import {IconsPlugin } from 'bootstrap-vue';
 import VueQuillEditor from 'vue-quill-editor';
-//import "./serviceWorker/registersw";
+import "./serviceWorker/registersw";
 import BootstrapVue from "bootstrap-vue";
 import VueNoty from 'vuejs-noty';
 //import VCalendar from 'v-calendar';

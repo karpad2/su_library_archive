@@ -24,8 +24,9 @@
 </template>
 <script>
 import {get_text} from "@/languages";
+import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc  } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache  } from "firebase/firestore";
 export default {
   methods:{
     gt(a)
@@ -41,12 +42,32 @@ export default {
   {
     let _user= await getDoc(doc(firestore,"users",this.$route.params.uid));
     this.user=_user.data();
+
+
+    this.cuuser= getAuth().currentUser;
+			let k;
+			try{
+        k=await getDocFromCache(doc(firestore,"users",this.cuuser.uid));
+        
+        }
+        catch(e)
+        {
+           k=await getDoc(doc(firestore,"users",this.cuuser.uid)); 
+        }
+
+
+			this.admin=(k.data().admin==null?false:k.data().admin);
+			this.member=(k.data().member==null?false:k.data().member);
+
+      if(!this.admin) this.$router.go("/home");
     this.dataReady=true;
 
   },
   data()
   {
-    return{
+    return{ cuuser:null,
+      admin:false,
+      member:false,
       user:{},
       user_name:"",
       user_email:"",

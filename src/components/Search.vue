@@ -77,8 +77,13 @@ import logo from "@/assets/logo";
 
 		},
 		name: 'Search',
-		metaInfo:{
+
+		metaInfo(){
+			return{
 			title:title_page("","Search"),
+			keywords:title_page("","Search"),
+			content:title_page("","Search"),
+			}
 		},
 		
 		data: () => ({
@@ -136,18 +141,18 @@ import logo from "@/assets/logo";
 				let d=collection(firestore,`${a.name}/${bb.id}/chapters`);
 				let queryv=d;
 				if(this.searching_text!=""&& this.searching_text.length>3){
-				queryv=await query(queryv,where("name","<=",this.searching_text),where("name",">=",this.searching_text));
+				queryv=await query(queryv,where("name",">=",this.searching_text),where("name","<=",this.searching_text+'\uf8ff'));
 			}
 
 			if(this.searching_author!="" && this.searching_author.length>3){
-				queryv=await query(queryv,where("name","<=",this.searching_author),where("name",">=",this.searching_author));
+				queryv=await query(queryv,where("name","<=",this.searching_author+'\uf8ff'),where("name",">=",this.searching_author));
 			}
 			if(this.fromdate!="" && this.fromdate.length>3){
-				queryv=await query(queryv,where("release_date",">=",Date(this.fromdate).toISOString().substring(0,10)));
+				queryv=await query(queryv,where("release_date",">=",Date(this.fromdate+'\uf8ff').toISOString().substring(0,10)));
 			}
 
 			if(this.todate!="" && this.todate.length>3){
-				queryv=await query(queryv,where("release_date","<=", Date(this.todate).toISOString().substring(0,10)));
+				queryv=await query(queryv,where("release_date","<=", Date(this.todate+'\uf8ff').toISOString().substring(0,10)));
 			}
 
 
@@ -168,7 +173,7 @@ import logo from "@/assets/logo";
 				let f;
 				if(this.searching_text!="" && this.searching_text.length>3)
 				{
-					f= await query(c,where('name','==',this.searching_text));
+					f= await query(c,where('name','<=',this.searching_text+'\uf8ff'));
 				}
 
 				let k= await getDocs(f);

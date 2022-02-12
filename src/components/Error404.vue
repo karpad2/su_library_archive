@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {get_text} from "@/languages";
+import {get_text,title_page} from "@/languages";
 import logo from '@/assets/logo';
 	export default {
 		components: {
@@ -30,6 +30,13 @@ import logo from '@/assets/logo';
 		data: () => ({
 			userTheme: "default",
 		}),
+		metaInfo(){
+			return{
+			title:title_page("","error404"),
+			keywords:title_page("","error404"),
+			content:title_page("","error404"),
+			}
+		},
 		mounted() {
 			if (localStorage.userTheme === "dark") {
 				this.userTheme = "dark";

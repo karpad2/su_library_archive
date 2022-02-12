@@ -17,6 +17,7 @@
     "axios": "^0.25.0",
     "crypto-js": "^4.1.1",
     "cryptojs": "^2.5.3",
+    "discord.js": "^13.6.0",
     "firebase-admin": "^9.8.0",
     "firebase-functions": "^3.14.1",
     "gm": "^1.23.1",

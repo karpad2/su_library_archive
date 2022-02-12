@@ -55,7 +55,7 @@
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                
-                <md-table-cell :md-label="gt(`${profile.slice(0,profile.length-1)}_name`)" md-sort-by="name">{{ item.data.name }}</md-table-cell>
+                <md-table-cell :md-label="gt(`${profile.slice(0,profile.length-1)}_name`)" md-sort-by="name">{{item.name }}</md-table-cell>
                 <md-table-cell :md-label="gt('release_date')" md-sort-by="release_date">{{ item.data.release_date }}</md-table-cell>
                 <md-table-cell :md-label="''"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}`)">{{gt("open")}}</md-button></md-table-cell>
             </md-table-row>
@@ -109,8 +109,10 @@ import flag from "@/components/parts/flag";
 		}),
 		metaInfo(){
 			return{
-			title:this.title_side,
-			keywords:this.generated_keywords
+			title:title_page(this.newspaper.name),
+			keywords:this.newspaper.keywords,
+			content:this.newspaper.description,
+			description:this.newspaper.description
 			}
 		},
 		async mounted() {
@@ -231,7 +233,7 @@ import flag from "@/components/parts/flag";
 			let chapters_refread=await getDocs(querya);
 			
 				chapters_refread.forEach(as=>{
-					this.chapters.push({data:as.data(),id:as.id});
+					this.chapters.push({data:as.data(),id:as.id,name:as.data().name});
 					});
 			},
 			async add_favorite(){

@@ -38,8 +38,9 @@
     
 </template>
 <script>
-import { collection, query, where, getDocs,setDoc,limit } from "firebase/firestore";
+import { collection, query, where, getDocs,setDoc,limit,doc,getDocFromCache,getDoc } from "firebase/firestore";
 import {Firedb,firestore} from "@/firebase"; 
+import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {get_text} from "@/languages";
 import flag from "@/components/parts/flag";
 
@@ -63,11 +64,31 @@ export default {
         searching_text: "",
         searchednewspapers: [],
         newspapers:[],
+         cuuser:null,
+      admin:false,
+      member:false,
         dataReady:false
        
     }),
     async mounted()
     {
+
+        this.cuuser= getAuth().currentUser;
+			let k;
+			try{
+        k=await getDocFromCache(doc(firestore,"users",this.cuuser.uid));
+        
+        }
+        catch(e)
+        {
+           k=await getDoc(doc(firestore,"users",this.cuuser.uid)); 
+        }
+
+
+			this.admin=(k.data().admin==null?false:k.data().admin);
+			this.member=(k.data().member==null?false:k.data().member);
+
+      if(!this.admin) this.$router.go("/home");
         	if(this.$route.params.viewtype!=undefined)
 			{
 				this.profile=this.$route.params.viewtype;

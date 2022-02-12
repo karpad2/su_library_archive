@@ -101,10 +101,10 @@ import { quillEditor } from 'vue-quill-editor';
 import { getDownloadURL, getStorage, ref, uploadBytes,put,deleteObject } from "firebase/storage";
 import axios from "axios";
 import loading from "@/components/parts/loading";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc,deleteDoc } from "firebase/firestore";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage,log} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc,deleteDoc,getDocFromCache } from "firebase/firestore";
 import flag from "@/components/parts/flag";
-
+import {getAuth,signOut,auth,user_language} from "firebase/auth";
 
 export default {
     
@@ -112,7 +112,8 @@ export default {
     components:{
         quillEditor,
         loading,
-        flag
+        flag,
+        
     },
      data:()=>({
       profile:"newspaper", 
@@ -144,10 +145,30 @@ export default {
       second:false,
       third:false,
       language_flag_reload:true,
-      chapters:[]
+      chapters:[],
+       cuuser:null,
+      admin:false,
+      member:false,
     }),
     async mounted()
     {
+       this.cuuser= getAuth().currentUser;
+			let k;
+			try{
+        k=await getDocFromCache(doc(firestore,"users",this.cuuser.uid));
+        
+        }
+        catch(e)
+        {
+           k=await getDoc(doc(firestore,"users",this.cuuser.uid)); 
+        }
+
+
+			this.admin=(k.data().admin==null?false:k.data().admin);
+			this.member=(k.data().member==null?false:k.data().member);
+
+      if(!this.admin) this.$router.go("/home");
+
       	if(this.$route.params.viewtype!=undefined)
 			{
 				this.profile=this.$route.params.viewtype;
@@ -163,6 +184,7 @@ export default {
         description:"",
         language:"",
         favorites:0,
+        
         flagready:true,
         newspaper_ref:null,
         uploading_date:"",
