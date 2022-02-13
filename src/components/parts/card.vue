@@ -12,8 +12,7 @@
         <md-card-area>
           <md-card-header>
             <router-link  :to="get_link()"> <span  class="md-title">{{newspaper.name}}</span> </router-link>
-            
-             
+            <span v-if="page!=''"> {{page+' '+gt("page")}}</span>
             <span  v-if="newspaper.author!=''" @click="open_newspaper" class="md-subhead">{{newspaper.author}}</span>
              <span  v-if="newspaper.category!=''" @click="open_newspaper" class="md-subhead">{{newspaper.category}}</span>
             <span  v-else-if="cat_name!=''" @click="open_newspaper" class="md-subhead">{{cat_name}}</span>
@@ -24,7 +23,7 @@
 
           <md-card-actions>
             <flag :flag="language"/>
-            <md-button v-if="signedin"  class="md-icon-button">
+            <md-button v-if="signedin && !libraryuser"  class="md-icon-button">
               <md-icon @click="add_favorite" v-if="is_favorite" style="color:red">favorite</md-icon>
               <md-icon @click="add_favorite" v-else>favorite</md-icon>
             </md-button>
@@ -69,7 +68,7 @@ import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,updateDoc,arrayUnion,arrayRemove } from "firebase/firestore";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage,libraryuser} from "@/firebase";
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
 export default {
@@ -87,6 +86,10 @@ export default {
     chapter:{
       type:String,
       default:""
+    },
+    page:{
+      type:String,
+      default:""
     }
     },
   
@@ -95,6 +98,7 @@ export default {
       return{
           dataReady:false,
           imageload:false,
+          libraryuser:false,
           newspaper:{},
           user:{},
           language:"rs-RS",
@@ -112,6 +116,8 @@ export default {
   },
   async mounted()
   {
+
+    this.libraryuser=libraryuser();
     console.log(this.chapter);
     let k=null;
     if(this.chapter!="")
@@ -215,9 +221,8 @@ export default {
     let l="";
 
 
-      if(this.signedin)
-      {
-        if(this.chapter!="")
+     
+      if(this.chapter!="")
       {
         
         l=`/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}/chapter/${this.chapter}`;
@@ -227,15 +232,35 @@ export default {
       {
         l=`/view/${this.profile}/${this.id}/${replace_white(this.newspaper.name)}`;
       }
+      if(this.page!="")
+      {
+        l+=`/page/${this.page}`;
       }
+      
     return l;
     },
    async add_favorite()
     {
-      let l=await getDoc(firestore,`users/${getAuth().currentUser.uid}/favorites/${this.profile}/${this.id}`);
+      let c=collection(firestore,`users/${getAuth().currentUser.uid}/favorites`);
+      let _query=null;
+      if(this.chapter==""){
+       _query= query(c,where("profile","==",this.profile),where("id","==",this.id));
+      }
+      else 
+      {
+        _query= query(c,where("profile","==",this.profile),where("id","==",this.id),where("chapter","==",this.chapter));
+      }
+      let l=await getDoc(_query);
       if(!l.exists())
-      await setDoc(firestore,`users/${getAuth().currentUser.uid}/favorites/${this.profile}/${this.id}`,{ilikeit:true},{merge:true});
-      
+      {
+      if(this.chapter==""){
+      await addDoc(c,{profile:this.profile,id:this.id});
+      }
+      else 
+      {
+        await addDoc(c,{"profile":this.profile,"id":this.id,"chapter":this.chapter});
+      }
+      }
     }
 
   },

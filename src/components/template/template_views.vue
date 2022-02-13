@@ -2,7 +2,7 @@
 	<div>
 	<md-card>	
 		<md-card-header>
-		{{gt(`search_for_${profile}`)}}
+		{{profile!=""?gt(`search_for_${profile}`):""}}
 		<md-field>
 			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 		</md-field>
@@ -50,7 +50,7 @@ import logo from "@/assets/logo";
 		},
 		
 		data: () => ({
-			profile:"newspaper",
+			profile:"",
 			title_cucc:"",
 			profile_picture_url:"",
 			profile_name:"",

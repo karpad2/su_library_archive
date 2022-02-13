@@ -3,11 +3,11 @@
 		<md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title">{{displayname()}} ❤️ {{gt("favorites")}}</div>
+          <div class="md-title">{{displayname()}} <md-icon>bookmarks</md-icon> {{gt("bookmarks")}}</div>
 		   </md-card-header-text>
 		   </md-card-header>
 		<md-card-content>
-          <card :profile="fav.profile" :chapter="fav.chapter" v-for="fav in favorites" :key="fav.id" :id="fav" />
+          <card  :profile="fav.profiles" :chapter="fav.chapter_id" :page="fav.page" v-for="fav in favorites" :key="fav" :id="fav" />
         </md-card-content>
 	</md-card>		
 		
@@ -28,7 +28,7 @@ import card from "@/components/parts/card";
 			 card
 		},
 		metaInfo:{
-			title:title_page("","favorites"),
+			title:title_page("","bookmarks"),
 		},
 		name: 'Favorite',
 		data: () => ({
@@ -43,10 +43,12 @@ import card from "@/components/parts/card";
 			
 		}),
 		async mounted() {
-			let bookmarks=collection(firestore,`users/${getAuth().currentUser.uid}/favorites`);
+
 			let user_ref;
+			let bookmarks=collection(firestore,`users/${getAuth().currentUser.uid}/bookmarks`)
 			try{
 			user_ref= await getDocsFromCache(bookmarks);
+
 			}
 			catch(e)
 			{
@@ -55,8 +57,8 @@ import card from "@/components/parts/card";
     		
 			user_ref.forEach(element =>
 			{
-				
-					this.favorites.push({"profile":element.data().profile,"id":element.data().id,"chapter":element.data().chapter});
+
+				this.favorites.push({"profile":element.data().profile,"id":element.data().id,"chapter":element.data().chapter,"page":element.data().page});
 				
 			});
 			console.log(this.favorites);

@@ -197,10 +197,6 @@ import logo from "@/assets/logo";
 			if(this.searching_author==""){
 				queryv=await query(queryv,where("author","<=",this.searching_author));
 			}*/
-
-
-			
-
 			
 			});
 				this.dataReady=true;
@@ -210,7 +206,7 @@ import logo from "@/assets/logo";
 				},
 			async loadmore()
 			{
-				this.loading_values+=3;
+				this.loading_values+=10;
 				await this.searching();
 			}
 			

@@ -30,7 +30,7 @@
 		</div>
 		<div>
 			{{gt("released_numbers")}}: <md-chip>{{counted_chapters}}</md-chip>
-			<div v-if="signed_in">
+			<div v-if="signed_in && !libraryuser">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
 			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`edit_${profile.split(0,profile.length-1)}`)}}</md-button>
@@ -70,8 +70,8 @@
 
 <script>
 import {signOut,getAuth} from "firebase/auth";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove, orderBy} from "firebase/firestore";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage,libraryuser} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove, orderBy,addDoc} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import moment from "moment";
@@ -97,6 +97,7 @@ import flag from "@/components/parts/flag";
 			loading_fail:false,
 			chapters:[],
 			member:false,
+			libraryuser:false,
 			promotion:false,
 			is_favorite:false,
 			title_side:"",
@@ -118,6 +119,7 @@ import flag from "@/components/parts/flag";
 		async mounted() {
 			this.newspaper_id=this.$route.params.nid;
 			let newspaper_ref;
+			this.libraryuser=libraryuser();
 		if(this.$route.params.viewtype!=undefined)
 			{
 				this.profile=this.$route.params.viewtype;
@@ -236,7 +238,7 @@ import flag from "@/components/parts/flag";
 					this.chapters.push({data:as.data(),id:as.id,name:as.data().name});
 					});
 			},
-			async add_favorite(){
+			/*async add_favorite(){
 			this.is_favorite=!this.is_favorite;
 			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
 			if(!this.signed_in) return;
@@ -253,7 +255,7 @@ import flag from "@/components/parts/flag";
 				
 			}
 			
-			},
+			},*/
 			enter_read(i)
 			{
 				this.$router.push(`/view/${this.profile}/${this.newspaper_id}/${replace_white(this.newspaper.name)}/page/${i}`);
@@ -274,6 +276,20 @@ import flag from "@/components/parts/flag";
 			this.loading_values+=10;
 			await  this.load_chapters();
 			},
+
+			 async add_favorite()
+    {
+      let c=await collection(firestore,`/users/${ await getAuth().currentUser.uid}/favorites`);
+      let _query=null;
+     
+       _query= query(c,where("profile","==",this.profile),where("id","==",this.newspaper_id));
+      
+      let l=await getDoc(_query);
+      /*if(!l.exists())
+      {
+    	 let q= await addDoc(c,{profile:this.profile,id:this.newspaper_id});
+      }*/
+    },
 			to_date_format(a)
 			{
 				console.log(Date(a));

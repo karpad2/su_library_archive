@@ -33,7 +33,7 @@
 		</div>
 		<div>
 			{{gt("page_number")}}: <md-chip>{{numPages}}</md-chip>
-			<div v-if="signed_in">
+			<div v-if="signed_in && !libraryuser">
 			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
 			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
 			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`edit_${profile.split(0,profile.length-1)}`)}}</md-button>
@@ -74,8 +74,8 @@
 
 <script>
 import {signOut,getAuth} from "firebase/auth";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove} from "firebase/firestore";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage,libraryuser} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove,addDoc} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL} from "firebase/storage";
 import {generatePdfPageNumber,generatePdfThumbnails} from 'pdf-thumbnails-generator-k2';
@@ -104,6 +104,7 @@ import flag from "@/components/parts/flag";
 			numPages:0,
 			chapter:{},
 			hide:false,
+			libraryuser:false,
 			loading_images:true,
 			dataReady: false,
 			signed_in:false,
@@ -136,6 +137,7 @@ import flag from "@/components/parts/flag";
 		async mounted() {
 			this.book_id=this.$route.params.nid;
 			this.chapter_id=this.$route.params.cid;
+			this.libraryuser=libraryuser();
 			if(this.$route.params.viewtype!=undefined)
 			{
 				this.profile=this.$route.params.viewtype;
@@ -259,25 +261,23 @@ catch(ex)
 				{
 					return get_text(a);
 				},
-			async add_favorite()
-			{
-			this.is_favorite=!this.is_favorite;
-			//let k= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
-			if(!this.signed_in) return;
-			if(this.is_favorite) {
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayUnion(this.book_id)});
-			let fav= (await getDoc(doc(firestore,`/${this.profile}`,this.book_id))).data().favorites;
-			await updateDoc(doc(firestore,`/${this.profile}`,this.book_id),{favorites:this.book.favorites+1},{merge:true}); 
-			}
-			else 
-			{
-			await updateDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:arrayRemove(this.book_id)});	
-			let fav= (await getDoc(doc(firestore,`/${this.profile}`,this.book_id))).data().favorites;
-			await updateDoc(doc(firestore,`/${this.profile}`,this.book_id),{favorites:this.book.favorites-1},{merge:true}); 
-				
-			}
-			
-			},
+			 async add_favorite()
+    {
+      let c=collection(firestore,`users/${getAuth().currentUser.uid}/favorites`);
+      let _query=null;
+     
+      
+        _query= query(c,where("profile","==",this.profile),where("id","==",this.book_id),where("chapter","==",this.chapter_id));
+      
+      let l=await getDoc(_query);
+      if(!l.exists())
+      {
+     
+      
+       let q= await addDoc(c,{"profile":this.profile,"id":this.book_id,"chapter":this.chapter_id});
+      
+      }
+    },
 			enter_read(i)
 			{
 				this.$router.push(`/view/${this.profile}/${this.book_id}/${replace_white(this.book.name)}/chapter/${this.chapter_id}/page/${i}`);

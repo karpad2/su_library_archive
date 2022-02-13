@@ -8,6 +8,7 @@ import { getPerformance } from "firebase/performance";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage,getDownloadURL } from "firebase/storage";
 import Vue from 'vue';
+import axios from "axios";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import {enableIndexedDbPersistence, getFirestore,doc,getDoc,collection,updateDoc,update,setDoc,getDocFromServer,CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 import firebaseCredentials from './credentials';
@@ -133,16 +134,27 @@ async function loadimage(link)
 
 }
 
- function logerror(b)
+async function libraryuser()
 {
-	
-	 logEvent(analytics,"exception",b);
+	if(getAuth()!=null)
+	return await getAuth().currentUser.email==firebaseCredentials.public_profile.u;
+	else return false;
+}
+
+ async function logerror(b)
+{
+	await axios.post(firebaseCredentials.bugreportwebhook,{username:getAuth().currentUser.displayName,avatar_url:getAuth().currentUser.photoURL,content:b.replace(/<[^>]*>?/gm, '')});
+	// logEvent(analytics,"exception",b);
+}
+async function missingword(lang,word)
+{
+	await axios.post(firebaseCredentials.bugreportwebhook,{username:"Language error",avatar_url:getAuth().currentUser.photoURL,content:`Lang error: missing keyword language:${lang}, keyword:'${word}'`});
 }
 
 
 export {
 	FirebaseAuth,
-	
+	libraryuser,
 	storage,
 	FireDb,
 	firestore,
@@ -155,6 +167,7 @@ export {
 	functions,
 	user_is_admin,
 	user_email_verified,
-	loadimage
+	loadimage,
+	missingword
 }
 

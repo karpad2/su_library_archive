@@ -1,4 +1,4 @@
-import {FirebaseAuth,logerror} from "@/firebase";
+import {FirebaseAuth,logerror,missingword} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,  } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import {convertWordToCyrillic} from "./transliteration"
@@ -43,10 +43,11 @@ function get_title()
 }
 function contains_the_array(array,word)
 {
-
+ if(word=="") return ;
     if(array[word]==undefined)
       { console.log(word);
-        logerror(`lang:${localStorage.getItem("language")} err word missing,word:${word}`);
+        missingword(localStorage.getItem("language"),word);
+        //logerror(`Language error language code:${localStorage.getItem("language")} err word missing,word:'${word}'`);
         return word;   
         //return english[word];
       }

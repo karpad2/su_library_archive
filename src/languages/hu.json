@@ -252,7 +252,14 @@
         "save":"Mentés",
         "generate_sitemap":"Honlap térkép generálása",
         "problem_report":"Probléma bejelentése",
-        "upload_screenshot":"Képernyőkép feltöltése"
+        "upload_screenshot":"Képernyőkép feltöltése",
+        "library_user_logout":"Könyvtár felhasználó kijelentkezésének engedélyezése",
+        "thank_you_for_your_feedback":"Köszönjük a visszajelzését!",
+        "bookmarks":"Könyvjelzők",
+        "keyboard_shortcuts":"Billentyű shortcutok",
+        "printing_queue":"Nyomtatás",
+        "sended_print_request":"Nyomtatási kérelem elküldve",
+        "print_request_has_been_already_sended":"Nyomtatási kérelem már el lett küldve."
        
 
 

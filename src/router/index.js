@@ -17,6 +17,8 @@ import AdminUser from "../components/admin/users/ad_user";
 import Home from "../components/Home";
 import PublicIndex from "../components/Index";
 import Search from "../components/Search";
+import Bookmarks from "../components/Bookmarks";
+import Printing from "../components/Printing";
 
 
 import template_views from "../components/template/template_views";
@@ -98,6 +100,16 @@ const router = new VueRouter ({
 					path: 'search',
 					name: 'Searchwithoutlogin',
 					component: Search
+				},
+				{
+					path: 'bookmarks',
+					name: 'bookmarks',
+					component: Bookmarks
+				},
+				{
+					path: 'printing',
+					name: 'printing',
+					component: Printing
 				},
 				{
 					path: 'search/:bmode/:bsearch',

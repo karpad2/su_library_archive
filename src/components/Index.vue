@@ -20,6 +20,8 @@
 				</md-field>
 				</hide-at>
 				<div v-if="!library_user" class="md-toolbar-section-end">
+					<md-button v-if="signed_in&& admin" class="desktop" @click="$router.push('/printing')"> <md-icon>printer</md-icon></md-button>
+					<md-button v-if="signed_in" class="desktop" @click="$router.push('/bookmarks')"><md-icon>bookmark</md-icon> {{gt("bookmarks")}}</md-button>
         			<md-button v-if="signed_in" class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
 					
 					<md-button v-if="signed_in && !library_user" class="desktop profile" @click="$router.push('/user')">

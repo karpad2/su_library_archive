@@ -214,7 +214,10 @@
         "manuscript_name":"Ime rukopisa",
         "manuscript_cant_found":"Rukopis se ne može pronaći",
         "open":"Otvoriti",
-        "favorite":"Omiljeno"
+        "favorite":"Omiljeno",
+        "problem_report":"Prijavljivanje problema",
+        "library_user_logout":"Dozvola izlaska korisnika biblioteke",
+        "thank_you_for_your_feedback":"Hvala vam na povratnoj informaciji"
 
 
 

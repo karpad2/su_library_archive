@@ -7,8 +7,11 @@
     <p> App version: {{version}}</p>
 	<p> App made by: <a href="https://karpad2.github.io/"> {{author}} </a></p>
 	<h3>{{gt('problem_report')}}</h3>
-	<quillEditor @change="change" v-model="ticket.text" />
-
+	
+ <md-field>
+      <label>Insert your text...</label>
+	<md-textarea @change="change" v-model="ticket.text" md-autogrow></md-textarea>
+	 </md-field>
 	 <b-form-file
       @change="upload_chapter_cover"
       accept="image/jpeg"
@@ -35,7 +38,7 @@ import { update } from '@firebase/database';
 
 export default {
 	components:{
-		quillEditor
+	
 	},
     metaInfo:{
 			title:title_page("","Support"),
@@ -74,7 +77,7 @@ export default {
 
 			async send()
 			{
-				await axios.post(bugreportwebhook.bugreportwebhook,{username:getAuth().currentUser.displayName,avatar_url:getAuth().currentUser.photoURL,content:this.ticket.text.replace(/<[^>]*>?/gm, '')});
+				await axios.post(bugreportwebhook.bugreportwebhook2,{username:getAuth().currentUser.displayName,avatar_url:getAuth().currentUser.photoURL,content:this.ticket.text.replace(/<[^>]*>?/gm, '')});
 				this.$noty.success(this.gt("thank_you_for_your_feedback"), {
 						killer: true,
 						timeout: 1500,
