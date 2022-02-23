@@ -30,13 +30,13 @@
 		</div>
 		<div>
 			{{gt("released_numbers")}}: <md-chip>{{counted_chapters}}</md-chip>
-			<div v-if="signed_in && !libraryuser">
-			<md-button v-if="is_favorite" style="background-color:#ed2553"  @click="add_favorite">❤️️ {{gt("favorite")}}</md-button>
-			<md-button v-else @click="add_favorite" >❤️️ {{gt("favorite")}}</md-button>
+			<div v-if="signed_in">
+			<md-button  @click="bookmark_add">❤️️ {{gt("favorite")}}</md-button>
+			
+			</div>
 			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`edit_${profile.split(0,profile.length-1)}`)}}</md-button>
-			</div>	
+				
 		</div>
-		
 		
 		</div>
 		
@@ -55,12 +55,15 @@
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                
-                <md-table-cell :md-label="gt(`${profile.slice(0,profile.length-1)}_name`)" md-sort-by="name">{{item.name }}</md-table-cell>
-                <md-table-cell :md-label="gt('release_date')" md-sort-by="release_date">{{ item.data.release_date }}</md-table-cell>
-                <md-table-cell :md-label="''"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}`)">{{gt("open")}}</md-button></md-table-cell>
+                <md-table-cell :md-label="gt(`name`)" md-sort-by="name">{{item.name}}</md-table-cell>
+                <md-table-cell :md-label="gt('release_date')" md-sort-by="release_date">{{ item.release_date }}</md-table-cell>
+                <md-table-cell :md-label="' '"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}`)">{{gt("open")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
-		<div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
+		<div class="middle-center"> 
+			<md-button @click="loadmore">{{gt("load_more")}}</md-button>
+			<md-button v-if="admin" class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
+		</div>
 	</md-card>
 	</div>
 	 <loading v-else/>
@@ -124,21 +127,22 @@ import flag from "@/components/parts/flag";
 			{
 				this.profile=this.$route.params.viewtype;
 			}
-			try{
-        newspaper_ref=await getDocFromCache(doc(firestore,this.profile,this.newspaper_id));
-        this.newspaper=newspaper_ref.data();
-		console.log( this.newspaper);
+			/*try{
+       // newspaper_ref=await getDocFromCache(doc(firestore,this.profile,this.newspaper_id));
+        //this.newspaper=newspaper_ref.data();
+		//console.log( this.newspaper);
 		
         }
         catch(e)
         {
            newspaper_ref=await getDoc(doc(firestore,`/${this.profile}`,this.newspaper_id));
-           this.newspaper=newspaper_ref.data(); 
-        }
+           //this.newspaper=newspaper_ref.data(); 
+        }*/
+		newspaper_ref=await getDoc(doc(firestore,`/${this.profile}`,this.newspaper_id));
 			this.newspaper=newspaper_ref.data();
 			
 			await this.load_chapters();
-				let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`))
+			let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`))
 			let chapters_refread=await getDocs(querya);
 			this.counted_chapters=chapters_refread.size;
 
@@ -155,12 +159,12 @@ import flag from "@/components/parts/flag";
 			this.user= getAuth().currentUser;
 			let k;
 			try{
-        k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+        k=await getDocFromCache(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
         
         }
         catch(e)
         {
-           k=await getDoc(doc(firestore,"users",this.user.uid)); 
+           k=await getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
         }
 
 
@@ -190,7 +194,7 @@ import flag from "@/components/parts/flag";
 				this.loading_fail=true;
 				try{
 				ref_storage =ref(storage,`/${this.profile}/${this.newspaper_id}/chapters/${this.chapters[0]}/book.pdf`);
-				this.pdf_file=await getDownloadURL(ref_storage);
+				this.newspaper_thumbnail=await getDownloadURL(ref_storage);
 				
 				}catch(ex)
 			{
@@ -216,6 +220,19 @@ import flag from "@/components/parts/flag";
 				//this.favorite=(this.user.favorites.indexOf(this.newspaper_id)>=0);
 				}
 
+				const newCache = await caches.open('su-library-archive');
+			 let response= await newCache.match(this.newspaper_thumbnail);
+			 if(!response||!response.ok)
+			 {
+				 await newCache.add(this.newspaper_thumbnail);
+				 response= await newCache.match(this.newspaper_thumbnail);
+			 }
+        await response.blob().then((blob)=>{
+
+			var objectURL = URL.createObjectURL(blob);
+			this.newspaper_thumbnail=objectURL;
+			});
+
 			this.dataReady=true;
 		},
 		methods: {
@@ -227,15 +244,30 @@ import flag from "@/components/parts/flag";
 			{
 				return replace_white(a);
 			},	
+			async bookmark_add()
+			{
+				let c=await collection(firestore,`/users/${await getAuth().currentUser.uid}/favorites`);
+			
+				 let q=await addDoc(c,{
+					 "profile":this.profile,
+					 "id":this.$route.params.nid
+					});
+
+					this.$noty.success(this.gt("favorite_added"), {
+						killer: true,
+						timeout: 1500,
+					});
+				
+			},
 			
 			async load_chapters()
 			{
 			this.chapters=[];
-			let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`),orderBy("name","asc"),limit(this.loading_values))
+			let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`),orderBy("name","desc"))
 			let chapters_refread=await getDocs(querya);
 			
 				chapters_refread.forEach(as=>{
-					this.chapters.push({data:as.data(),id:as.id,name:as.data().name});
+					this.chapters.push({data:as.data(),id:as.id,name:as.data().name,release_date:as.data().release_date});
 					});
 			},
 			/*async add_favorite(){

@@ -20,9 +20,9 @@
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                
                 <md-table-cell :md-label="gt('name')" md-sort-by="name">{{item.name}}</md-table-cell>
-                <md-table-cell :md-label="gt('page')" md-sort-by="page">{{ item.page}}</md-table-cell>
-                <md-table-cell :md-label="''"><md-button @click="print(item.id,true)"><md-icon>done</md-icon></md-button></md-table-cell>
-				<md-table-cell :md-label="''"><md-button @click="print(item.id,false)"><md-icon>clear</md-icon></md-button></md-table-cell>
+                <md-table-cell :md-label="gt('page')" md-sort-by="page">{{item.page}}</md-table-cell>
+                <md-table-cell :md-label="' '"><md-button @click="print(item.id,true)"><md-icon>done</md-icon></md-button></md-table-cell>
+				<md-table-cell :md-label="' '"><md-button @click="print(item.id,false)"><md-icon>clear</md-icon></md-button></md-table-cell>
             
 			</md-table-row>
         </md-table>
@@ -112,7 +112,7 @@ import flag from "@/components/parts/flag";
 			let k=await getDocs(q);
 			k.forEach(async(e)=>
 			{
-				this.printings.push({name:e.data().name,page:e.data().name,id:e.id});
+				this.printings.push({name:e.data().name,page:e.data().page,id:e.id});
 			});
 			this.dataReady=true;
 			},

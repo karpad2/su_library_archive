@@ -14,10 +14,11 @@
             <router-link  :to="get_link()"> <span  class="md-title">{{newspaper.name}}</span> </router-link>
             <span v-if="page!=''"> {{page+' '+gt("page")}}</span>
             <span  v-if="newspaper.author!=''" @click="open_newspaper" class="md-subhead">{{newspaper.author}}</span>
-             <span  v-if="newspaper.category!=''" @click="open_newspaper" class="md-subhead">{{newspaper.category}}</span>
+            <span  v-if="newspaper.description!=''" @click="open_newspaper" class="md-subhead">{{remove_tags(newspaper.description)}}</span>
+             <span  v-else-if="newspaper.category!=''" @click="open_newspaper" class="md-subhead">{{newspaper.category}}</span>
             <span  v-else-if="cat_name!=''" @click="open_newspaper" class="md-subhead">{{cat_name}}</span>
-            <span  v-else-if="newspaper.publisher!=null" @click="open_newspaper" class="md-subhead">{{newspaper.publisher}}</span>
-            
+            <span  v-else-if="newspaper.publisher!=''" @click="open_newspaper" class="md-subhead">{{newspaper.publisher}}</span>
+            <span  v-if="newspaper.release_date!=''" @click="open_newspaper" class="md-subhead">{{newspaper.release_date}}</span>
 
           </md-card-header>
 
@@ -202,6 +203,11 @@ export default {
 				 await newCache.add(this.newspaper_cover);
 				 response= await newCache.match(this.newspaper_cover);
 			 }
+        await response.blob().then((blob)=>{
+
+			var objectURL = URL.createObjectURL(blob);
+			this.newspaper_cover=objectURL;
+			});
     this.imageload=true;
       },
 
@@ -216,6 +222,10 @@ export default {
     {
 
     },
+    gt(a)
+				{
+					return get_text(a);
+				},
     get_link()
     {
     let l="";
@@ -261,6 +271,10 @@ export default {
         await addDoc(c,{"profile":this.profile,"id":this.id,"chapter":this.chapter});
       }
       }
+    },
+    remove_tags(a)
+    {
+      return String(a).replace(/<[^>]*>?/gm, '')
     }
 
   },

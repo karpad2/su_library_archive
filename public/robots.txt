@@ -1,4 +1,4 @@
-Sitemap:https://us-central1-su-library-archive.cloudfunctions.net/buildSitemap
+Sitemap:https://digitalna.subiblioteka.rs/sitemap.xml
 User-agent: *
 Disallow:
 

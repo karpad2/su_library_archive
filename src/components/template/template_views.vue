@@ -6,7 +6,7 @@
 		<md-field>
 			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 		</md-field>
-		<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`admin_${profile}`)}}</md-button>
+			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`admin_${profile}`)}}</md-button>
 		</md-card-header>
 
 		<md-card-content>

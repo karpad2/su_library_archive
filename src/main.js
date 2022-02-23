@@ -29,9 +29,9 @@ Vue.use(VueMeta);
 Vue.use(VueMaterial);
 Vue.use(VueLazyload);
 Vue.use(Vuer);
-
-
-
+/*
+window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+*/
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';

@@ -7,7 +7,7 @@
 		   </md-card-header-text>
 		   </md-card-header>
 		<md-card-content>
-          <card :profile="fav.profile" :chapter="fav.chapter" v-for="fav in favorites" :key="fav.id" :id="fav" />
+          <card :profile="fav.profile" :chapter="fav.chapter" v-for="fav in favorites" :key="fav.a" :id="fav.id" />
         </md-card-content>
 	</md-card>		
 		
@@ -45,18 +45,14 @@ import card from "@/components/parts/card";
 		async mounted() {
 			let bookmarks=collection(firestore,`users/${getAuth().currentUser.uid}/favorites`);
 			let user_ref;
-			try{
-			user_ref= await getDocsFromCache(bookmarks);
-			}
-			catch(e)
-			{
-				user_ref= await getDocs(bookmarks);
-			}
+			
+			user_ref= await getDocs(bookmarks);
+		
     		
 			user_ref.forEach(element =>
 			{
 				
-					this.favorites.push({"profile":element.data().profile,"id":element.data().id,"chapter":element.data().chapter});
+					this.favorites.push({"profile":element.data().profile,"id":element.data().id,"chapter":element.data().chapter,a:element.id});
 				
 			});
 			console.log(this.favorites);

@@ -118,7 +118,8 @@
     "deletebook":"Delete book",
     "register":"Register",
     "manuscirpts":"Manuscripts",
-    "admin_manuscripts":"Admin Manuscripts"
+    "admin_manuscripts":"Admin Manuscripts",
+    "require_login_to_view":"Require login to watch content"
    
 
 

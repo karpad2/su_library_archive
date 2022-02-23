@@ -31,7 +31,7 @@ function createWindow () {
     }
   })
 
-mainWindow.webContents.userAgent = "Electron_profile";
+ //mainWindow.webContents.userAgent = "Electron_profile";
  mainWindow.loadURL(`https://su-library-archive.firebaseapp.com/`);
 
   // and load the index.html of the app.

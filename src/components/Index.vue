@@ -21,8 +21,8 @@
 				</hide-at>
 				<div v-if="!library_user" class="md-toolbar-section-end">
 					<md-button v-if="signed_in&& admin" class="desktop" @click="$router.push('/printing')"> <md-icon>printer</md-icon></md-button>
-					<md-button v-if="signed_in" class="desktop" @click="$router.push('/bookmarks')"><md-icon>bookmark</md-icon> {{gt("bookmarks")}}</md-button>
-        			<md-button v-if="signed_in" class="desktop" @click="$router.push('/favorites')">❤️️ {{gt("favorites")}}</md-button>
+					<md-button v-if="signed_in" class="desktop" @click="$router.push('/bookmarks')"><md-icon>bookmark</md-icon> <span v-if="!mini">{{gt("bookmarks")}}</span></md-button>
+        			<md-button v-if="signed_in" class="desktop" @click="$router.push('/favorites')">❤️️ <span v-if="!mini">{{gt("favorites")}}</span></md-button>
 					
 					<md-button v-if="signed_in && !library_user" class="desktop profile" @click="$router.push('/user')">
 					<md-avatar style="z-index:999" >
@@ -40,7 +40,7 @@
 				</md-app-toolbar>
 				
 				
-				<md-app-drawer v-if="!fullscreen" :md-active.sync="menuVisible1" md-persistent="mini">
+				<md-app-drawer ref="drawer" v-if="!fullscreen" :md-active.sync="menuVisible1" :md-persistent="size"  md-swipeable >
 							<md-toolbar class="md-transparent" md-elevation="3">
 								<span>{{gt("navigation")}}</span>
 								<div class="md-toolbar-section-end">
@@ -49,7 +49,6 @@
 									</md-button>
 								</div>
 							</md-toolbar>
-
 							<md-list>
 								<div v-for="tab in menuTab" :key="tab.title">
 									<router-link :to="tab.link">
@@ -197,9 +196,9 @@ import * as firebaseui from 'firebaseui';
 		data: () => ({
 			profile_picture_url:"",
 			profile_name:"",
-			admin:true,
-			oath:true,
-			member:true,
+			admin:false,
+			oath:false,
+			member:false,
 			library_user:false,
 			valid_until:new Date(),
 			dateFormat:"",
@@ -211,6 +210,8 @@ import * as firebaseui from 'firebaseui';
 			},
 			code:"",
 			fullscreen:false,
+			mini:false,
+			size:"mini",
 			enter_code:false,
 			languages:langa.languages,
 			searchedBooks:[],
@@ -269,6 +270,18 @@ import * as firebaseui from 'firebaseui';
 				this.fullscreen=JSON.parse(localStorage.getItem("fullscreen"));
 				//logger(JSON.parse(localStorage.getItem("fullscreen")));
 				 this.internet_connection=window.navigator.onLine;
+
+				 if(window.innerWidth>550)
+				 {
+					//console.log(this.$refs["drawer"].$data);
+					 this.size="mini"
+					 this.mini=false;
+				 }
+				 else
+				 {
+					 this.size=null;
+					 this.mini=true;
+				 }
 			},500);
 			
 			this.$router.afterEach(()=>{

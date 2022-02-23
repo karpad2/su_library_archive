@@ -64,6 +64,10 @@ function title_page(a,type="")
 
 const languages =[
     {
+        code:"sr-SR",
+        name:convertWordToCyrillic("Srpski")
+    },
+    {
         code:"rs-RS",
         name:"Srpski"
     },

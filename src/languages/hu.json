@@ -259,7 +259,15 @@
         "keyboard_shortcuts":"Billentyű shortcutok",
         "printing_queue":"Nyomtatás",
         "sended_print_request":"Nyomtatási kérelem elküldve",
-        "print_request_has_been_already_sended":"Nyomtatási kérelem már el lett küldve."
+        "print_request_has_been_already_sended":"Nyomtatási kérelem már el lett küldve.",
+        "book_cant_found":"Könyv nem található",
+        "simple_search":"Egyszerű keresés",
+        "adv_search":"Összetett keresés",
+        "ft_search":"Teljes szöveg keresés",
+        "search_by_text":"Keresés szöveg alapján...",
+        "add_full_text_search":"Hozzáadás a teljes szöveg kereséshez",
+        "file_uploaded":"Fájl feltöltve",
+        "require_login_to_view":"Megtekintéshez bejelentkezés szükséges"
        
 
 

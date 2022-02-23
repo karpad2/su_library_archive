@@ -1,10 +1,8 @@
-<template>
-    
+<template>    
     <div class="center">
         <md-icon style="width:150px;height:150px;">cloud_off</md-icon>
         <h3>{{gt("no_internet_connection")}}</h3>
     </div>
-
 </template>
 
 <script>

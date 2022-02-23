@@ -58,6 +58,10 @@ user-select: none;
 	width: 40px;
 	height: 40px;
 }
+.md-list
+{
+	width: 100vw;
+}
 #vue-js-index-container {
 	.md-app {
 		height: 100vh;
@@ -85,7 +89,7 @@ user-select: none;
 			height: 30pt;
 		}
 		.md-list-item {
-
+			//width: 2vw;
 			&:hover {
 				.md-icon {
 					color: $accent;
@@ -115,14 +119,16 @@ user-select: none;
 		}
 	}
 	 .md-drawer {
-	width: 230px;
-	max-width: calc(100vw - 125px);
+	width: 300px;
+	max-width: calc(100vw);
 	  }
+	 
 	  img {
 		border-top-left-radius: .3em;
 		border-top-right-radius: .3em;
 		border-bottom-left-radius: .3em;
 		border-bottom-right-radius: .3em;
 	  }
+	  
 	  
 }

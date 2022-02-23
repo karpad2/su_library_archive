@@ -17,6 +17,11 @@
             <md-input id="publisher_name" @change="change" v-model="newspaper.publisher" md-counter="100"></md-input>
           </md-field>
 
+          <md-field>
+            <label for="author_name">{{gt('author_name')}}</label>
+            <md-input id="author_name" @change="change" v-model="newspaper.author" md-counter="100"></md-input>
+          </md-field>
+
            <md-field>
             <label for="category">{{gt('category')}}</label>
             <md-input id="category" @change="change" v-model="newspaper.category" md-counter="100"></md-input>
@@ -37,6 +42,15 @@
           <md-field>
             <label for="cobisslink">Cobiss link:</label>
             <md-input id="cobisslink" @change="change" v-model="newspaper.cobiss" md-counter="100"></md-input>
+          </md-field>
+
+             <md-field>
+            <label for="release_date">{{"release_date"}}</label>
+            <md-input id="release_date" @change="change" v-model="newspaper.release_date" md-counter="100"></md-input>
+          </md-field>
+        <md-field>
+          <label for="popularity"></label>
+            <md-input id="popularity" @change="change" v-model="newspaper.popularity" md-counter="100"></md-input>
           </md-field>
 
        
@@ -77,8 +91,8 @@
 
             <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-                <md-table-cell :md-label="gt(profile)+' '+gt('name')" md-sort-by="newspapername">{{ item.data.name }}</md-table-cell>
-                <md-table-cell :md-label="gt('release_date')" md-sort-by="release_date">{{ item.data.release_date }}</md-table-cell>
+                <md-table-cell :md-label="gt('name')" md-sort-by="name">{{ item.name }}</md-table-cell>
+                <md-table-cell :md-label="gt('release_date')" md-sort-by="release_date">{{ item.release_date }}</md-table-cell>
                 <md-table-cell :md-label="gt('edit')" md-sort-by="editnewspaper"><md-button @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/${item.id}`)">{{gt("edit")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
@@ -101,10 +115,10 @@ import { quillEditor } from 'vue-quill-editor';
 import { getDownloadURL, getStorage, ref, uploadBytes,put,deleteObject } from "firebase/storage";
 import axios from "axios";
 import loading from "@/components/parts/loading";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage,log} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc,deleteDoc,getDocFromCache } from "firebase/firestore";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, addDoc,FieldValue,updateDoc,deleteDoc } from "firebase/firestore";
 import flag from "@/components/parts/flag";
-import {getAuth,signOut,auth,user_language} from "firebase/auth";
+
 
 export default {
     
@@ -112,8 +126,7 @@ export default {
     components:{
         quillEditor,
         loading,
-        flag,
-        
+        flag
     },
      data:()=>({
       profile:"newspaper", 
@@ -132,7 +145,7 @@ export default {
       hided:true,
       dataReady:false,
       first_page:null,
-      page_number:0,
+     
       anewspaper:null,
       active:"first",
       imageData:null,
@@ -145,30 +158,11 @@ export default {
       second:false,
       third:false,
       language_flag_reload:true,
-      chapters:[],
-       cuuser:null,
-      admin:false,
-      member:false,
+      chapters:[]
     }),
     async mounted()
     {
-       this.cuuser= getAuth().currentUser;
-			let k;
-			try{
-        k=await getDocFromCache(doc(firestore,"users",this.cuuser.uid));
-        
-        }
-        catch(e)
-        {
-           k=await getDoc(doc(firestore,"users",this.cuuser.uid)); 
-        }
-
-
-			this.admin=(k.data().admin==null?false:k.data().admin);
-			this.member=(k.data().member==null?false:k.data().member);
-
-      if(!this.admin) this.$router.go("/home");
-
+      if(FirebaseAuth.currentUser==null) return;
       	if(this.$route.params.viewtype!=undefined)
 			{
 				this.profile=this.$route.params.viewtype;
@@ -184,7 +178,6 @@ export default {
         description:"",
         language:"",
         favorites:0,
-        
         flagready:true,
         newspaper_ref:null,
         uploading_date:"",
@@ -211,7 +204,7 @@ export default {
         let chapters_refread=await getDocs(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`));
         this.chapters=[];
         chapters_refread.forEach(as=>{
-          this.chapters.push({data:as.data(),id:as.id});
+          this.chapters.push({data:as.data(),id:as.id,name:as.data().name,release_date:as.data().release_date});
         });
 
       }

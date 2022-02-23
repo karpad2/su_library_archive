@@ -11,6 +11,7 @@
      <md-switch @change="change" v-model="properties.promotion_hide"> <small>{{gt("promotion_hide")}}</small></md-switch>
       <md-switch @change="change" v-model="properties.library_user_logout"> <small>{{gt("library_user_logout")}}</small></md-switch>
       <md-button @click="generate_sitemap">{{gt("generate_sitemap")}}</md-button>
+       <md-button @click="getmodel">JSON export</md-button>
       <md-field>
             
             <md-chips @change="change" v-model="properties.keywords" :md-placeholder="gt('add_keywords')"></md-chips>
@@ -63,7 +64,7 @@
 </template>
 <script>
 import {get_text,title_page} from "@/languages";
-import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified} from "@/firebase";
+import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified,storage} from "@/firebase";
 import  categories from "../../firebase/categories";
 import {getAuth,signOut,auth,user_language} from "firebase/auth";
 import { getDownloadURL, getStorage, ref, uploadString,deleteObject } from "firebase/storage";
@@ -97,7 +98,8 @@ export default {
       user:null,
       admin:false,
       member:false,
-      dataReady:false
+      dataReady:false,
+      maps:[]
     }
   },
   methods:
@@ -110,6 +112,51 @@ export default {
     {
       updateDoc(doc(firestore,"properties","global_flags"),this.properties,{merge:true});
     },
+
+    async getmodel()
+			{
+			await categories.categories.forEach(async (a)=>{
+			let c=collection(firestore,`${a.name}`);
+			let e=await getDocs(c);
+			
+			e.forEach(async (bb)=>{
+				let d=await getDocs(collection(firestore,`${a.name}/${bb.id}/chapters`));
+				d.forEach((f)=>
+				{
+					this.maps.push({
+						profile:a.name,
+						id:bb.id,
+						chapter_id:f.id,
+						publisher:f.data().publisher,
+						author_name:f.data().author_name,
+						chapter_name:f.data().name,
+						chapter_description:f.data().description,
+						category_description:bb.data().description,
+						category_name:bb.data().name,
+						chapter_upload_date:f.data().upload_date,
+						chapter_release_date:f.data().release_date
+					});
+				});
+				
+			});
+			});
+			console.log(this.maps);
+
+
+      const firststorageRef = ref(storage,`sitemap.json`);
+      
+      let text = await JSON.stringify(this.maps)
+    uploadString(firststorageRef,text).then((a)=>
+      {
+        console.log("File uploaded");
+          this.$noty.success(this.gt("file_uploaded"), {
+						killer: true,
+						timeout: 1500,
+					});
+      })
+
+
+			},
      async searchinguser()
 			{
                 

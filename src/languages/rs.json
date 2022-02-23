@@ -217,7 +217,8 @@
         "favorite":"Omiljeno",
         "problem_report":"Prijavljivanje problema",
         "library_user_logout":"Dozvola izlaska korisnika biblioteke",
-        "thank_you_for_your_feedback":"Hvala vam na povratnoj informaciji"
+        "thank_you_for_your_feedback":"Hvala vam na povratnoj informaciji",
+        "require_login_to_view":"Za pregled je potrebna prijava"
 
 
 

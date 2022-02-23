@@ -31,19 +31,25 @@
             <md-chips @change="change" v-model="chapter.keywords" :md-placeholder="gt('add_keywords')"></md-chips>
           </md-field>
 
+           <md-field>
+              <b-form-select @change="change" v-model="chapter.language" :options="languages"></b-form-select>   <flag :flag="chapter.language"/>  
+            </md-field>
 
           <md-field>
             <md-switch @change="change" v-model="chapter.hided">{{gt("hided")}}</md-switch>
           </md-field>
 
-          <md-datepicker :md-closed="change" v-model="chapter.release_date">
-              <label>{{gt("release_date")}}</label>
-        </md-datepicker>
+        <md-field>
+            <label>{{gt('release_date')}}</label>
+            <md-input @change="change" v-model="chapter.release_date" md-counter="10"></md-input>
+          </md-field>
 
          <md-field>
             <label></label>
             <md-switch  v-model="first_page_as_cover">{{gt('first_page_as_cover')}}</md-switch>
           </md-field>
+
+
           
 
           
@@ -91,7 +97,6 @@
           <quillEditor class="ql-editor" @change="change" v-model="chapter.description" />
           </md-field>
           <md-field>
-            
             <md-chips @change="change" v-model="chapter.keywords" :md-placeholder="gt('add_keywords')"></md-chips>
           </md-field>
 
@@ -124,17 +129,14 @@
       :drop-placeholder="gt('upload_chapter')"></b-form-file>
          
           
-           <md-datepicker :md-closed="change" v-model="chapter.release_date">
-              <label>{{gt("release_date")}}</label>
-        </md-datepicker>
-          <md-datepicker  :md-closed="change" v-model="chapter.upload_date">
-              <label>{{gt("upload_date")}}</label>
-        </md-datepicker>
-
-          <md-field>
-            <label>{{gt('page_number')}}</label>
-            <md-input @change="change" v-model="chapter.page_number" md-counter="100"></md-input>
+           <md-field>
+            <label>{{gt('release_date')}}</label>
+            <md-input @change="change" v-model="chapter.release_date" md-counter="10"></md-input>
           </md-field>
+
+          
+
+         
            <md-button class="md-raised md-primary" @click="change">{{gt("save")}}</md-button>
           <md-button class="md-raised md-primary" @click="deletechapter">{{gt("delete")}}</md-button>
           
@@ -189,9 +191,9 @@ export default {
         pages:[],
         hided:true,
         dataReady:false,
-        release_date:null,
+        //release_date:null,
         first_page:null,
-        page_number:0,
+        
         achapter:null,
         active:"first",
         new_chapter:true,
@@ -259,15 +261,6 @@ export default {
         this.chapter_id=this.$route.params.cid;
          let chapter_refread=await getDoc(doc(firestore,`${this.profile}/${this.$route.params.bid}/chapters`,this.chapter_id));
         this.chapter=chapter_refread.data();
-       
-        if(this.chapter.release_date==undefined)
-        {
-          this.chapter.release_date=null;
-        }
-        else{
-this.release_date=new Date();
-        }
-         
       }
       
       
@@ -336,9 +329,7 @@ this.release_date=new Date();
       
         let l=new Date();
         this.chapter.upload_date=l.toISOString().substring(0,10);
-        l=new Date(this.chapter.release_date)
-        this.chapter.release_date=l.toISOString().substring(0,10);
-        this.chapter_ref=updateDoc(doc(firestore,`/${this.profile}/${this.$route.params.bid}/chapters`,this.chapter_id),this.chapter,{merge:true});
+        this.chapter_ref= await setDoc(doc(firestore,`/${this.profile}/${this.$route.params.bid}/chapters`,this.chapter_id),this.chapter,{merge:true});
            
       this.$noty.success(this.gt("saved"), {
 						killer: true,
@@ -377,9 +368,8 @@ this.release_date=new Date();
       const firststorageRef = ref(storage,`/${this.profile}/${this.$route.params.bid}/chapters/${this.chapter_id}/book.pdf`);
       const metadata = {contentType: 'application/pdf'};
       this.dataReady=false;
-      if(this.chapter.name=="")
-      this.chapter.name=event.target.files[0].name;
-       console.log(event.target.files[0]);
+      if(this.chapter.name=="") this.chapter.name=event.target.files[0].name;
+       //console.log(event.target.files[0]);
       uploadBytes(firststorageRef, event.target.files[0]).then((a)=>
       {
        this.$noty.success(this.gt("file_uploaded"), {

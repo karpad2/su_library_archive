@@ -4,9 +4,11 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "outDir": "lib",
     "sourceMap": true,
-    "strict": true,
+    "strict": false,
     "target": "es2017"
   },
   "compileOnSave": true,

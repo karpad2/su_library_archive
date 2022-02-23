@@ -15,7 +15,7 @@
 		<div>
 		<md-button :id="idConfig.zoomOut" ><md-icon>zoom_out</md-icon></md-button>
 		<md-button :id="idConfig.zoomIn"><md-icon>zoom_in</md-icon></md-button>
-		<md-button v-if="!libraryuser" @click="print_local"><md-icon>print</md-icon></md-button>
+		<md-button v-if="inlibrary || admin" @click="print_local"><md-icon>print</md-icon></md-button>
 		</div>
 	</hide-at>
 	<md-button @click="fullscreen_toggle" class="small"><md-icon>fullscreen</md-icon></md-button>
@@ -27,7 +27,7 @@
 	</div>
 </md-toolbar> 
 <div class="section">
-	<vue-pdf-app :id-config="idConfig" style="width:auto; height: 80vh;" :page-number="page" :pdf="pdf_file" ></vue-pdf-app>
+	<vue-pdf-app :id-config="idConfig" style="width:auto; height: 80vh;" :page-number="page" :pdf="b64_file" ></vue-pdf-app>
 
 	
 </div>
@@ -47,7 +47,7 @@
 <script>
 import {signOut,getAuth} from "firebase/auth";
 import VuePdfApp from "vue-pdf-app";
-import {FireDb,FirebaseAuth,change_Theme_Fb,storage,firestore,libraryuser} from "@/firebase";
+import {FireDb,FirebaseAuth,change_Theme_Fb,storage,firestore,libraryuser,Firebasecren} from "@/firebase";
 import { getStorage, ref, listAll,get, getDownloadURL } from "firebase/storage";
 import InnerImageZoom from 'vue-inner-image-zoom';
 import 'vue-inner-image-zoom/lib/vue-inner-image-zoom.css';
@@ -56,8 +56,9 @@ import bugreportwebhook from "../../firebase/credentials";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white} from "@/languages";
 import {getDoc,doc, getDocFromCache, collection, query,where, getDocs, addDoc, documentId, deleteDoc} from "firebase/firestore";
 import loading from "@/components/parts/loading";
-import {generatePdfPageNumber,generatePdfThumbnails} from 'pdf-thumbnails-generator-k2';
+import {generatePdfThumbnail} from 'pdf-thumbnails-generator-k2';
 import {showAt, hideAt} from 'vue-breakpoints';
+import firebaseCredentials from "../../firebase/credentials";
 import logo from "@/assets/logo";
 
 	export default {
@@ -85,9 +86,8 @@ import logo from "@/assets/logo";
 				config:{
        			 toolbar: false
       			},
-				  thumbnails:null,
 				idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId"},
-				pdf_file:"",
+				pdf_file_url:"",
 				chapter_id:"",
 				zoom_scale:1,
 				fullscreen:false,
@@ -96,14 +96,17 @@ import logo from "@/assets/logo";
 				image_pre:[],
 				title_side:"",
 				admin:false,
+				b64_file:null,
 				print_id:"",
+				inlibrary:false,
 				print_page:"",
 				member:false,
 				promotion:false,
 				user:{},
 				choosed_pager:0,
 				preloading_page_number:3,
-				settings_dialog:false
+				settings_dialog:false,
+				thumbnails:[]
 			}
 		},
 		async mounted() {
@@ -123,21 +126,16 @@ import logo from "@/assets/logo";
 			{
 			 //this.$router.push("/");
 			 	
-			}
+			}*/
 			let k;
-			try{
-        k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+		
+           k=await getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
         
-        }
-        catch(e)
-        {
-           k=await getDoc(doc(firestore,"users",this.user.uid)); 
-        }
 
 
 			this.admin=(k.data().admin==null?false:k.data().admin);
 			this.member=(k.data().member==null?false:k.data().member);
-			if(!this.member||!this.admin)  this.$router.push("/");*/
+			// if(!this.member||!this.admin)  this.$router.push("/");
 			//this.libraryuser= await libraryuser();
 			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
 			
@@ -154,17 +152,39 @@ import logo from "@/assets/logo";
 		//if(!(this.member||this.admin||this.promotion)) this.back_to_home();
 
 			 let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/book.pdf`);// loading page from bucket
-			 this.pdf_file= await getDownloadURL(image_ref);
-			 this.thumbnails=await generatePdfThumbnails(this.pdf_file,1500);
-
-			// this.pdf_file_url= await getDownloadURL(image_ref);
-			 const newCache = await caches.open('su-library-archive');
-			 let response= await newCache.match(this.pdf_file);
+			 this.pdf_file_url= await getDownloadURL(image_ref);
+			const newCache = await caches.open('su-library-archive');
+			 let response= await newCache.match(this.pdf_file_url);
 			 if(!response||!response.ok)
 			 {
-				 await newCache.add(this.pdf_file);
-				 response= await newCache.match(this.pdf_file);
+				 await newCache.add(this.pdf_file_url);
+				 response= await newCache.match(this.pdf_file_url);
 			 }
+
+			 await response.blob().then((blob)=>{
+
+			var objectURL = URL.createObjectURL(blob);
+			this.b64_file=objectURL;
+			});
+
+			
+			/*
+			for(let i=0;i<_num;i++)
+			{
+			await localStorage.setItem(`${this.pdf_file_url}_${i}`,JSON.stringify(this.thumbnails[i]));
+			}
+			}
+			else
+			{
+
+				for(let i=0;i<_num;i++)
+			{*/
+			// this.thumbnails[i]= await JSON.parse(localStorage.getItem(`${this.pdf_file_url}_${i}`));
+			/*}
+			}*/
+
+			// this.pdf_file_url= await getDownloadURL(image_ref);
+			 
 
 			 //this.$emit('fullscreen',true);
 			 let chapter_ref;
@@ -178,13 +198,7 @@ import logo from "@/assets/logo";
 
 			 this.chapter=chapter_ref.data();
 
-			
-			
-
-			for(let i=this.page;i<(this.page+this.preloading_page_number);i++)
-			{
-				if(i<=Number(this.chapter.page_number))  await this.add_page_to_load(i);
-			}
+		
 			
 			/*if (this.page<=0 || this.page>Number(this.chapter.page_number))
 			{
@@ -194,13 +208,14 @@ import logo from "@/assets/logo";
 			
 			 this.setup_shortcuts();
 			 this.dataReady=true;
-
-			  setInterval(()=>{
+			await this.checkin();
+			  setInterval( async()=>{
 			 this.title_side=title_page(`${this.chapter.name} - ${this.gt("page")} ${this.pn()}`);
+			 
 			 },500);
 		},
 		methods: {
-			async add_page_to_load(lo)
+			/*async add_page_to_load(lo)
 			{
 				let prev= ref(storage,`${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/pages/${lo}.jpg`);
 				let l={
@@ -210,40 +225,39 @@ import logo from "@/assets/logo";
 				if ( !this.image_pre.includes(l)) {
     				this.image_pre.push(l); 
 				}
-			},
+			},*/
 			async bookmark_add()
 			{
-				let pagenumber=document.getElementById("pageNumber").value;
-				console.log(pagenumber);
-				 let c=await collection(firestore,`/users/${await getAuth().currentUser.uid}/bookmarks`);
-				 let _query=query(collection,where("profile","==",this.profile),where("id","==",this.$route.params.nid),where("chapter","==",this.$route.params.cid),where("page","==",pagenumber))
-				console.log(_query);
-				let d= await getDoc(_query);
-				if(d.exists())
-				{
-					this.$noty.success(this.gt("bookmark_exist"), {
-						killer: true,
-						timeout: 1500,
-					});
-				}
-				else 
-				{
+				let c=await collection(firestore,`/users/${await getAuth().currentUser.uid}/bookmarks`);
+			
 				 let q=await addDoc(c,{
 					 "profile":this.profile,
 					 "id":this.$route.params.nid,
 					 "chapter":this.$route.params.cid,
-					 "page":pagenumber
+					 "page":this.pn()
 					});
+
 					this.$noty.success(this.gt("bookmark_added"), {
 						killer: true,
 						timeout: 1500,
 					});
-				}
+				
 			},
 
 			next_page()
 			{
 				this.enter_read(this.page+1);	
+			},
+			async checkin()
+			{
+				axios.get("https://api.ipify.org?format=json")
+				.then(resp => {
+					if(resp.data.ip==firebaseCredentials.public_profile.ip||resp.data.ip==firebaseCredentials.public_profile.ip2)
+					{
+						this.inlibrary=true;
+					}
+        		//console.log(resp.data);
+    			})
 			},
 			last_page()
 			{
@@ -329,6 +343,8 @@ import logo from "@/assets/logo";
 			},
 			async print_local()
 			{
+				if(!this.admin)
+				{
 				if(this.print_id!="")
 				{
 					this.$noty.success(this.gt("print_request_has_been_already_sended"), {
@@ -358,9 +374,11 @@ import logo from "@/assets/logo";
 							{		
 								
 								 //let thumbnails=await generatePdfThumbnails(this.pdf_file);
-								 let image= this.thumbnails[Number(this.print_page)-1].thumbnail;
+
+								 let images=(await generatePdfThumbnail(this.b64_file,this.print_page,1500))[0];
+								 let image= images.thumbnail;
 								 var _window=window.open("","PrintWindow","width=800,height=600");
-								 await _window.document.write(`<img style="height:90vh" src="${image}" alt="${this.print_page}" />`);
+								 await _window.document.write(`<img style="height:98vh" src="${image}" alt="${this.print_page}" />`);
 								 _window.print();
 								 _window.close();
 								await deleteDoc(c,save_pc.id);
@@ -376,8 +394,22 @@ import logo from "@/assets/logo";
 
 					
 				},5000)
-
+				}
 			}
+			else 
+			{
+				let k= parseInt(await this.pn());
+				console.log(k);
+				 let images=await generatePdfThumbnail(this.b64_file,k,1500);
+								 let image= images[0].thumbnail;
+								 var _window=window.open("","PrintWindow","width=800,height=600");
+								 await _window.document.write(`<img style="height:98vh" src="${image}" alt="${k}" />`);
+								 _window.print();
+								 _window.close();
+								//await deleteDoc(c,save_pc.id);
+								this.print_id="";
+			}
+				
 			}	
 
 		},
