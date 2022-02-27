@@ -10,11 +10,8 @@
           <card  :profile="fav.profile" :id="fav.id" :chapter="fav.chapter_id" :page="fav.page" v-for="fav in favorites" :key="fav.keyID"  />
         </md-card-content>
 	</md-card>		
-		
 	</div>
-
 </template>
-
 <script>
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";

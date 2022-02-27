@@ -58,7 +58,7 @@ import logo from "@/assets/logo";
 			showSidepanel:false,
 			menuVisible: false,
 			searchednewspapers:[],
-			loading_values:10,
+			loading_values:100,
 			userTheme: "default",
 			loading_screen:false,
 			dataReady:false,

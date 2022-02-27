@@ -29,17 +29,12 @@
 						<img  :src="profile_picture_url" alt="Avatar">
 					</md-avatar>
 					</md-button>
-					
-						<md-button v-else class="desktop" @click="$router.push('/account/login')">️{{gt("login")}} <md-icon class="md-icon">login</md-icon> </md-button>
-					
-						
+					<md-button v-else class="desktop" @click="$router.push('/account/login')">️{{gt("login")}} <md-icon class="md-icon">login</md-icon> </md-button>
      		 	</div>
 				<div v-else class="md-toolbar-section-end">
 				  <b-form-select v-if="library_user" @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
 				</div>
 				</md-app-toolbar>
-				
-				
 				<md-app-drawer ref="drawer" v-if="!fullscreen" :md-active.sync="menuVisible1" :md-persistent="size"  md-swipeable >
 							<md-toolbar class="md-transparent" md-elevation="3">
 								<span>{{gt("navigation")}}</span>
@@ -90,44 +85,10 @@
 				
 				
 		
-		
-	<md-drawer class="md-right" :md-active.sync="showSidepanel">
-      <md-toolbar class="md-transparent" md-elevation="0">
-        <span class="md-title">{{gt("account")}}</span>
-      </md-toolbar>
-
-      <md-list>
-        <md-list-item>
-          <span class="md-list-item-text">Abbey Christansen</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon class="md-primary">chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-
-        <md-list-item>
-          <span class="md-list-item-text">Alex Nelson</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon class="md-primary">chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-
-        <md-list-item>
-          <span class="md-list-item-text">Mary Johnson</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon>chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-      </md-list>
-    </md-drawer>
-
 			<md-app-content>
 				    <b-alert v-if="signed_in && !email_verified && !library_user &&(!member||!admin||!oath)" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
-
-					<b-alert v-if="promotion && !library_user && !promotion_hide &&(!member||!admin||!oath)" variant="success" show>{{gt("promotion_text")}}</b-alert>
-					<b-alert v-if="!promotion && !library_user && !promotion_hide && (!member||!admin||!oath)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
+					<b-alert v-if="promotion && !library_user && promotion_hide &&(!member||!admin||!oath)" variant="success" show>{{gt("promotion_text")}}</b-alert>
+					<b-alert v-if="!promotion && !library_user && promotion_hide && (!member||!admin||!oath)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
 
 					 <md-dialog-confirm
 						:md-active.sync="terms"
@@ -137,8 +98,6 @@
 						:md-cancel-text="gt('disagree')"
 						@md-cancel="logout"
 						@md-confirm="accept_terms" />
-
-					 
 
 						<md-dialog-prompt
 						:md-active.sync="enter_code"

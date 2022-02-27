@@ -11,13 +11,10 @@
 						<b-form-select @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
 					</show-at>	
 					</div>
-				
 			</md-app-toolbar>
 
 			<md-app-content>
 				<div  v-if="dataReady" class="middle-center">
-					
-					
 					<logo style="width:75px;height:75px;" />
 					
 					<div> <h4>{{gt("app-title")}}</h4></div>
@@ -34,7 +31,6 @@
 
 <script>
 import logo from '@/assets/logo';
-
 import {FirebaseAuth,firestore} from "@/firebase";
 import imagelogo from "@/assets/icons/android-chrome-512x512.png";
 import {showAt, hideAt} from 'vue-breakpoints';
@@ -46,7 +42,6 @@ import Biglogo from '@/assets/biglogo.vue';
 		components: {
 		logo,
 		showAt, hideAt,
-		
 		},
 		name: "AccountIndex",
 		data: () => ({

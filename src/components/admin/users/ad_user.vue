@@ -24,7 +24,7 @@
 </template>
 <script>
 import {get_text} from "@/languages";
-import {getAuth,signOut,auth,user_language} from "firebase/auth";
+import {getAuth,signOut,auth,user_language,getAdditionalUserInfo} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,user_email_verified} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache  } from "firebase/firestore";
 export default {
@@ -42,7 +42,7 @@ export default {
   {
     let _user= await getDoc(doc(firestore,"users",this.$route.params.uid));
     this.user=_user.data();
-
+    getAdditionalUserInfo().profile
 
     this.cuuser= getAuth().currentUser;
 			let k;

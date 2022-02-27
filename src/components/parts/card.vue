@@ -181,8 +181,11 @@ export default {
       if(this.chapter=="")
       {
         ref_thumbnail=ref(storage,`/${this.profile}/${this.id}/thumbnail.jpg`);
-        this.newspaper_cover=await getDownloadURL(ref_thumbnail);
-         
+        let k=await getDownloadURL(ref_thumbnail);
+       // k=k.replace('https://', '');
+       // k="https://cdn.statically.io/img/"+k;
+        //console.log(k);
+        this.newspaper_cover=k;
       }
       else{
         try{

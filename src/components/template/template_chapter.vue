@@ -1,5 +1,6 @@
 <template>
 	<div>
+	
 	<div div v-if="dataReady">
 <md-card>
 		<md-card-header>
@@ -9,14 +10,8 @@
 		   </md-card-header>
 		    <md-card-content>
 				<div class="book-container">
-					<md-card @click="enter_read(1)" style="width:250px; display:inline; float:left">
-					<img  v-if="!loading_images" @click="enter_read(1)" draggable="false"  :alt="'page_'+1" :src="thumbnails[0].thumbnail"/> 
-				 <md-card-media-cover v-else md-solid>
-        <md-card-media md-ratio="1:1">
-          <loading/>
-        </md-card-media>
-      </md-card-media-cover>
-			</md-card>
+					<img   @click="enter_read(1)" draggable="false" style="width:250px; display:inline; float:left"  :alt="'page_'+1" :src="thumbnails[0].thumbnail"/> 
+				 
 		<div class="book-info">
 			<p> {{gt("name")}}: <md-chip @click="gotoparent(book.name)" md-static>{{book.name}}</md-chip></p>
 			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in chapter.keywords" md-static>{{keyword}}</md-chip> </p>
@@ -37,7 +32,7 @@
 			
 		
 			</div>
-			<md-button class="md-raised md-primary" v-if="admin" @click="addtofulltextsearch">{{gt(`add_to_full_text_search`)}}</md-button>	
+			<md-button class="md-raised md-primary" v-if="false" @click="addtofulltextsearch">{{gt(`add_to_full_text_search`)}}</md-button>	
 		</div>
 		
 		<div >
@@ -62,6 +57,7 @@
 	</md-card>
 	<md-card v-else>
 		<md-card-content>
+			
 			<div>
 				<h3>{{gt("require_login_to_view")}}</h3>
 			 </div>
@@ -69,8 +65,13 @@
 		</md-card-content>	
 	</md-card>
 	</div>
-	 <md-progress-bar v-else md-mode="buffer" :md-value="amount" :md-buffer="buffer"></md-progress-bar>
+	<div v-else>
+	<div id="wrapper">
+		<canvas  width="250" height="385" id="canvas"></canvas>
+	</div>
+	 <md-progress-bar  md-mode="buffer" :md-value="amount" :md-buffer="buffer"></md-progress-bar>
 	 
+	</div>
 	</div>
 
 </template>
@@ -78,7 +79,7 @@
 <script>
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage,libraryuser} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove,addDoc} from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,updateDoc,getDocFromCache,arrayUnion,arrayRemove,addDoc, documentId} from "firebase/firestore";
 import {get_text,languages,get_defaultlanguage,title_page,replace_white,replace_under} from "@/languages";
 import { getStorage, ref, uploadBytes ,getDownloadURL, uploadString} from "firebase/storage";
 import axios from "axios";
@@ -92,7 +93,7 @@ import flag from "@/components/parts/flag";
 
 	export default {
 		components: {
-		loading,
+		
 		},
 		
 		name: 'Book',
@@ -101,7 +102,7 @@ import flag from "@/components/parts/flag";
 			chapter_id:"",
 			logout:true,
 			chapter_ref:"",
-			loading_values:10,
+			loading_values:5,
 			numPages:0,
 			size:0,
 			images:[],
@@ -126,6 +127,8 @@ import flag from "@/components/parts/flag";
 			user:{},
 			amount:10,
 			buffer:20,
+			ctx:null,
+			canvas:null,
 			config:{
 				toolbar: false},
 				idConfig: { zoomIn: "zoomInId", zoomOut: "zoomOutId",numPages: "vuePdfAppNumPages",pageNumber: "vuePdfAppPageNumber", print: "vuePdfAppPrint" },
@@ -140,6 +143,7 @@ import flag from "@/components/parts/flag";
 			}
 		},
 		async mounted() {
+			
 			this.book_id=this.$route.params.nid;
 			this.chapter_id=this.$route.params.cid;
 			this.libraryuser=libraryuser();
@@ -149,54 +153,23 @@ import flag from "@/components/parts/flag";
 			}
 			let book_ref;
 
-		try{
-        book_ref=await getDocFromCache(doc(firestore,`${this.profile}`,this.book_id));
-       
-        }
-        catch(e)
-        {
-           book_ref=await getDoc(doc(firestore,`${this.profile}`,this.book_id));
-          
-        }
 		 book_ref=await getDoc(doc(firestore,`${this.profile}`,this.book_id));
 		 this.book=book_ref.data();
-		try{
-        this.chapter_ref=await getDocFromCache(doc(firestore,`${this.profile}/${this.book_id}/chapters`,this.chapter_id));
-        this.chapter=this.chapter_ref.data();
-        }
-        catch(e)
-        {
+		
            this.chapter_ref=await getDoc(doc(firestore,`${this.profile}/${this.book_id}/chapters`,this.chapter_id));
            this.chapter=this.chapter_ref.data(); 
-        }
-		try{
-			let ref_storage =ref(storage,`${this.profile}/${this.book_id}/chapters/${this.chapter_id}/thumbnail.png`);
-			this.book_thumbnail= await getDownloadURL(ref_storage);
+        
 
-			 const newCache = await caches.open('su-library-archive');
-			 let response= await newCache.match(this.book_thumbnail);
-			 if(!response||!response.ok)
-			 {
-				 await newCache.add(this.book_thumbnail);
-				 response= await newCache.match(this.book_thumbnail);
-			 }
-			 await response.blob().then((blob)=>{
-				
-				var objectURL = URL.createObjectURL(blob);
-				this.thumbnails[0]={"thumbnails":objectURL};
-				
-				});
-
-}
-catch(ex)
-{
-	console.error(ex);
-	this.book_thumbnail_jpg=false;
-}
 			this.book=book_ref.data();
 			this.buffer=40;
 			let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/book.pdf`);// loading page from bucket
+			 try
+			 {
 			 this.pdf_file_url= await getDownloadURL(image_ref);
+			 }
+			 catch{
+				 //
+			 }
 			 const newCache = await caches.open('su-library-archive');
 			 let response= await newCache.match(this.pdf_file_url);
 			 if(!response||!response.ok)
@@ -214,7 +187,12 @@ catch(ex)
 				if(this.chapter.page_number==null)
 				{
 					await this.gen_number();
+					try{
 					setDoc(doc(firestore,`${this.profile}/${this.book_id}/chapters/${this.chapter_id}`,),{page_number:this.numPages},{merge:true});
+					}
+					catch{
+						//
+					}
 				}
 				else
 				{
@@ -234,24 +212,30 @@ catch(ex)
 			{
 				this.generated_keywords+=`${e},`;
 			});
+			try{
 			setDoc(doc(firestore,`${this.profile}`,this.book_id),{popularity:this.book.popularity+1},{merge:true});
-			this.signed_in=!(await getAuth().currentUser==null);
+			}
+			catch
+			{
+				//
+			}
+			this.signed_in=(await getAuth().currentUser!=null);
 			
 			if(this.chapter.name==null)
 			{
-				setDoc(doc(firestore,`${this.profile}/${this.book_id}/chapters/${this.chapter_id}`,),{name:this.chapter.chapter_name},{merge:true});
+				await setDoc(doc(firestore,`${this.profile}/${this.book_id}/chapters/${this.chapter_id}`,),{name:this.chapter.chapter_name},{merge:true});
 			}
 			if(this.signed_in)
 			{
 			this.user= getAuth().currentUser;
 			let k;
 			try{
-        k=await getDocFromCache(doc(firestore,"users",FirebaseAuth.currentUser.uid));
+       		  k=await getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
         
         }
         catch(e)
         {
-           k=await getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
+         console.warn(e); 
         }
 
 
@@ -262,7 +246,6 @@ catch(ex)
 			
 				try{
         get_under=await getDocFromCache(doc(firestore,"properties","global_flags"));
-        
         }
         catch(e)
         {
@@ -342,21 +325,18 @@ catch(ex)
 					});
 				
 			},
-
 			async render()
 			{
-			
 			let rendered_numbers_max=0;
 			this.thumbnails=[];
 			if(this.loading_values>this.numPages) 
-			 {rendered_numbers_max=this.numPages;
+			 {
+				rendered_numbers_max=this.numPages;
 				this.hide=true;
-			}
+			 }
 			else rendered_numbers_max=this.loading_values;
-
-			if(FirebaseAuth.currentUser!=null) rendered_numbers_max=1;
+			if(FirebaseAuth.currentUser==null) rendered_numbers_max=1;
 			this.size=rendered_numbers_max;
-
 			const newCache = await caches.open('su-library-archive');
 			 let response= await newCache.match(this.pdf_file_url);
 			 if(!response||!response.ok)
@@ -368,10 +348,12 @@ catch(ex)
 			for(let i=1;i<=rendered_numbers_max;i++){
 			
 			 await this.generateThumnail(i);
-			setInterval(()=>{
-			if(this.thumbnails.length+1==rendered_numbers_max) this.loading_images=false;
-			},500);
+			
 			}
+			setInterval(()=>{
+			if(
+			this.thumbnails.length+1==rendered_numbers_max) this.loading_images=false;
+			},100);
 			//console.log(this.thumbnails);
 			
 
@@ -406,7 +388,7 @@ catch(ex)
 			},
 			async generateThumnail(i){ 
 			
-			let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/pages/${i}.png`);// loading page from bucket
+			let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/pages/${i}.webp`);// loading page from bucket
 			 try {
 			 let b= await getDownloadURL(image_ref);
 			 const newCache = await caches.open('su-library-archive');
@@ -426,7 +408,32 @@ catch(ex)
 			 }
 			 catch 
 			 {
-			  await this.thumbnails.push(await (await generatePdfThumbnail(this.b64_file,i,300))[0]);
+			  let canvas=await document.getElementById("canvas");
+			let ctx= await canvas.getContext('2d');	
+			//ctx.clear(); 
+			//await ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+			await this.thumbnails.push(await (await generatePdfThumbnail(this.b64_file,i,250))[0]);
+			 let image=new Image();
+			 //let cv=new Canvas
+			 //console.log(this.thumbnails);
+ 			await canvas.toDataURL("image/webp",0.5);
+			image.src= await this.thumbnails[i-1].thumbnail;
+			image.alt=`image-${i}.webp`;
+			// console.log(image);
+			 await ctx.drawImage(image,0,0);
+			  await ctx.stroke();	
+			 await canvas.toBlob(async (blob)=>{
+				 try{
+					 console.log(blob);
+				 //await uploadBytes(image_ref,blob);
+				 }
+				 catch(e)
+				 {
+					 //
+					 console.error(e);
+				 }
+			 });
+			  //console.log(this.canvas);
 			 //this.images[i]=this.thumbnails[i].thumbnail;
 			// await uploadString(image_ref,this.thumbnails[i-1].thumbnail);
 			 /*if(i==1)

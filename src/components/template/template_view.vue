@@ -61,7 +61,6 @@
             </md-table-row>
         </md-table>
 		<div class="middle-center"> 
-			<md-button @click="loadmore">{{gt("load_more")}}</md-button>
 			<md-button v-if="admin" class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
 		</div>
 	</md-card>
@@ -84,7 +83,6 @@ import flag from "@/components/parts/flag";
 
 	export default {
 		components: {
-		
 		loading,
 		flag
 		},
