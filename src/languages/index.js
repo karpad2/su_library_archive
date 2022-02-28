@@ -47,8 +47,14 @@ function contains_the_array(array,word)
     if(array[word]==undefined)
       { console.log(word);
         missingword(localStorage.getItem("language"),word);
+        if(localStorage.getItem("language")=="hr-HR")
+        {
+            return contains_the_array(serbian,word);
+        }
+        else return word;
+
         //logerror(`Language error language code:${localStorage.getItem("language")} err word missing,word:'${word}'`);
-        return word;   
+         
         //return english[word];
       }
     else 

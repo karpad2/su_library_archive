@@ -1,4 +1,28 @@
-module.exports = { baseUrl: '/', devServer: { disableHostCheck: true, } } 
+module.exports = { 
+	baseUrl: '/', 
+devServer: { disableHostCheck: true, },
+module:{
+	rules:[
+		{
+			test: /.jsonc$/,
+			use: [
+				{
+				  loader: `jsonc-loader`,
+				},
+			  ],
+		}
+	]
+}
+
+}; 
+
+
+
+
+
+
+
+
 /*const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");

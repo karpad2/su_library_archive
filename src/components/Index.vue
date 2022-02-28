@@ -49,7 +49,7 @@
 									<router-link :to="tab.link">
 										<md-list-item v-if="tab.auth" :class="{'active': $route.fullPath.includes(tab.link)}">
 											<md-icon class="md-icon">{{tab.icon}}</md-icon>
-											<span class="md-list-item-text">{{tab.title}}</span>
+											<span style="text-transform:uppercase;"  class="md-list-item-text">{{tab.title}}</span>
 										</md-list-item>
 										
 									</router-link>

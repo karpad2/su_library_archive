@@ -11,7 +11,7 @@
         "app-title":"Digitalna biblioteka Subotica",
         "login":"Prijava",
         "books":"knjige",
-        "email":"Email",
+        "email":"e-mail",
         "password":"Vaša Lozinka",
         "login_with":"Prijava preko",
         "login_with_google":"Prijava preko Google usluge",
@@ -33,7 +33,7 @@
         "Home":"Početna strana",
         "account":"Nalog",
         "cookie_text":"Ovaj sajt koristi kolačiće (cookies) u cilju pružanja boljeg korisničkog iskustva.",
-        
+        "name":"Ime",
         "search_for_books":"Pretraga knjige",
         "search":"Pretraga...",
         "search_by_name":"Pretraga po nazivu ...",
@@ -52,7 +52,6 @@
         "add_new_book":"Dodaj novu knjigu",
         "not_verified_user":"Potrebna verifikacija",
         "login_reason":"Sajt zbog bezbednosti podržava prijavu preko google servisa.",
-        
         "add_keywords":"Dodaj ključne reči...",
         "up_to_keywords":"Maximalni broj ključnih reči",
         "upload_book_cover":"Postavi naslovnu stranu knjige",
@@ -121,7 +120,7 @@
         "newspapers":"Serijska publikacija",
         "upload_a_newspaper":"Dodaj serijsku publikaciju",
         "add_new_newspaper":"Dodaj serijsku publikaciju",
-        "photoalbums":"Fotodokumenti",
+        "photoalbums":"Fond fotodokumentata",
         "admin_newspaper":"Administracija serijske publikacije",
         "admin_photoalbums":"Administracija fotodokumentacije",
         "newspaper_cant_found":"Neuspešna pretraga serijske publikacije",
@@ -151,7 +150,19 @@
         "photo_cant_found":"Neuspešna pretraga fotodokumentacije",
         "add_new_photo":"Dodaj novu fotodokumentaciju",
         "photo_name":"Naziv fotografije",
-        "notes":"Opis",
-        "search_for_notes":"Pretraga izemđu opisa",
-        "navigation":"Meni"   
+        "notes":"Muzika i zvuk",
+        "search_for_notes":"",
+        "navigation":"Meni",
+        "simple_search":"",
+        "adv_search":"",
+        "bookmarks":"",
+        "search_for_newspapers":"Pretraga",
+        "Search":"Pretraga",
+        "libraryuser":"",
+        "posters":"Plakati i sitni dokumentacioni material",
+        "search_for_posters":"",
+        "search_for_manuscripts":"",
+        "manuscripts":"Rukopisi"
+
+
 }
