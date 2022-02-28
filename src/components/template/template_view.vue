@@ -15,21 +15,21 @@
 				
 				</div>
 		<div class="newspaper-info">
-			<p v-if="newspaper.publisher!=null"> {{gt("publisher")}}: <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>
-			<p v-if="newspaper.keywords!=null">{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in newspaper.keywords" md-static>{{keyword}}</md-chip> </p>
-			<p v-if="newspaper.language!=null">{{gt("language")}}: <md-chip @click="keyword_link(newspaper.language)" md-static><flag :flag="newspaper.language" /></md-chip> </p>
-			<p v-if="newspaper.cobiss!=null">{{"Cobiss link"}}: <md-chip @click="open_cobiss(newspaper.cobiss)" md-static>Cobiss</md-chip> </p>
+			<p v-if="newspaper.publisher!=null"><b> {{gt("publisher")}}:</b> <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>
+			<p v-if="newspaper.keywords!=null"><b>{{gt("keywords")}}:</b> <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in newspaper.keywords" md-static>{{keyword}}</md-chip> </p>
+			<p v-if="newspaper.language!=null"><b>{{gt("language")}}:</b> <md-chip @click="keyword_link(newspaper.language)" md-static><flag :flag="newspaper.language" /></md-chip> </p>
+			<p v-if="newspaper.cobiss!=null"> <b>{{"Cobiss link"}}:</b> <md-chip @click="open_cobiss(newspaper.cobiss)" md-static>Cobiss</md-chip> </p>
 		
 		<div v-if="newspaper.description!=null">
-		{{gt("information")}}:
+		 <b>{{gt("information")}}: </b>
 		<div v-html="newspaper.description">
 		</div>
 		<div>
-			<p>{{gt("upload_date")}}:{{newspaper.upload_date}}</p>
+			<p hidden>{{gt("upload_date")}}:{{newspaper.upload_date}}</p>
 		</div>
 		</div>
 		<div>
-			{{gt("released_numbers")}}: <md-chip>{{counted_chapters}}</md-chip>
+			<b>{{gt("released_numbers")}}:</b> <md-chip>{{counted_chapters}}</md-chip>
 			<div v-if="signed_in">
 			<md-button  @click="bookmark_add">❤️️ {{gt("favorite")}}</md-button>
 			
@@ -112,9 +112,12 @@ import flag from "@/components/parts/flag";
 		metaInfo(){
 			return{
 			title:title_page(this.newspaper.name),
-			keywords:this.newspaper.keywords,
-			content:this.newspaper.description,
-			description:this.newspaper.description
+			meta:[
+			{ name: 'keywords',content:this.newspaper.keywords},
+			{ name: 'description',content:this.newspaper.description},
+			{ name: 'og:description',content:this.newspaper.description},
+			{ name: 'og:image',content:`https://cdn.statically.io/screenshot/${window.location.href.replace('https://','')}`},
+			]
 			}
 		},
 		async mounted() {

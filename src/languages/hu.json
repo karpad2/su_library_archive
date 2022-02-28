@@ -61,17 +61,18 @@
     "hungarian":"Magyar",
     "english":"Angol",
     "german":"Német",
-    "croatian":"Horvát"
+    "croatian":"Horvát",
     "upload_date":"Feltöltés ideje",
     "information":"Leírás",
     "open_book":"Könyv megnyitása",
     "upload_book_info":"Könyvfeltöltés adatai",
     "upload_book_finish":"Könyvfeltöltés befejezése",
+    "name":"Név",
 
     "popular_ones":"Népszerűek",
     "recent_uploads":"Új feltöltés",
     "send_email":"Küldjön emailt újra",
-    "page_number":"Oldalszám:",
+    "page_number":"Oldalszám",
     "uploading_date":"Feltöltés dátuma:",
     "switch":"Váltás",
     "favorites":"Kedvencek",
@@ -128,7 +129,7 @@
     "upload_a_newspaper":"Folyóirat feltöltése",
     "add_new_newspaper":"Folyóirat hozzáadása",
     "photoalbums":"Fotóalbumok",
-    "admin_newspaper":"Folyóiratok szerkesztése",
+    "admin_newspapers":"Folyóiratok szerkesztése",
     "admin_photoalbums":"Fotóalbum szerkesztése",
     "newspaper_cant_found":"Folyóirat nem található",
     "no_newspaper_cant_be_found":"Nem található találat",
@@ -144,7 +145,7 @@
     "upload_a_photoalbums":"Fotóalbum feltöltése",
     "photoalbums_cant_found":"Nem található találat",
     "no_photoalbums_cant_be_found":"Nem található kifejezés",
-    "released_numbers":"Feltöltött kötetek száma:",
+    "released_numbers":"Feltöltött kötetek száma",
     "user_name":"Felhasználó neve",
     "user_email":"Felhasználó email címe",
     "editnewspaper":"Folyóírat szerkesztése",
@@ -163,7 +164,106 @@
     "upload_a_title_notes":"Kották szerkesztése",
     "add_new_note":"Kotta hozzáadása",
     "note_name":"Kotta neve",
-    "edit_note":"Kotta szerkesztése"
+    "edit_note":"Kotta szerkesztése",
+    "edit_notes":"Kotta szerkesztése",
+    "edit_book":"Könyv szerkesztése",
+    "manuscript":"kézírat",
+
+    "admin":"adminisztrálása",
+
+    "search_by_year":"Év keresése",
+    "newspaper":"újság",
+    "open":"megnyitás",
+    "add_new":"Új hozzáadása",
+    "cant_found":"nem találhatóak",
+   
+
+    "upload_cover":"Borító feltöltése",
+
+    "go_back":"Vissza",
+    "saved":"Mentve",
+    "upload_chapter":"Fájl feltöltése",
+    "upload_chapter_info":"Fájl információk",
+    "upload_chapter_finish":"Fájl feltöltés befejezése",
+    "libraryuser":"Helyi gépről való bejelentkezés",
+    "no_internet_connection":"Nincs internetkapcsolat",
+    "release_date":"Kiadás dátuma",
+    "from_date":"tól",
+    "to_date":"ig",
+    "upload_chapter_cover":"Borító feltöltése",
+    "chapter_add_new":"Új rész hozzáadása",
+        "admin_newspaper":"Folyóírat adminisztrációja",
+        "search_for":"Keresés",
+        "Search":"Keresés",
+       
+        "search_for_notes":"Zeneművek keresése",
+
+
+        "manuscripts":"Kézirattár",
+        "posters":"Plakát és kisnyomtatványtár",
+        "search_for_newspapers":"Folyóíratok keresése",
+        "search_for_newspaper":"Folyóíratok keresése",
+        "search_by_author":"Keresés szerző alapján",
+        "categories":"Kategóriák",
+        "search_by_keywords":"Keresés kulcsszó alapján",
+
+        "newspaper_edit":"Folyóirat szerkesztése",
+        "edit_newspapers":"Folyóirat szerkesztése",
+        "edit_books":"Könyv szerkesztése",
+        "edit":"Szerkesztés",
+        "edit_photoalbums":"Fotóalbum szerkesztése",
+
+        "search_for_manuscripts":"Kézíratok keresése",
+        "admin_manuscripts":"Kézíratok adminisztrációja",
+
+        "search_for_posters":"Plakát és kisnyomtatványtár keresése",
+        "admin_posters":"Plakát és kisnyomtatványtár adminisztrációja",
+
+        "add_new_poster":"Új plakát hozzáadása",
+        "edit_posters":"Plakát szerkesztése",
+        "add_new_manuscripts":"Új kézírat hozzáadása",
+
+
+
+        "newspapers_name":"Folyóírat neve",
+        "add_news_newspapers":"Új folyóírat hozzáadása",
+
+
+       
+        "photoalbum_cant_found":"Fotóalbum nem található",
+        "note_cant_found":"Kották nem találhatóak",
+        "poster_name":"Plakát neve",
+        "poster_cant_found":"Plakátok és kisnyomtatványok nem találhatóak",
+        "continue":"Folytatás",
+        "open_poster":"Plakát megnyitása",
+        "open_note":"Kotta megnyitása",
+
+        "open_newspaper":"Folyóírat megnyitása",
+        "open_manuscipt":"Kézírattár megnyitása",
+        "chapter_name":"Név",
+        "chapter_author":"Szerző",
+        "edit_manuscripts":"Kézírat szerkesztése",
+        "manuscript_name":"Kézírat neve",
+        "manuscript_cant_found":"Kézírat nem található",
+        "save":"Mentés",
+        "generate_sitemap":"Honlap térkép generálása",
+        "problem_report":"Probléma bejelentése",
+        "upload_screenshot":"Képernyőkép feltöltése",
+        "library_user_logout":"Könyvtár felhasználó kijelentkezésének engedélyezése",
+        "thank_you_for_your_feedback":"Köszönjük a visszajelzését!",
+        "bookmarks":"Könyvjelzők",
+        "keyboard_shortcuts":"Billentyű shortcutok",
+        "printing_queue":"Nyomtatás",
+        "sended_print_request":"Nyomtatási kérelem elküldve",
+        "print_request_has_been_already_sended":"Nyomtatási kérelem már el lett küldve.",
+        "book_cant_found":"Könyv nem található",
+        "simple_search":"Egyszerű keresés",
+        "adv_search":"Összetett keresés",
+        "ft_search":"Teljes szöveg keresés",
+        "search_by_text":"Keresés szöveg alapján...",
+        "add_full_text_search":"Hozzáadás a teljes szöveg kereséshez",
+        "file_uploaded":"Fájl feltöltve",
+        "require_login_to_view":"Megtekintéshez bejelentkezés szükséges"
 
 
 

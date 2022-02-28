@@ -209,9 +209,12 @@ import * as firebaseui from 'firebaseui';
 		metaInfo(){
 			return{
 			title:title_page("",""),
-			keywords:this.generated_keywords,
-			content:title_page("",""),
-			description:title_page("","")
+			meta:[
+			{ name: 'keywords',content:this.generated_keywords},
+			{ name: 'description',content:title_page("","")},
+			{ name: 'og:description',content:title_page("","")},
+			{ name: 'og:image',content:"img/icons/favicon-32x32.png"},
+			]
 			}
 		},
 		async mounted() {

@@ -8,10 +8,7 @@
 		</md-field>
 			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`admin_${profile}`)}}</md-button>
 		</md-card-header>
-
 		<md-card-content>
-		 
-		
 		<div class="section">
 			<card :profile="profile" v-for="newspaper in searchednewspapers" :key="newspaper.id" :id="newspaper.id"/>
 		</div>
@@ -43,9 +40,13 @@ import logo from "@/assets/logo";
 		metaInfo(){
 			return{
 			title:title_page("",this.profile),
-			keywords:title_page("",this.profile),
-			content:title_page("",this.profile),
-			description:title_page("",this.profile)
+			
+			meta:[
+			{ name: 'keywords',content:title_page("",this.profile)},
+			{ name: 'description',content:title_page("",this.profile)},
+			{ name: 'og:description',content:title_page("",this.profile)},
+			{ name: 'og:image',content:`https://cdn.statically.io/screenshot/${window.location.href.replace('https://','')}`},
+			]
 			}
 		},
 		

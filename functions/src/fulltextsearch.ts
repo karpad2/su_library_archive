@@ -1,3 +1,4 @@
+/*
 import * as functions from "firebase-functions";
 import {initializeApp,storage} from "firebase-admin";
 
@@ -37,3 +38,4 @@ export default (async (req:functions.https.Request,res:functions.Response)=>  {
       res.status(200).send(text);
     return;
   });
+*/

@@ -1,42 +1,35 @@
 <template>
 	<div>
-	
 	<div div v-if="dataReady">
 <md-card>
 		<md-card-header>
         <md-card-header-text>
-          <div class="md-title"> <h1>{{chapter.name}}</h1></div>
+          <div class="md-title"><h1>{{chapter.name}}</h1></div>
 		   </md-card-header-text>
 		   </md-card-header>
 		    <md-card-content>
-				<div class="book-container">
-					<img   @click="enter_read(1)" draggable="false" style="width:250px; display:inline; float:left"  :alt="'page_'+1" :src="thumbnails[0].thumbnail"/> 
-				 
+		<div class="book-container">
+				<img   @click="enter_read(1)" draggable="false" style="width:250px; display:inline; float:left"  :alt="'page_'+1" :src="thumbnails[0].thumbnail"/> 		 
 		<div class="book-info">
-			<p> {{gt("name")}}: <md-chip @click="gotoparent(book.name)" md-static>{{book.name}}</md-chip></p>
-			<p>{{gt("keywords")}}: <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in chapter.keywords" md-static>{{keyword}}</md-chip> </p>
+			<p> <b>{{gt("name")}}:</b> <md-chip @click="gotoparent(book.name)" md-static>{{book.name}}</md-chip></p>
+			<p> <b>{{gt("keywords")}}:</b> <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in chapter.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
-		{{gt("information")}}:
+		 <b>{{gt("information")}}:</b>
 		<div v-html="chapter.description"></div>
 		<div>
-			<p>{{gt("upload_date")}}:{{chapter.upload_date}}</p>
-			<p>{{gt("release_date")}}:{{chapter.release_date}}</p>
+			<p hidden><b>{{gt("upload_date")}}</b>:{{chapter.upload_date}}</p>
+			<p><b>{{gt("release_date")}}</b>:{{chapter.release_date}}</p>
 		</div>
 		</div>
 		<div>
-			{{gt("page_number")}}: <md-chip>{{numPages}}</md-chip>
+			<b>{{gt("page_number")}}</b>: <md-chip>{{numPages}}</md-chip>
 			<div v-if="signed_in">
-			<md-button  @click="bookmark_add">❤️️ {{gt("favorite")}}</md-button>
-			
-			<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`edit_${profile.split(0,profile.length-1)}`)}}</md-button>
-			
-		
+				<md-button  @click="bookmark_add">❤️️ {{gt("favorite")}}</md-button>
+				<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`edit_${profile.split(0,profile.length-1)}`)}}</md-button>
 			</div>
 			<md-button class="md-raised md-primary" v-if="false" @click="addtofulltextsearch">{{gt(`add_to_full_text_search`)}}</md-button>	
 		</div>
-		
 		<div >
-			
 		</div>
 		</div>
 		</div>
@@ -46,11 +39,8 @@
 	<md-card v-if="(signed_in &&member||admin)||(signed_in&&promotion)">
 		<md-card-content>
 			<div>
-			
 				<img  style="max-width:14vw; margin:2vw 1vw" @click="enter_read(page)" draggable="false" v-for="page in size" :key="page"  :alt="'page_'+page" :src="thumbnails[page-1].thumbnail"/> 
-			
-			
-		<div class="middle-center"> <md-button v-if="!hide&&signed_in" @click="loadmore">{{gt("load_more")}}</md-button></div>
+				<div class="middle-center"> <md-button v-if="!hide&&signed_in" @click="loadmore">{{gt("load_more")}}</md-button></div>
 			 </div>
 			 
 		</md-card-content>	
@@ -70,12 +60,9 @@
 		<canvas  width="250" height="385" id="canvas"></canvas>
 	</div>
 	 <md-progress-bar  md-mode="buffer" :md-value="amount" :md-buffer="buffer"></md-progress-bar>
-	 
 	</div>
 	</div>
-
 </template>
-
 <script>
 import {signOut,getAuth} from "firebase/auth";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage,libraryuser} from "@/firebase";
@@ -95,7 +82,6 @@ import flag from "@/components/parts/flag";
 		components: {
 		
 		},
-		
 		name: 'Book',
 		data: () => ({
 			book:{},
@@ -139,8 +125,11 @@ import flag from "@/components/parts/flag";
 		metaInfo(){
 			return{
 			title:title_page(this.chapter.name),
-			keywords:this.book.keywords,
-			content:this.book.description
+			meta:[
+			{ name: 'keywords',content:this.book.keywords},
+			{ name: 'description',content:this.book.description},
+			{ name: 'og:image',content:this.thumbnails[0].thumbnail},
+			]
 			}
 		},
 		async mounted() {
@@ -301,9 +290,7 @@ import flag from "@/components/parts/flag";
 			},
 			pagesRendered()
 			{
-				//console.log(document.getElementById("canvas"));
-
-
+			
 			},
 			loadmore()
 			{
@@ -312,8 +299,7 @@ import flag from "@/components/parts/flag";
 			},
 			async bookmark_add()
 			{
-				let c=await collection(firestore,`/users/${await getAuth().currentUser.uid}/favorites`);
-			
+				let c=await collection(firestore,`/users/${await FirebaseAuth.currentUser.uid}/favorites`);
 				 let q=await addDoc(c,{
 					 "profile":this.profile,
 					 "id":this.$route.params.nid,
@@ -330,8 +316,7 @@ import flag from "@/components/parts/flag";
 			{
 			let rendered_numbers_max=0;
 			this.thumbnails=[];
-			if(this.loading_values>this.numPages) 
-			 {
+			if(this.loading_values>this.numPages) {
 				rendered_numbers_max=this.numPages;
 				this.hide=true;
 			 }
@@ -347,21 +332,13 @@ import flag from "@/components/parts/flag";
 			 	
 			 }
 			for(let i=1;i<=rendered_numbers_max;i++){
-			
 			 await this.generateThumnail(i);
-			
 			}
 			setInterval(()=>{
 			if(
 			this.thumbnails.length+1==rendered_numbers_max) this.loading_images=false;
-			},100);
-			//console.log(this.thumbnails);
-			
-
-			 //this.book_thumbnail_pdf=this.thumbnails[0].thumbnail;
-			 
+			},100);	 
 			},
-
 			gotoparent()
 			{
 			
@@ -421,8 +398,7 @@ import flag from "@/components/parts/flag";
 			this.aimage= await image;
 		    
 			window.requestAnimationFrame( await this.draw);
-
-	 setTimeout( async()=>{
+	        await setTimeout( async()=>{
 			 await canvas.toBlob(async (blob)=>{
 				 try{
 				 console.log(blob);
@@ -430,20 +406,10 @@ import flag from "@/components/parts/flag";
 				 }
 				 catch(e)
 				 {
-					 //
 					 console.error(e);
 				 }
 			 });
 			 },300);
-			
-			  //console.log(this.canvas);
-			 //this.images[i]=this.thumbnails[i].thumbnail;
-			// await uploadString(image_ref,this.thumbnails[i-1].thumbnail);
-			 /*if(i==1)
-			 {
-				image_ref = await ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/thumbnail.png`);
-				await uploadString(image_ref,this.thumbnails[i-1].thumbnail);	 
-			 }*/
 			 }
 			
 			this.progress+=5;
@@ -454,41 +420,34 @@ import flag from "@/components/parts/flag";
 			  let ctx= await canvas.getContext('2d');
 			  canvas.toDataURL("image/webp",0.5);	
 			  await ctx.drawImage(this.aimage,0,0);
-
 			}
 		},
 		computed:{
-			pagenumbers()
-			{
+			pagenumbers(){
 				let l=[];
 				for(let i=0;i<this.loading_values;i++)
 				{
 					if(i<this.numPages) l.push(i+1);
-					//else {this.hide=true;}
 				}
 				return l;
 			}
 		}
 	}
-	
 </script>
-
 <style lang="scss" >
 	.book_cover{
 		width: 350px;
-		
 		aspect-ratio: auto 350/494;
 	}
 	 .md-progress-bar {
-    margin: 24px;
-  }
+    	margin: 24px;
+  	}
 	.big_container
 	{
 		display: inline-block;
 		width: 48%;
 		vertical-align: top;
-	}
-		
+	}	
 .bookavatar{
 	float: left;
     margin: 2 em;
@@ -496,14 +455,11 @@ import flag from "@/components/parts/flag";
 }
 .bookavatar img{
 	width: 350px;
-
 	aspect-ratio: auto 350/494; 
-    
-
 }
 .book-info{
 	float:left;
-	 margin: 50px;
+	margin: 50px;
 }
 .book-container
 {
