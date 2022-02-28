@@ -12,6 +12,9 @@ export default {
             value: "en-EN", text: "english"
         },
         {
+            value: "hr-HR", text: "croatian"
+        },
+        {
             value: "de-DE", text: "german"
         }]
 }

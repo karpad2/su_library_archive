@@ -136,8 +136,10 @@ async function loadimage(link)
 
 async function libraryuser()
 {
-	if(getAuth()!=null)
-	return await getAuth().currentUser.email==firebaseCredentials.public_profile.u;
+	if(FirebaseAuth.currentUser!=null)
+	{
+	return await FirebaseAuth.currentUser.email==firebaseCredentials.public_profile.u;
+	}
 	else return false;
 }
 

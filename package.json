@@ -1,7 +1,7 @@
 {
   "name": "su-library-archive",
   "description": "Gradska digitalna biblioteka Subotica",
-  "version": "0.1.0-alpha-prerelease",
+  "version": "0.1.0-alpha",
   "author": "karpad2",
   "author_homepage": "https://karpad2.github.io",
   "private": true,
@@ -29,7 +29,7 @@
     "productName": "Gradska digitalna biblioteka Subotica",
     "nsis": {
       "oneClick": false,
-      "artifactName": "su_library_archive.setup.${version}.${ext}",
+      "artifactName": "su_library_archive.${version}.${ext}",
       "uninstallDisplayName": "Gradska digitalna biblioteka Subotica"
     },
     "linux": {

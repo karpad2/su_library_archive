@@ -127,6 +127,7 @@ import flag from "@/components/parts/flag";
 			user:{},
 			amount:10,
 			buffer:20,
+			aimage:null,
 			ctx:null,
 			canvas:null,
 			config:{
@@ -388,7 +389,7 @@ import flag from "@/components/parts/flag";
 			},
 			async generateThumnail(i){ 
 			
-			let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/pages/${i}.webp`);// loading page from bucket
+			let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/pages/${i}.png`);// loading page from bucket
 			 try {
 			 let b= await getDownloadURL(image_ref);
 			 const newCache = await caches.open('su-library-archive');
@@ -400,32 +401,32 @@ import flag from "@/components/parts/flag";
 			 }
 
 				await response.blob().then((blob)=>{
-
 				var objectURL = URL.createObjectURL(blob);
-				this.thumbnails[i-1]={"thumbnail":objectURL};
-				//this.buffer=100;
+				this.thumbnails.push({"thumbnail":objectURL});
 				});
 			 }
 			 catch 
 			 {
 			  let canvas=await document.getElementById("canvas");
-			let ctx= await canvas.getContext('2d');	
+			  //let ctx= await canvas.getContext('2d');	
 			//ctx.clear(); 
 			//await ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 			await this.thumbnails.push(await (await generatePdfThumbnail(this.b64_file,i,250))[0]);
 			 let image=new Image();
 			 //let cv=new Canvas
 			 //console.log(this.thumbnails);
- 			await canvas.toDataURL("image/webp",0.5);
+ 			//await canvas.toDataURL("image/webp",0.5);
 			image.src= await this.thumbnails[i-1].thumbnail;
 			image.alt=`image-${i}.webp`;
-			// console.log(image);
-			 await ctx.drawImage(image,0,0);
-			  await ctx.stroke();	
+			this.aimage= await image;
+		    
+			window.requestAnimationFrame( await this.draw);
+
+	 setTimeout( async()=>{
 			 await canvas.toBlob(async (blob)=>{
 				 try{
-					 console.log(blob);
-				 //await uploadBytes(image_ref,blob);
+				 console.log(blob);
+				 await uploadBytes(image_ref,blob);
 				 }
 				 catch(e)
 				 {
@@ -433,6 +434,8 @@ import flag from "@/components/parts/flag";
 					 console.error(e);
 				 }
 			 });
+			 },300);
+			
 			  //console.log(this.canvas);
 			 //this.images[i]=this.thumbnails[i].thumbnail;
 			// await uploadString(image_ref,this.thumbnails[i-1].thumbnail);
@@ -444,6 +447,14 @@ import flag from "@/components/parts/flag";
 			 }
 			
 			this.progress+=5;
+			},
+			async draw()
+			{
+			  let canvas=await document.getElementById("canvas");
+			  let ctx= await canvas.getContext('2d');
+			  canvas.toDataURL("image/webp",0.5);	
+			  await ctx.drawImage(this.aimage,0,0);
+
 			}
 		},
 		computed:{

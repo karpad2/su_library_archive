@@ -182,8 +182,7 @@ export default {
       {
         ref_thumbnail=ref(storage,`/${this.profile}/${this.id}/thumbnail.jpg`);
         let k=await getDownloadURL(ref_thumbnail);
-       // k=k.replace('https://', '');
-       // k="https://cdn.statically.io/img/"+k;
+       
         //console.log(k);
         this.newspaper_cover=k;
       }
@@ -199,6 +198,11 @@ export default {
           this.newspaper_cover=await getDownloadURL(ref_thumbnail);
         }
       }
+
+      /*let k=this.newspaper_cover;
+       k=k.replace('https://', '');
+        k="https://cdn.statically.io/screenshot/"+k;
+        this.newspaper_cover=k;*/
     const newCache = await caches.open('su-library-archive');
 			 let response= await newCache.match(this.newspaper_cover);
 			 if(!response||!response.ok)

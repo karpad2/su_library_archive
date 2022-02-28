@@ -120,7 +120,8 @@ import flag from "@/components/parts/flag";
 		async mounted() {
 			this.newspaper_id=this.$route.params.nid;
 			let newspaper_ref;
-			this.libraryuser=libraryuser();
+		//	this.libraryuser=libraryuser();
+			
 		if(this.$route.params.viewtype!=undefined)
 			{
 				this.profile=this.$route.params.viewtype;
@@ -149,26 +150,34 @@ import flag from "@/components/parts/flag";
 			{
 				this.generated_keywords+=`${e},`;
 			});
-			setDoc(doc(firestore,`/${this.profile}`,this.newspaper_id),{popularity:this.newspaper.popularity+1},{merge:true});
-			this.signed_in=!(await getAuth().currentUser==null);
+			 //setDoc(doc(firestore,`/${this.profile}`,this.newspaper_id),{popularity:this.newspaper.popularity+1},{merge:true});
+			
+			if(FirebaseAuth.currentUser!=null)
+			{
+				this.signed_in=true;
+			}
+			else
+			this.signed_in=false;
 			
 			if(this.signed_in)
 			{
-			this.user= getAuth().currentUser;
+			this.user= FirebaseAuth.currentUser;
+			this.title_side=title_page(this.newspaper.name);
 			let k;
 			try{
-        k=await getDocFromCache(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
-        
-        }
-        catch(e)
-        {
-           k=await getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
-        }
+				k=await getDocFromCache(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
+				
+				}
+				catch(e)
+				{
+				k=await getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
+				}
 
 
 			this.admin=(k.data().admin==null?false:k.data().admin);
 			this.member=(k.data().member==null?false:k.data().member);
-			} 
+			}
+
 			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
 			
 				try{
@@ -199,17 +208,14 @@ import flag from "@/components/parts/flag";
 				console.error(ex);
 			}
 			}
-			if(this.newspaper.hided) this.$router.push("/home");
-			this.title_side=title_page(this.newspaper.name);
-			if(this.signed_in)
+		//	if(this.newspaper.hided) this.$router.push("/home");
+			//
+		/*	if(this.signed_in)
 				{
-				let user_ref= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
+				let user_ref= await getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid));
 				this.user=user_ref.data();
 				if(this.user.favorites==null){
 				setDoc(doc(firestore,"users",getAuth().currentUser.uid),{favorites:["test"]},{merge:true});
-
-				
-
 				}
 				else
 				{
@@ -217,7 +223,7 @@ import flag from "@/components/parts/flag";
 				}
 				//this.favorite=(this.user.favorites.indexOf(this.newspaper_id)>=0);
 				}
-
+*/
 				const newCache = await caches.open('su-library-archive');
 			 let response= await newCache.match(this.newspaper_thumbnail);
 			 if(!response||!response.ok)
@@ -263,7 +269,6 @@ import flag from "@/components/parts/flag";
 			this.chapters=[];
 			let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`),orderBy("name","desc"))
 			let chapters_refread=await getDocs(querya);
-			
 				chapters_refread.forEach(as=>{
 					this.chapters.push({data:as.data(),id:as.id,name:as.data().name,release_date:as.data().release_date});
 					});

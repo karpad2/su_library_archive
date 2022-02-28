@@ -85,21 +85,23 @@ import logo from "@/assets/logo";
 			{
 				this.profile=this.$route.params.viewtype;
 			}
-			this.user=await FirebaseAuth.currentUser;
+			
 			this.title_cucc=title_page("",this.$route.params.viewtype);
 			let k;
+			if(FirebaseAuth.currentUser!=null)
+			{
 			try{
-				k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+				k=await getDocFromCache(doc(firestore,"users",FirebaseAuth.currentUser.uid));
 				
 				}
 				catch(e)
 				{
-				k=await getDoc(doc(firestore,"users",this.user.uid)); 
+				k=await getDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid)); 
 				}
 
 
 			this.admin=(k.data().admin==null?false:k.data().admin);
-
+			}	
 			this.dataReady=true;
 		},
 		methods: {
