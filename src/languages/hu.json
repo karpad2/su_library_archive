@@ -7,24 +7,24 @@
     "Books":"Könyvek",
     "email":"E-mail",
     "password":"Jelszó",
-    "login_with":"Bejelentkezés helyi gépről",
+    "login_with":"Bejelentkezés",
     "login_with_google":"Bejelentkezés Google segítségével",
-    "Books":"Könyvek",
+    "books":"Könyvek",
     "News":"Hírlapok, folyóiratok",
     "Photoalbums":"Fotóalbumok",
     "username":"Felhasználói név",
     "useremail":"Felhasználói e-mail",
     "valid_until":"Érvényes:",
     "error404":"error404",
-    "Delete":"Törlés",
+    "delete":"Törlés",
     "Delete":"Törlés",
     "upload_a_title_book":"Könyv hozzáadása:",
     "upload":"Feltöltés",
     "like":"Tetszik",
     "user":"Felhasználó",
     "ok":"Rendben",
-    "Home":"Főoldal",
-    "Support":"Támogatás",
+    "home":"Főoldal",
+    "support":"Támogatás",
     "ctheme":"Téma csere",
     "Home":"Főoldal",
     "navigation":"Menü",
@@ -123,7 +123,7 @@
     "page":"Oldal",
     "delete_book":"Könyv törlése",
     
-    "register":"Mutató",
+    "register":"Regisztrálás",
     "password_pls_write_again":"Ismételje meg a jelszót.",
     "newspapers":"Hírlapok, folyóiratok",
     "upload_a_newspaper":"Lapok feltöltése",
@@ -264,12 +264,5 @@
         "add_full_text_search":"Hozzáadás a teljes szöveg kereséshez",
         "file_uploaded":"Fájl feltöltve",
         "require_login_to_view":"A megtekintéshez bejelentkezés szükséges."
-
-
-
-
-
-
-
 
 }
