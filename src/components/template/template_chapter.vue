@@ -23,7 +23,7 @@
 		</div>
 		<div>
 			<b>{{gt("page_number")}}</b>: <md-chip>{{numPages}}</md-chip>
-			<div v-if="signed_in">
+			<div v-if="signed_in && !libraryuser">
 				<md-button  @click="bookmark_add">❤️️ {{gt("favorite")}}</md-button>
 				<md-button class="md-raised md-primary" v-if="admin" @click="movetoadmin">{{gt(`edit_${profile.split(0,profile.length-1)}`)}}</md-button>
 			</div>

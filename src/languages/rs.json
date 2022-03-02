@@ -5,7 +5,7 @@
     "hungarian":"Mađarski",
     "english":"Engleski",
     "german":"Nemački",
-    "croatian":"Hrvatski"
+    "croatian":"Hrvatski",
         "logout":"Odjava",
         "logout_success":"Uspešna odjava",
         "logout_error_pls_refresh":"Odjava je neuspešna, molimo Vas osvežite stranicu.",
@@ -64,10 +64,11 @@
         "popular_ones":"Najgledaniji",
         "recent_uploads":"Novo postavjene",
         "send_email":"Pošaljite imejl adresu",
-        "page_number":"Broj stranica:",
-        "uploading_date":"Datum objave:",
+        "page_number":"Broj stranica",
+        "uploading_date":"Datum objave",
         "switch":"Dalje",
         "favorites":"Omiljeni",
+
         "agree":"Slažem se",
         "disagree":"Ne slažem se",
         "cancel":"Otkaži",
@@ -244,6 +245,7 @@
         "under_constructions": "U pripremi",
         "cant_found": "Nije pronađeno",
         "chapter_add_new": "Dodaj novi broj",
+        "favorite":"Omiljeni"
     
 
 
