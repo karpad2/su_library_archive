@@ -86,9 +86,8 @@
 				
 		
 			<md-app-content>
-				    <b-alert v-if="signed_in && !email_verified && !library_user &&(!member||!admin||!oath)" variant="success" show>{{gt("not_verified_user")}} <a href="#" @click="send_email">{{gt("send_email")}}</a></b-alert>
-					<b-alert v-if="promotion && !library_user && promotion_hide &&(!member||!admin||!oath)" variant="success" show>{{gt("promotion_text")}}</b-alert>
-					<b-alert v-if="!promotion && !library_user && promotion_hide && (!member||!admin||!oath)" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
+				    <b-alert v-if="promotion" variant="success" show>{{gt("promotion_text")}}</b-alert>
+					<b-alert v-if="!promotion  && !promotion_hide" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
 
 					 <md-dialog-confirm
 						:md-active.sync="terms"
