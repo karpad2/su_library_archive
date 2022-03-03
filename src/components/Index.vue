@@ -78,7 +78,11 @@
 											<md-icon class="md-icon">logout</md-icon>
 											<span class="md-list-item-text">{{gt("logout")}}</span>
 								</md-list-item>
-								
+
+								<md-list-item v-if="!signed_in" @click="$router.push('/account/login')">
+											<md-icon class="md-icon">login</md-icon>
+											<span class="md-list-item-text">{{gt("login")}}</span>
+								</md-list-item>
 																
 							</md-list>
 				</md-app-drawer>

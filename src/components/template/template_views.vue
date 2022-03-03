@@ -22,7 +22,7 @@
 import {signOut} from "firebase/auth";
 import {get_text,languages,get_defaultlanguage,title_page,get_text_by_language} from "@/languages";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore,storage} from "@/firebase";
-import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,getDocFromCache  } from "firebase/firestore";
+import {collection, doc, setDoc, query, where, getDocs,getDoc,limit,getDocFromCache, orderBy  } from "firebase/firestore";
 import { getStorage, ref, listAll,get } from "firebase/storage";
 import loading from "@/components/parts/loading";
 import card from "@/components/parts/card";
@@ -136,7 +136,7 @@ import logo from "@/assets/logo";
 			},
 			async load_basic()
 			{
-				let q=query(collection(firestore,`/${this.profile}`),limit(this.loading_values));
+				let q=query(collection(firestore,`/${this.profile}`),orderBy("name","asc"),limit(this.loading_values));
 				let c=await getDocs(q);
 				c.forEach(element => {
 				this.check_element_exist({id:element.id});
@@ -148,7 +148,7 @@ import logo from "@/assets/logo";
 				},
 			async loadmore()
 			{
-				this.loading_values+=3;
+				this.loading_values+=10;
 				await this.searching();
 			},
 			check_element_exist(b){

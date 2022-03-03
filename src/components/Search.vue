@@ -21,10 +21,7 @@
 						<label>{{gt("release_date")}}</label>
 						<md-input @change="searching" v-model="from_date"></md-input>
 					</md-field>
-					<md-field>
-						<label>{{gt("upload_date")}}</label>
-						<md-input @change="searching" v-model="upload_date"></md-input>
-					</md-field>
+					
 			 </b-tab>
 			<b-tab v-if="false" :title="gt('ft_search')+' (alpha)'"  disabled>
 				<md-field>
