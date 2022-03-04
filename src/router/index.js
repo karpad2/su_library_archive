@@ -16,6 +16,8 @@ import AdminUser from "../components/admin/users/ad_user";
 
 import Home from "../components/Home";
 import PublicIndex from "../components/Index";
+import AboutUs from "../components/AboutUs";
+import Contact from "../components/Contact";
 import Search from "../components/Search";
 import Bookmarks from "../components/Bookmarks";
 import Printing from "../components/Printing";
@@ -72,7 +74,13 @@ const router = new VueRouter ({
 			path: 'support',
 			name: 'support_public',
 			component: Support
-		}	
+		},
+		{
+			path: 'aboutus',
+			name: 'aboutus',
+			component: AboutUs
+		}		
+
 	]
 	},
 		{
@@ -126,6 +134,18 @@ const router = new VueRouter ({
 					path: 'view/:viewtype/:nid/:nname',
 					name: 'viewwithoutlogin',
 					component: template_view
+				},
+				
+				{
+			path: 'aboutus',
+			name: 'aboutus',
+			component: AboutUs
+				},
+
+				{
+					path: 'contact',
+					name: 'contact',
+					component: Contact
 				},
 				
 				{

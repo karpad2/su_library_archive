@@ -3,8 +3,6 @@
 	<md-card>	
 		<md-card-header>
 		{{gt("search")}}
-
-
 		<b-tabs content-class="mt-3">
 			<b-tab :title="gt('simple_search')" active>
 				<md-field>

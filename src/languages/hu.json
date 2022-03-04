@@ -263,6 +263,16 @@
         "search_by_text":"Keresés szöveg alapján...",
         "add_full_text_search":"Hozzáadás a teljes szöveg kereséshez",
         "file_uploaded":"Fájl feltöltve",
-        "require_login_to_view":"A megtekintéshez bejelentkezés szükséges."
+        "require_login_to_view":"A megtekintéshez bejelentkezés szükséges.",
+        "about_us":"Rólunk",
+        "about_us_text_1":"A Szabadkai Digitális Könyvtár a Szabadkai Városi Könyvtár keretein belül léltrehozott digitális adatbázis,mely folyamatosan frissül és a Könyvtár gazdag helyismereti állományát, illetve többi dokumentumát kivánja elérhetővé tenni. A Digitális Könyvtár állománya a követkető kategóráikba sorolja a digitalizált tartalmakat: \n ",
+        "about_us_text_2":" Könyvek, Hírlapok és folyóiratok, Fotóalbumok, Kották, Plakát és kisnyomtatványok, illetve Kéziratok.",
+        "about_us_text_3":"Az oldal négy nyelven igazít el: szerb, magyar, horvát és angol.",
+        "contact":"Kapcsolat",
+        "address_label":"Cím",
+        "address":"Dušan cár u . 2",
+        "subotica":"Szabadka",
+        "contactperson":"Kapcsolattartó személy",
+        "contactpersonname":"Lalits Anita"
 
 }

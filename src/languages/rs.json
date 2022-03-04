@@ -246,8 +246,17 @@
         "cant_found": "Nije pronađeno",
         "chapter_add_new": "Dodaj novi broj",
         "favorite":"Omiljeni",
-        "navigation": "Meni"
-
+        "navigation": "Meni",
+        "about_us":"O nama",
+        "about_us_text_1":"Digitalna knjižnica Subotica je digitalna platforma Gradske knjižnice Subotica koja se neprestano puni digitalnim sadržajem iz svog zavičajnog fonda, odnosno drugih dokumenata, te na taj način želi ovu bogatu zbirku učiniti dostupnom. Digitalna knjižnica Subotica je svoju zbirku svrstala u sljedeće kategorije:",
+        "about_us_text_2":"Knjige, Novine i časopisi, Fotoalbumi, Note, Plakati i sitan tisak, Rukopisi.",
+        "about_us_text_3":"Ova stranica je dostupna na četiri jezika: na srpskom, mađarskom, hrvatskom i na engleskom.",
+        "contact":"Kontakt",
+        "address_label":"Adresa",
+        "address":"Cara Dušana 2",
+        "subotica":"Subotica",
+        "contactperson":"Osoba za kontakt",
+        "contactpersonname":"Anita Lalić"
 
 
 

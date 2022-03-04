@@ -73,6 +73,14 @@
 											<md-icon class="md-icon">translate</md-icon>
 											<span class="md-list-item-text">{{gt("language")}}</span>
 								</md-list-item>
+								<md-list-item  @click="$router.push('/aboutus')">
+											<md-icon class="md-icon">info</md-icon>
+											<span class="md-list-item-text">{{gt("about_us")}}</span>
+								</md-list-item>
+								<md-list-item  @click="$router.push('/contact')">
+											<md-icon class="md-icon">contact_page</md-icon>
+											<span class="md-list-item-text">{{gt("contact")}}</span>
+								</md-list-item>
 								<md-divider></md-divider>
 								<md-list-item v-if="signed_in && (!library_user|| library_user_logout)" @click="logout">
 											<md-icon class="md-icon">logout</md-icon>
@@ -83,6 +91,8 @@
 											<md-icon class="md-icon">login</md-icon>
 											<span class="md-list-item-text">{{gt("login")}}</span>
 								</md-list-item>
+
+								
 																
 							</md-list>
 				</md-app-drawer>
@@ -91,7 +101,7 @@
 		
 			<md-app-content>
 				    <b-alert v-if="promotion" variant="success" show>{{gt("promotion_text")}}</b-alert>
-					<b-alert v-if="!promotion  && !promotion_hide" variant="success" show>{{gt("promotion_over_text")}}</b-alert>
+					<b-alert v-if="!promotion  && !promotion_hide" variant="warning" show>{{gt("promotion_over_text")}}</b-alert>
 
 					 <md-dialog-confirm
 						:md-active.sync="terms"
@@ -230,6 +240,20 @@ import * as firebaseui from 'firebaseui';
 				next();
 			});
 
+
+			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
+           	get_under=await getDoc(doc(firestore,"properties","global_flags"));
+			//console.log("Properties reading")
+			//console.log(get_under.data());
+			this.undermaintenance_flag= get_under.data().undermaintenance;
+			this.promotion=get_under.data().promotion;
+			this.promotion_hide=get_under.data().promotion_hide;
+			this.library_user_logout=get_under.data().library_user_logout;
+			let keywords= get_under.data().keywords;
+			keywords.forEach(as=>{
+				this.generated_keywords+=`${as},`;
+			});
+
 			setInterval(()=>
 			{
 				this.fullscreen=JSON.parse(localStorage.getItem("fullscreen"));
@@ -316,27 +340,7 @@ import * as firebaseui from 'firebaseui';
 			}
 			localStorage.setItem("language",k.data().language);
 
-			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
-			
-				try{
-        get_under=await getDocFromCache(doc(firestore,"properties","global_flags"));
-        
-        }
-        catch(e)
-        {
-           get_under=await getDoc(doc(firestore,"properties","global_flags"));
-           
-        }
-
-
-			this.undermaintenance_flag= get_under.data().undermaintenance;
-			this.promotion=get_under.data().promotion;
-			this.promotion_hide=get_under.data().promotion_hide;
-			this.library_user_logout=get_under.data().library_user_logout;
-			let keywords= get_under.data().keywords;
-			keywords.forEach(as=>{
-				this.generated_keywords+=`${as},`;
-			})
+		
 
 			//this.language=await getAuth().languageCode;
 			}

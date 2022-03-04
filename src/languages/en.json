@@ -264,6 +264,18 @@
     "serach_by_text": "Search by text",
     "add_full_text_serach": "Add full text search",
     "file_upload": "Upload file",
-    "require_login_to_view": "Login required for view"
+    "require_login_to_view": "Login required for view",
+    "about_us":"About us",
+    "about_us_text_1":"Digital Library Subotica is a digital database created within the framework of the City Library Subotica, which is constantly updated and makes the Library's rich local knowledge and other documents available. The files of the Digital Library classify the digitized content into the following categories:",
+    "about_us_text_2":"Books, Newspapers and magazines, Photoalbums, Notes, Posters and small prints and Manuscripts.",
+    "about_us_text_3":"The site is available in four languages: Serbian, Hungarian, Croatian and English.",
+    "contact":"Contact",
+    "address_label":"Address",
+    "address":"Cara Dušana 2",
+    "subotica":"Subotica",
+    "contactperson":"Contact person",
+    "contactpersonname":"Anita Lalić"
+
+
 
 }
