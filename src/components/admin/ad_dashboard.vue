@@ -121,7 +121,7 @@ export default {
 			
 			e.forEach(async (bb)=>{
 				let d=await getDocs(collection(firestore,`${a.name}/${bb.id}/chapters`));
-				d.forEach((f)=>
+				await d.forEach((f)=>
 				{
 					this.maps.push({
 						profile:a.name,
@@ -141,12 +141,11 @@ export default {
 			});
 			});
 			console.log(this.maps);
-
-
       const firststorageRef = ref(storage,`sitemap.json`);
       
       let text = await JSON.stringify(this.maps)
-    uploadString(firststorageRef,text).then((a)=>
+
+    await uploadString(firststorageRef,text).then((a)=>
       {
         console.log("File uploaded");
           this.$noty.success(this.gt("file_uploaded"), {

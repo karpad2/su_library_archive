@@ -1,6 +1,9 @@
 <template>
-		<div class="middle-center">
+		
+			<b-card>
+				<b-card>
 					<logo />
+					</b-card>
 					<h3>{{gt("about_us")}}</h3>
                     <p>
                         {{gt("about_us_text_1")}}
@@ -12,8 +15,9 @@
                         {{gt("about_us_text_3")}}
                     </p>
 
-                    <p> App made by: <a href="https://karpad2.github.io/"> {{author}} </a></p>
-		</div>
+                    <p v-if="false"> App made by: <a href="https://karpad2.github.io/"> {{author}} </a></p>
+					</b-card>
+		
 </template>
 
 <script>

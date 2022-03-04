@@ -76,7 +76,11 @@
 "add_full_text_search": "Pretraga iz cijelog teksta",
 "require_login_to_view": "Za pregled je potrebna prijava",
 "News": "Novine, časopisi",
-"dashboard": "Nadzorna ploča"
+"dashboard": "Nadzorna ploča",
+"about_us":"O nama",
+"about_us_text_1":"Digitalna knjižnica Subotica je digitalna platforma Gradske knjižnice Subotica koja se neprestano puni digitalnim sadržajem iz svog zavičajnog fonda, odnosno drugih dokumenata, te na taj način želi ovu bogatu zbirku učiniti dostupnom. Digitalna knjižnica Subotica je svoju zbirku svrstala u sljedeće kategorije:",
+"about_us_text_2":"Knjige, Novine i časopisi, Fotoalbumi, Note, Plakati i sitan tisak, Rukopisi.",
+"about_us_text_3":"Ova stranica je dostupna na četiri jezika: na srpskom, mađarskom, hrvatskom i na engleskom."
 
 
 

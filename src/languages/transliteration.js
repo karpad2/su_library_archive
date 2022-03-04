@@ -320,6 +320,7 @@ var commonForeignWords = [
     "dacia",
     "default",
     "developer",
+    "cookies",
     "e-mail",
     "edge",
     "electronics",

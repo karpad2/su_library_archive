@@ -105,12 +105,15 @@
 
 					 <md-dialog-confirm
 						:md-active.sync="terms"
-						:md-title="terms_text.title"
-						:md-content="terms_text.text"
+						:md-title="gt('terms_title')"
+						:md-content="gt('terms_text')"
 						:md-confirm-text="gt('agree')"
 						:md-cancel-text="gt('disagree')"
 						@md-cancel="logout"
-						@md-confirm="accept_terms" />
+						@md-confirm="accept_terms"
+						:md-click-outside-to-close="false"
+						:md-close-on-esc="false"
+						:md-fullscreen="true"  />
 
 						<md-dialog-prompt
 						:md-active.sync="enter_code"
@@ -306,7 +309,9 @@ import * as firebaseui from 'firebaseui';
 			this.admin=(k.data().admin==null?false:k.data().admin);
 			this.oath=(k.data().oath==null?false:k.data().oath);
 			this.member=(k.data().member==null?false:k.data().member);
-			this.aterms=(k.data().terms==null?false:k.data().terms);
+			console.log("terms data");
+			console.log(k.data().terms);
+			this.terms=(k.data().terms==undefined?true:!k.data().terms);
 
 			if(k.data().h4cker==null||!k.data().h4cker)
 			{
@@ -472,31 +477,10 @@ import * as firebaseui from 'firebaseui';
 				{
 					return get_text(a);
 				},
-				async check_terms()
-				{
-					let terms=this.aterms;
-
-					if(!terms)
-					{
-						
-						let terms_p=await getDoc(doc(firestore,"properties","terms"));
-						
-						if(terms_p.exists())
-						{
-							this.terms_text.text=terms_p.data().terms_text;
-							this.terms_text.title=terms_p.data().terms_title;
-							//console.log(terms_p.data());
-						}
-						
-
-					}
-					return terms;
-},
+				
 				async accept_terms()
 				{
-				//console.log(ref);
-				setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{terms:true},{merge:true});
-
+				 await setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{terms:true},{merge:true});
 				},
 				refresh_page()
 				{

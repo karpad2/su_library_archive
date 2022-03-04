@@ -1,5 +1,6 @@
 <template>
-		<div  class="middle-center" >
+		
+			<b-card>
 					<logo />
 					<h3>{{gt("contact")}}</h3>
                     <h4>{{gt("app-title")}}</h4>
@@ -23,7 +24,8 @@
                         {{gt("email")}}: <a :href="'mailto:'+contactmailaddress">{{contactmailaddress}}</a>
                     </p>
                     </address>
-		</div>
+			</b-card>		
+		
 </template>
 
 <script>
