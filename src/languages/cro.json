@@ -22,6 +22,7 @@
 "admin_dashboard":"Admin nadzorne ploče",
 "dashboard":"Nadzorna ploča",
 "promotion_over_text":"Promotivna perioda je istekla",
+"promotion_text":"Svi sadržaji ove stranice će u promotivnom razdoblju biti dostupni za zainteresirane bez obzira na mjesto pristupanja stranici i na status člana. I u ovom promotivnom razdoblju je uvjetovano preuzimanje dokumenata, te se treba obratiti kontakt osobi na adresi koja je data na mrežnoj stranici.",        
 "promotion_has_ended":"Promotivna perioda je istekla",
 "promotion_text_get_membership":"Promotivna perioda je istekla, ukoliko želite da obnovite nalog, molimo da nam se obratite.",
 "books_cant_found":"Pretraživanje knjige nije uspjelo",
@@ -80,7 +81,17 @@
 "about_us":"O nama",
 "about_us_text_1":"Digitalna knjižnica Subotica je digitalna platforma Gradske knjižnice Subotica koja se neprestano puni digitalnim sadržajem iz svog zavičajnog fonda, odnosno drugih dokumenata, te na taj način želi ovu bogatu zbirku učiniti dostupnom. Digitalna knjižnica Subotica je svoju zbirku svrstala u sljedeće kategorije:",
 "about_us_text_2":"Knjige, Novine i časopisi, Fotoalbumi, Note, Plakati i sitan tisak, Rukopisi.",
-"about_us_text_3":"Ova stranica je dostupna na četiri jezika: na srpskom, mađarskom, hrvatskom i na engleskom."
+"about_us_text_3":"Ova stranica je dostupna na četiri jezika: na srpskom, mađarskom, hrvatskom i na engleskom.",
+"terms_title":"UVJETI KORIŠTENJA",
+"su_library":"Gradska knjižnica Subotica ",
+"terms_text":"Korištenjem Digitalne knjižnice Subotica potvrđujete da ste pročitali, razumjeli i prihvatili ove uvjete korištenja (u daljnjem tekstu „Uvjeti”) i obvezujete se da ćete ih poštovati, kao i sve druge zakone i propise. Ako ne prihvaćate ove uvjete, molimo vas da ne koristite Digitalnu knjižnicu Subotica. Gradska knjižnica Subotica pridržava pravo da u bilo kojem trenutku promjeni ove Uvjete.",
+"terms_title_2":"UPORABA DIGITALNE KNJIŽNICE SUBOTICA",
+"terms_text_2":"Sav materijal na Digitalnoj knjižnici Subotica predstavlja nacionalno dobro. Zaštićen je licencama koje su navedene uz svaki digitalni objekt i podrazumijevaju pregledanje, preuzimanje i tiskanje, pod uvjetom da sve naznake o autorskim pravima ili drugim vlasničkim informacijama koje su sadržane u originalnom dokumentu zadržite u svim kopijama. Ne može se mijenjati sadržaj Digitalne knjižnice Subotica ni na koji način, niti reproducirati ili javno prikazivati, izvoditi, distribuirati ili na drugi način koristiti u komercijalne svrhe. Izuzev ako je eksplicitno drugačije naznačeno ovdje ili na nekoj drugoj stranici Digitalne knjižnice Subotica, sve ovdje sadržano, bilo izričito, prešutno, odricanjem ili na drugi način, ne daje pravo korištenja bilo kog dijela intelektualne svojine s Digitalne knjižnice Subotica pod drukčijim uvjetima od naznačenih.",
+"privacy_title":"PRIVATNOST",
+"privacy_text":"Gradska knjižnica Subotica pridržava pravo prikupljanja određenih osobnih podatke tijekom pretrage nekih mrežnih stranica Digitalne knjižnice Subotica kako bi ispunila vaše zahtjeve ili potrebe. Svako prikupljanje takvih informacija na ovim stranicama bit će provedeno na temelju pravila o privatnosti sadržanom na ovim mrežnim stranicama, kao i važećim propisima o zaštiti osobnih podataka. Neke stranice ovog portala bi mogle na vašem računaru pohranjivati određene pakete informacija poznate kao „cookies” (kolačići). Kolačići nam daju odgovor na pitanje kako i kada je stranica ovog portala posjećena i koliko ju je ljudi posjetilo. Ova tehnologija ne skuplja informacije o osobi i njezinom identitetu, već se informacije nalaze u zbirnoj formi. Svrha ove tehnologije i informacija koje ona prikuplja je unapređenje Digitalne knjižnice Subotica.",
+"legal_title":"REGISTRIRANI ZAŠTITNI ZNACI",
+"legal_text":"Svi nazivi, logotipi, žigovi, zaštitni znaci ili oznake usluga koji se pojavljuju na portalu Digitalne knjižnice Subotica su registrirani zaštitni znaci. Ne mogu se koristiti bez prethodne pismene suglasnosti njihovog punopravnog vlasnika.",
+"all_rights_reserved":"Sva prava zadržana"
 
 
 

@@ -90,10 +90,7 @@
 								<md-list-item v-if="!signed_in" @click="$router.push('/account/login')">
 											<md-icon class="md-icon">login</md-icon>
 											<span class="md-list-item-text">{{gt("login")}}</span>
-								</md-list-item>
-
-								
-																
+								</md-list-item>															
 							</md-list>
 				</md-app-drawer>
 				
@@ -106,7 +103,7 @@
 					 <md-dialog-confirm
 						:md-active.sync="terms"
 						:md-title="gt('terms_title')"
-						:md-content="gt('terms_text')"
+						:md-content="generateTerms()"
 						:md-confirm-text="gt('agree')"
 						:md-cancel-text="gt('disagree')"
 						@md-cancel="logout"
@@ -425,6 +422,31 @@ import * as firebaseui from 'firebaseui';
 		methods: {
 			toggleMenu() {
 				this.menuVisible = !this.menuVisible;
+			},
+			 year()
+            {
+                let k=new Date();
+                return k.toISOString().substring(0,4);
+            },
+			generateTerms()
+			{
+			 return `<h3>${this.gt("terms_title")}</h3>
+                    <p>
+                        ${this.gt("terms_text")}
+                    </p>
+                    <h3>${this.gt("terms_title_2")}</h3>
+                    <p>
+                        ${this.gt("terms_text_2")}
+                    </p>
+                      <h3>${this.gt("privacy_title")}</h3>
+                    <p>
+                        ${this.gt("privacy_text")}
+                    </p>
+                      <h3>${this.gt("legal_title")}</h3>
+                    <p>
+                        ${this.gt("legal_text")}
+                    </p>
+                    <p>${this.gt("su_library")} &copy; | ${this.year()} ${this.gt("all_rights_reserved")} |  ${this.gt("terms_title")}</p>`;
 			},
 			toggleSidepanel()
 			{

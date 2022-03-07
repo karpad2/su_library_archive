@@ -1,22 +1,23 @@
 <template>
-		
-			<b-card>
 				<b-card>
 					<logo />
-					</b-card>
-					<h3>{{gt("about_us")}}</h3>
+					<h3>{{gt("terms_title")}}</h3>
                     <p>
-                        {{gt("about_us_text_1")}}
+                        {{gt("terms_text")}}
                     </p>
-                     <p>
-                        {{gt("about_us_text_2")}}
-                    </p>
+                    <h3>{{gt("terms_title_2")}}</h3>
                     <p>
-                        {{gt("about_us_text_3")}}
+                        {{gt("terms_text_2")}}
                     </p>
-					<router-link to="/terms">{{gt("terms_title")}}</router-link>
-
-                    <p v-if="false"> App made by: <a href="https://karpad2.github.io/"> {{author}} </a></p>
+                      <h3>{{gt("privacy_title")}}</h3>
+                    <p>
+                        {{gt("privacy_text")}}
+                    </p>
+                      <h3>{{gt("legal_title")}}</h3>
+                    <p>
+                        {{gt("legal_text")}}
+                    </p>
+                    <p>&copy; {{gt("su_library")}} {{year}} | {{gt("all_rights_reserved")}} |  {{gt("terms_title")}}</p>
 					</b-card>
 		
 </template>
@@ -55,7 +56,14 @@ import version from "../../package.json"
 			{
 				this.$router.go(-1);
 			}
-		}
+		},
+        computed:{
+            year()
+            {
+                let k=new Date();
+                return k.toISOString().substring(0,4);
+            }
+        }
 	}
 </script>
 

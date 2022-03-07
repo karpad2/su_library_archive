@@ -18,6 +18,7 @@ import Home from "../components/Home";
 import PublicIndex from "../components/Index";
 import AboutUs from "../components/AboutUs";
 import Contact from "../components/Contact";
+import Terms from "../components/Terms";
 import Search from "../components/Search";
 import Bookmarks from "../components/Bookmarks";
 import Printing from "../components/Printing";
@@ -113,6 +114,11 @@ const router = new VueRouter ({
 					path: 'bookmarks',
 					name: 'bookmarks',
 					component: Bookmarks
+				},
+				{
+					path: 'terms',
+					name: 'terms',
+					component: Terms
 				},
 				{
 					path: 'printing',

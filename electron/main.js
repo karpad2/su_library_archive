@@ -32,13 +32,13 @@ function createWindow () {
   })
 
  //mainWindow.webContents.userAgent = "Electron_profile";
- mainWindow.loadURL(`https://su-library-archive.firebaseapp.com/`);
+ mainWindow.loadURL(`https://digitalna.subiblioteka.rs/`);
 
   // and load the index.html of the app.
  // mainWindow.loadURL();
 
   // Open the DevTools.
-   mainWindow.webContents.openDevTools()
+   //mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

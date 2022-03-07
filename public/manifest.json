@@ -1,5 +1,5 @@
 {
-"name": "Gradska Biblioteka Subotica",
+"name": "Digitatlna biblioteka Subotica",
 "themeColor": "#ebaa6e",
 "msTileColor": "#ebaa6e",
 "display": "standalone",
@@ -9,14 +9,12 @@
 "appleMobileWebAppStatusBarStyle": "ebaa6e",
 "gcm_sender_id": "103953800507",
 "permissions":[
-  
   "https://www.googleapis.com/*",
-  "webRequest"
-],
+  "webRequest"],
 "icons": [
   {
-    "src": "logo.png",
-    "sizes": "35x35",
+    "src": "img/icons/android-chrome-512x512.png",
+    "sizes": "512x512",
     "type": "image/png"
   }
 ]
