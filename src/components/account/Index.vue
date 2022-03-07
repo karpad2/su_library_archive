@@ -15,9 +15,10 @@
 
 			<md-app-content>
 				<div  v-if="dataReady" class="middle-center">
-					<logo style="width:75px;height:75px;" />
+					<div>
+						<flogo class="logo_full" style="" />
+					</div>
 					
-					<div> <h4>{{gt("app-title")}}</h4></div>
 					<router-view  v-if="dataReady" @themeChanged="themeChanged"/>
 					
 					<hide-at  breakpoint="mediumAndAbove">	
@@ -30,16 +31,18 @@
 </template>
 
 <script>
-import logo from '@/assets/logo';
+//import logo from '@/assets/logo';
 import {FirebaseAuth,firestore} from "@/firebase";
 import imagelogo from "@/assets/icons/android-chrome-512x512.png";
 import {showAt, hideAt} from 'vue-breakpoints';
 import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider,getAuth } from "firebase/auth";
 import {get_text,languages,get_defaultlanguage} from "@/languages";
 import langa from "../../languages/languages";
-import Biglogo from '@/assets/biglogo.vue';
+import flogo from '@/assets/bigfulltextlogo';
+import logo from '@/assets/logo';
 	export default {
 		components: {
+		flogo,
 		logo,
 		showAt, hideAt,
 		},
@@ -93,6 +96,14 @@ import Biglogo from '@/assets/biglogo.vue';
 
 <style lang="scss">
 	#account-index-container {
+		.bar-logo {
+				
+				height: 40pt;
+			}
+		.logo_full {
+				height: 200px;
+				margin: -30pt;
+			}	
 		.md-app {
 			height: 100vh;
 
@@ -101,10 +112,7 @@ import Biglogo from '@/assets/biglogo.vue';
 				align-items: center;
 			}
 
-			.bar-logo {
-				width: 35px !important;
-				height: 30pt;
-			}
+			
 
 			.middle-center {
 				position: absolute;
@@ -116,9 +124,7 @@ import Biglogo from '@/assets/biglogo.vue';
 				text-align: center;
 			}
 
-			.logo {
-				height: 200px;
-			}
+			
 		}
 	}
 	.language

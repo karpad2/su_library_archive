@@ -85,7 +85,7 @@
         "dashboard":"Komandna tabla",
         "promotion_over_text":"Promotivni period je istekao",
         "promotion":"Promocija",
-        "promotion_text":"Tekst promocije",
+        "promotion_text":"Svi sadržaji ove stranice će u promotivnom periodu biti dostupni za zainteresovane bez obzira na mesto pristupanja stranici i na status člana. I u ovom promotivnom periodu je uslovljeno preuzimanje dokumenata, te se treba obratiti kontakt osobi na adresi koja je data na veb stranici.",
         "promotion_has_ended":"Promotivni period je istekao",
         "promotion_text_get_membership":"Promotivni period je istekao, ukoliko želite da produžite nalog, molimo da nam se obratite.",
         "member":"Član",
@@ -257,8 +257,16 @@
         "subotica":"Subotica",
         "contactperson":"Osoba za kontakt",
         "contactpersonname":"Anita Lalić",
-        "terms_title":"Terms title",
-        "terms_text":"Terms text"
+        "terms_title":"USLOVI KORIŠĆENJA",
+        "su_library":"Gradska biblioteka Subotica",
+        "terms_text":"Korišćenjem Digitalne biblioteke Subotica potvrđujete da ste pročitali, razumeli i prihvatili ove uslove korišćenja (u daljem tekstu “Uslovi”) i obavezujete se da ćete ih poštovati, kao i sve druge zakone i propise. Ukoliko ne prihvatate ove uslove, molimo vas da ne koristite Digitalnu biblioteku Subotica. Gradska biblioteka Subotica zadržava pravo da izmeni ove Uslove u bilo kom trenutku.",
+        "terms_title_2":"UPOTREBA DIGITALNE BIBLIOTEKE SUBOTICA",
+        "terms_text_2":"Sav materijal na Digitalnoj biblioteci Subotica predstavlja nacionalno dobro. Zaštićen je licencama koje su navedene uz svaki digitalni objekat i podrazumevaju pregledanje, preuzimanje i štampanje, pod uslovom da sve naznake o autorskim pravima ili drugim vlasničkim informacijama koje su sadržane u originalnom dokumentu zadržite u svim kopijama. Ne može se menjati sadržaj Digitalne biblioteke Subotica ni na koji način, niti reprodukovati ili javno prikazivati, izvoditi, distribuirati ili na drugi način koristiti u komercijalne svrhe. Osim ako je eksplicitno drugačije naznačeno ovde ili na nekoj drugoj stranici Digitalne biblioteke Subotica, ovde sadržano, bilo izričito, prećutno, odricanjem ili na drugi način, ne daje pravo korišćenja bilo kog dela intelektualne svojine sa Digitalne biblioteke Subotica pod drugačijim uslovima od naznačenih.",
+        "privacy_title":"PRIVATNOST",
+        "privacy_text":"Gradska biblioteka Subotica zadržava pravo da prikuplja određene lične podatke prilikom pretrage nekih internet stranica Digitalne biblioteke Subotica da bi ispunio vaše zahteve ili potrebe. Svako prikupljanje takvih informacija na ovim stranicama biće sprovedeno u skladu sa pravilima o privatnosti sadržanom na ovim internet stranicama, kao i važećim propisima o zaštiti podataka o ličnosti. Neke stranice ovog portala bi mogle pohranjivati određene pakete informacija poznate kao “cookies” (kolačići) na vašem računaru. Kolačići nam daju odgovor na pitanje kako i kada je stranica ovog portala posećena i koliko ljudi je posetilo. Ova tehnologija ne skuplja informacije o ličnom identitetu, već se informacije nalaze u zbirnoj formi. Svrha ove tehnologije i informacija koje ona prikuplja je unapređenje Digitalne biblioteke Subotica.",
+        "legal_title":"REGISTROVANI ZAŠTITNI ZNACI",
+        "legal_text":" Svi nazivi, logotipi, žigovi, zaštitni znaci ili oznake usluga koji se pojavljuju na sajtu Digitalne biblioteke Subotica su registrovani zaštitni znaci. Ne mogu se koristiti bez prethodne pismene saglasnosti njihovog punopravnog vlasnika.",
+        "all_rights_reserved":"Sva prava zadržana"
 
 
 

@@ -13,18 +13,13 @@
 				<img  :src="user.photoURL" alt="Avatar">
 				</div>
 				<div class="user-info">
-			
-	
       	<h3>{{user.displayName}}</h3>
 		<md-field>
 		<label for="useremail">{{gt('user_email')}}</label>
       		<md-input id="useremail" v-if="!library_user" v-model="user.email" disabled></md-input>
     	</md-field>
-
 		<md-field>
-		 
 		  	<b-form-select @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
-					
     	</md-field>
 		
 

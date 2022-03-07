@@ -92,7 +92,7 @@
     "admin_dashboard":"Admin Dashboard",
     "promotion_over_text":"Promotion time expired",
     "promotion":"Promotion",
-    "promotion_text":"Promotion text",
+    "promotion_text":"The digital content published on this site is accessible to anyone, regardless of location or membership status, during the introductory period. During the promotion period, a separate permit is required to download the data displayed on the website, which can be requested from the contact persons listed on the site.",
     "promotion_has_ended":"Promotion has ended",
     "promotion_text_get_membership":"Promotion time has ended, if you want to extend your access please contact us. ",
     "member":"Member",
@@ -275,8 +275,17 @@
     "subotica":"Subotica",
     "contactperson":"Contact person",
     "contactpersonname":"Anita Lalić",
-    "terms_title":"Terms title",
-    "terms_text":"Terms text"
+
+    "terms_title":"TERMS AND CONDITIONS",
+    "su_library":"Gradska knjižnica Subotica ",
+    "terms_text":"By using the Digital Library Subotica you acknowledge that you have read, understood and accepted the Terms and Conditions and that you shall comply with them and all other applicable laws and regulations. Otherwise, please refrain from using this website. The City Library Subotica reserves the right to change the Terms and Conditions at any time.",
+    "terms_title_2":"THE USE OF THE DIGITAL NBS WEBSITE",
+    "terms_text_2":"All the material available at Digital Library Subotica is considered part of the national cultural heritage. It is protected by flexible licenses listed by each digital object. Viewing, copying, printing or downloading is allowed provided that the copyright and related rights information regarding the originals is maintained in all the copies. The content of Digital Library Subotica may not be altered in any way, nor reproduced, publicly exhibited, performed, distributed or used for any kind of commercial purposes. Unless expressly stated otherwise herein or on any other Digital Library Subotica webpage, nothing stated herein, whether expressly, implicitly, through a disclaimer or otherwise, should be interpreted as an entitlement to use any digitized object under any conditions other than those specified.",
+    "privacy_title":"PRIVACY",
+    "privacy_text":"In order to improve the user experience, the City Library Subotica reserves the right to collect certain personal data while the users browse through the pages of Digital Library Subotica. Such data is collected in accordance with the privacy policy of this website, as well as the applicable personal data protection regulations. Some webpages may store cookies on your computer. They provide information on the ways and times the webpage is visited and the number of users. Personal data is not collected. Instead, the information is stored collectively. This technology is used to improve the website features.",
+    "legal_title":"REGISTERED TRADEMARKS",
+    "legal_text":"All names, logos, watermarks, trademarks or service marks displayed on the website are registered trademarks, which may not be used without the written consent of their legal owners.",
+    "all_rights_reserved":"All rights reserved."
 
 
 

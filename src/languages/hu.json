@@ -92,7 +92,7 @@
     "admin_dashboard":"Admin vezérlőpult kezelése",
     "promotion_over_text":"A promóciós időszak lejárt.",
     "promotion":"Promóció",
-    "promotion_text":"Promóciós szöveg",
+    "promotion_text":"Az ezen az oldalon közzétett digitális tartalmakhoz a bevezető időszakban bárki helytől és tagsági státustól függetlenül hozzáférhet. A promóciós időszakban a honlapon megjelenített adatok letöltéshez külön engedély szükséges, melyet az oldalon megadott kapcsolattartó személyektől lehet kérelmezni.    ",
     "promotion_has_ended":"Promóciós időszak véget ért",
     "promotion_text_get_membership":"Promóció véget ért,ha meg szeretné hosszabítani a hozzáférését kérem keressen fel bennünket.",
     "member":"Tag",
@@ -274,7 +274,21 @@
         "subotica":"Szabadka",
         "contactperson":"Kapcsolattartó személy",
         "contactpersonname":"Lalits Anita",
-        "terms_title":"Terms title",
-        "terms_text":"Terms text"
+        "su_library":"Szabadkai Városi Könyvtár",
+        "terms_title":"Használati feltételek",
+        "terms_text":"A Szabadkai Digitális Könyvtár használatával igazolja, hogy elolvasta, megértette és elfogadta a használati feltételeit, és ezeknek, valamint más ide vonatkozó jogszabálynak, törvénynek  betartására kötelezi magát. A Szabadkai Városi Könyvtár bármikor fenntartja e feltételek megváltoztatásához való jogát.",
+        "terms_title_2":"A SZABADKAI DIGITÁLIS KÖNYVTÁR HASZNÁLATÁNAK KÖRÜLMÉNYEI",
+        "terms_text_2":"Minden digitális dokumentum a Szabadkai Digitális Könyvtár oldalán a nemzeti kulturális értékű javak részét képezi. Ezek licenccel védett tartalmak, amelyek minden digitális objektumnál fel vannak tüntetve, és ez alatt értendő, hogy az áttekintés, letöltés, illetve  nyomtatás során az eredeti dokumentumban feltüntetett szerzői és tulajdoni  jogok jelzését a készített másolaton is kötelező meghagyni. A Szabadkai Digitális Könyvtár tartalma nem változtatható semmilyen módon, nem másolható és tilos nyilvánosan bemutatni, terjeszteni vagy bármi más módon kommerciális célokra felhasználni. A Szabadkai Digitális Könyvtár intellektuális tulajdona bármely részének a leírt feltételektől eltérően való használatához semmi az itt közölt tartalomból, legyen az kötelező, hallgatólagos, lemondó, vagy más módú, nem ad jogot, hacsak, ha ezt explicite nem tüntették fel a Szabadkai Digitális Könyvtár oldalán, illetve más oldalakon.",
+        "privacy_title":"ADATVÉDELEM",
+        "privacy_text":" A Szabadkai Városi Könyvtár fenntartja a jogát, hogy a Szabadkai Digitális Könyvtár honlapjának böngészése során bizonyos személyes adatokat elkérjen, hogy a kérelmeit teljesíthesse és szolgáltatásokat nyújthasson. Minden információgyűjtés ezen az oldalon az itt közölt személyes adatok védelméről szóló szabályok betartása mellett, illetve az érvényben levő adatvédelmi előírásokkal összhangban történik. E honlap esetében előfordulhat, hogy bizonyos ún. cookies (sütik) információcsomagot töltenek le a számítógépére. A sütik arra adnak választ, hogy hogyan és mikor tekintették meg a honlapot, és hány felhasználó nézte meg. Ez a technológia nem a személyes identitásról gyűjt információkat, hanem ezek az információk csoportos formában kerülnek felhasználásra. Ennek a technológiának és információgyűjtésnek a célja a Szabadkai Digitális Könyvtár fejlesztése.",
+        "legal_title":"REGISZTRÁLT VÉDJEGYEK ÉS ELNEVEZÉSEK",
+        "legal_text":" Minden elnevezés, logó, védjegy vagy egyes szolgáltatás jelölése, amely megjelenik a Szabadkai Digitális Könyvtár honlapján, regisztrált védjegy, és nem használható fel a teljes jogú tulajdonos írásos beleegyezése nélkül.",
+        "all_rights_reserved":"Minden jog fenntartva"
+
+        
+     
+        
+       
+       
 
 }
