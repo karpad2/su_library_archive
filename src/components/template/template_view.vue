@@ -110,15 +110,15 @@ import flag from "@/components/parts/flag";
 			
 		}),
 		metaInfo(){
-			return{
+			/*return{
 			title:title_page(this.newspaper.name),
 			meta:[
-			{ name: 'keywords',content:this.newspaper.keywords},
+		/*	{ name: 'keywords',content:this.newspaper.keywords},
 			{ name: 'description',content:this.newspaper.description},
 			{ name: 'og:description',content:this.newspaper.description},
 			{ name: 'og:image',content:`https://cdn.statically.io/screenshot/${window.location.href.replace('https://','')}`},
 			]
-			}
+			}*/
 		},
 		async mounted() {
 			this.newspaper_id=this.$route.params.nid;

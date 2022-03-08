@@ -139,16 +139,16 @@ import logo from "@/assets/logo";
 			//this.libraryuser= await libraryuser();
 			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
 			
-				try{
-        get_under=await getDocFromCache(doc(firestore,"properties","global_flags"));
-        
-        }
-        catch(e)
-        {
+			
            get_under=await getDoc(doc(firestore,"properties","global_flags"));
            
-        }
+        
 			this.promotion=get_under.data().promotion;
+
+
+			if((this.member||this.admin)|| this.promotion)  console.log("login_okay");
+			else this.back_to_home();
+
 		//if(!(this.member||this.admin||this.promotion)) this.back_to_home();
 
 			 let image_ref = ref(storage, `/${this.profile}/${this.$route.params.nid}/chapters/${this.$route.params.cid}/book.pdf`);// loading page from bucket

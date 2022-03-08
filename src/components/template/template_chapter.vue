@@ -141,6 +141,12 @@ import flag from "@/components/parts/flag";
 			{
 				this.profile=this.$route.params.viewtype;
 			}
+
+			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
+           	get_under=await getDoc(doc(firestore,"properties","global_flags"));
+			this.promotion=get_under.data().promotion;
+			console.log(this.promotion);
+
 			let book_ref;
 
 		 book_ref=await getDoc(doc(firestore,`${this.profile}`,this.book_id));
@@ -232,17 +238,7 @@ import flag from "@/components/parts/flag";
 			this.admin=(k.data().admin==null?false:k.data().admin);
 			this.member=(k.data().member==null?false:k.data().member);
 			} 
-			let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
 			
-				try{
-        get_under=await getDocFromCache(doc(firestore,"properties","global_flags"));
-        }
-        catch(e)
-        {
-           get_under=await getDoc(doc(firestore,"properties","global_flags"));
-           
-        }
-			this.promotion=get_under.data().promotion;
 
 			if(this.book.hided) this.$router.push("/home");
 			this.title_side=title_page(this.book.name);
@@ -278,7 +274,9 @@ import flag from "@/components/parts/flag";
     },
 			enter_read(i)
 			{
-				if(FirebaseAuth.currentUser!=null) this.$router.push(`/view/${this.profile}/${this.book_id}/${replace_white(this.book.name)}/chapter/${this.chapter_id}/page/${i}`);
+				if((this.member||this.admin) || this.promotion)  
+				this.$router.push(`/view/${this.profile}/${this.book_id}/${replace_white(this.book.name)}/chapter/${this.chapter_id}/page/${i}`);
+				else return;
 			},
 			keyword_link(i)
 			{

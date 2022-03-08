@@ -97,9 +97,10 @@
 				
 		
 			<md-app-content>
+				<div v-if="!member">
 				    <b-alert v-if="promotion" variant="success" show>{{gt("promotion_text")}}</b-alert>
 					<b-alert v-if="!promotion  && !promotion_hide" variant="warning" show>{{gt("promotion_over_text")}}</b-alert>
-
+				</div>
 					 <md-dialog-confirm
 						:md-active.sync="terms"
 						:md-title="gt('terms_title')"
@@ -330,18 +331,29 @@ import * as firebaseui from 'firebaseui';
 			this.language=get_defaultlanguage();
 			}
 			else {
-				this.language="rs-RS";
+				this.language="sr-SR";
 			}
 			
 
+			if(!this.library_user)
+			{
 			if(k.data().language!=localStorage.getItem("language"))
 			{
 				localStorage.setItem("language",k.data().language);
 				window.location.reload();
-
 			}
-			localStorage.setItem("language",k.data().language);
 
+			localStorage.setItem("language",k.data().language);
+			}
+			else 
+			{
+				if(localStorage.getItem("language")==null)
+				{
+					localStorage.setItem("language",k.data().language);
+				}
+				
+			}
+			this.language=localStorage.getItem("language");
 		
 
 			//this.language=await getAuth().languageCode;
@@ -492,7 +504,7 @@ import * as firebaseui from 'firebaseui';
 				//getAuth().languageCode=this.language;
 				
 				await  localStorage.setItem("language",this.language);
-				//window.location.reload();
+			    window.location.reload();
 				this.dataReady=true;
 			},
 			gt(a)
