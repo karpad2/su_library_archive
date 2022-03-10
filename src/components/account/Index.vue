@@ -20,7 +20,6 @@
 					</div>
 					
 					<router-view  v-if="dataReady" @themeChanged="themeChanged"/>
-					
 					<hide-at  breakpoint="mediumAndAbove">	
 					 	<b-form-select @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
 					</hide-at>
@@ -57,7 +56,7 @@ import logo from '@/assets/logo';
 		}),
 		mounted() {
 			this.themeChanged();
-			if(localStorage.getItem("language")!=undefined|| localStorage.getItem("language")!=undefined)
+			if(localStorage.getItem("language")==undefined)
 			{ localStorage.setItem("language",get_defaultlanguage());
 				this.language=get_defaultlanguage();
 			}
@@ -78,7 +77,7 @@ import logo from '@/assets/logo';
 				//getAuth().languageCode=this.language;
 				
 				await  localStorage.setItem("language",this.language);
-				//window.location.reload();
+				window.location.reload();
 				this.dataReady=true;
 			},
 			changeTheme: function () {

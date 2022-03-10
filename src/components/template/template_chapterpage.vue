@@ -146,7 +146,7 @@ import logo from "@/assets/logo";
 			this.promotion=get_under.data().promotion;
 
 
-			if((this.member||this.admin)|| this.promotion)  console.log("login_okay");
+			if(((this.member||this.admin) || this.promotion) && (FirebaseAuth.currentUser!=null))  console.log("login_okay");
 			else this.back_to_home();
 
 		//if(!(this.member||this.admin||this.promotion)) this.back_to_home();

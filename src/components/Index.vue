@@ -47,7 +47,7 @@
 							<md-list>
 								<div v-for="tab in menuTab" :key="tab.title">
 									<router-link :to="tab.link">
-										<md-list-item v-if="tab.auth" :class="{'active': $route.fullPath.includes(tab.link)}">
+										<md-list-item v-if="tab.auth" @click="menuVisible1=false" :class="{'active': $route.fullPath.includes(tab.link)}">
 											<md-icon class="md-icon">{{tab.icon}}</md-icon>
 											<span style="text-transform:uppercase;"  class="md-list-item-text">{{tab.title}}</span>
 										</md-list-item>
@@ -59,38 +59,52 @@
 											<md-icon class="md-icon">vpn_key</md-icon>
 											<span class="md-list-item-text">{{gt("enter_code")}}</span>
 								</md-list-item>
-								<md-list-item v-if="signed_in" @click="changeTheme">
+								<md-list-item v-if="signed_in" @click="menuVisible1=false;changeTheme">
 											<md-icon class="md-icon">settings_brightness</md-icon>
 											<span class="md-list-item-text">{{gt("ctheme")}}</span>
 								</md-list-item>
 								<show-at breakpoint="mediumAndAbove">
 								</show-at>
-								<md-list-item v-if="signed_in" @click="$router.push(add_public('/support'))">
+								<router-link v-if="signed_in" :to="add_public('/support')">
+								<md-list-item  @click="menuVisible1=false">
 											<md-icon class="md-icon">contact_support</md-icon>
 											<span class="md-list-item-text">{{gt("support")}}</span>
 								</md-list-item>
-								<md-list-item v-if="signed_in && !library_user" @click="$router.push('/user')">
+								</router-link>
+
+								<router-link v-if="signed_in && !library_user"  :to="'/user'">
+								<md-list-item  @click="menuVisible1=false">
 											<md-icon class="md-icon">translate</md-icon>
 											<span class="md-list-item-text">{{gt("language")}}</span>
 								</md-list-item>
-								<md-list-item  @click="$router.push('/aboutus')">
+								</router-link>
+
+								<router-link  :to="'/aboutus'">
+								<md-list-item  @click="menuVisible1=false">
 											<md-icon class="md-icon">info</md-icon>
 											<span class="md-list-item-text">{{gt("about_us")}}</span>
 								</md-list-item>
-								<md-list-item  @click="$router.push('/contact')">
+								</router-link>
+
+								<router-link  :to="'/contact'">
+								<md-list-item  @click="menuVisible1=false">
 											<md-icon class="md-icon">contact_page</md-icon>
 											<span class="md-list-item-text">{{gt("contact")}}</span>
 								</md-list-item>
+								</router-link>
+							
 								<md-divider></md-divider>
 								<md-list-item v-if="signed_in && (!library_user|| library_user_logout)" @click="logout">
 											<md-icon class="md-icon">logout</md-icon>
 											<span class="md-list-item-text">{{gt("logout")}}</span>
 								</md-list-item>
 
-								<md-list-item v-if="!signed_in" @click="$router.push('/account/login')">
+								<router-link v-if="!signed_in"  :to="'/account/login'">
+								<md-list-item  @click="menuVisible1=false">
 											<md-icon class="md-icon">login</md-icon>
 											<span class="md-list-item-text">{{gt("login")}}</span>
-								</md-list-item>															
+								</md-list-item>
+								</router-link>														
 							</md-list>
 				</md-app-drawer>
 				
@@ -98,8 +112,8 @@
 		
 			<md-app-content>
 				<div v-if="!member">
-				    <b-alert v-if="promotion" variant="success" show>{{gt("promotion_text")}}</b-alert>
-					<b-alert v-if="!promotion  && !promotion_hide" variant="warning" show>{{gt("promotion_over_text")}}</b-alert>
+				    <b-alert v-if="promotion" variant="success" dismissible show>{{gt("promotion_text")}}</b-alert>
+					<b-alert v-if="!promotion  && !promotion_hide" variant="warning" dismissible show>{{gt("promotion_over_text")}}</b-alert>
 				</div>
 					 <md-dialog-confirm
 						:md-active.sync="terms"

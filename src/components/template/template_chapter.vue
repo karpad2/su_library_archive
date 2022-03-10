@@ -274,7 +274,7 @@ import flag from "@/components/parts/flag";
     },
 			enter_read(i)
 			{
-				if((this.member||this.admin) || this.promotion)  
+				if(((this.member||this.admin) || this.promotion) && (FirebaseAuth.currentUser!=null))  
 				this.$router.push(`/view/${this.profile}/${this.book_id}/${replace_white(this.book.name)}/chapter/${this.chapter_id}/page/${i}`);
 				else return;
 			},
