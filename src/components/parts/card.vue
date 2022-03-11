@@ -14,7 +14,7 @@
             <router-link  :to="get_link()"> <span  class="md-title">{{newspaper.name}}</span> </router-link>
             <span v-if="page!=''"> {{page+' '+gt("page")}}</span>
             <span  v-if="newspaper.author!=''" @click="open_newspaper" class="md-subhead">{{newspaper.author}}</span>
-            <span  v-if="newspaper.description!=''" @click="open_newspaper" class="md-subhead">{{remove_tags(newspaper.description)}}</span>
+            <span  v-if="false&&newspaper.description!=''" @click="open_newspaper" class="md-subhead">{{remove_tags(newspaper.description)}}</span>
              <span  v-else-if="newspaper.category!=''" @click="open_newspaper" class="md-subhead">{{newspaper.category}}</span>
             <span  v-else-if="cat_name!=''" @click="open_newspaper" class="md-subhead">{{cat_name}}</span>
             <span  v-else-if="newspaper.publisher!=''" @click="open_newspaper" class="md-subhead">{{newspaper.publisher}}</span>

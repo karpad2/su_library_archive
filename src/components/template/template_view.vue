@@ -15,7 +15,8 @@
 				
 				</div>
 		<div class="newspaper-info">
-			<p v-if="newspaper.publisher!=null"><b> {{gt("publisher")}}:</b> <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>
+			<p v-if="newspaper.author!=''"><b> {{gt("author_name")}}:</b> <md-chip @click="keyword_link(newspaper.author)" md-static>{{newspaper.author}}</md-chip></p>
+			<p v-if="newspaper.publisher!=''"><b> {{gt("publisher")}}:</b> <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>
 			<p v-if="newspaper.keywords!=null"><b>{{gt("keywords")}}:</b> <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in newspaper.keywords" md-static>{{keyword}}</md-chip> </p>
 			<p v-if="newspaper.language!=null"><b>{{gt("language")}}:</b> <md-chip @click="keyword_link(newspaper.language)" md-static><flag :flag="newspaper.language" /></md-chip> </p>
 			<p v-if="newspaper.cobiss!=null"> <b>{{"Cobiss link"}}:</b> <md-chip @click="open_cobiss(newspaper.cobiss)" md-static>Cobiss</md-chip> </p>

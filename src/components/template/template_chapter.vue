@@ -12,6 +12,8 @@
 				<img   @click="enter_read(1)" draggable="false" style="width:250px; display:inline; float:left"  :alt="'page_'+1" :src="thumbnails[0].thumbnail"/> 		 
 		<div class="book-info">
 			<p> <b>{{gt("name")}}:</b> <md-chip @click="gotoparent(book.name)" md-static>{{book.name}}</md-chip></p>
+			<p v-if="chapter.author!=''"><b> {{gt("author_name")}}:</b> <md-chip @click="keyword_link(chapter.author)" md-static>{{chapter.author}}</md-chip></p>
+			
 			<p> <b>{{gt("keywords")}}:</b> <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in chapter.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
 		 <b>{{gt("information")}}:</b>
