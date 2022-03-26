@@ -9,12 +9,12 @@
 		   </md-card-header>
 		    <md-card-content>
 		<div class="book-container">
-				<img   @click="enter_read(1)" draggable="false" style="width:250px; display:inline; float:left"  :alt="'page_'+1" :src="thumbnails[0].thumbnail"/> 		 
+				<img   @click="enter_read(1)" draggable="false" style="border-radius: 3px; width:250px; display:inline; float:left"  :alt="'page_'+1" :src="thumbnails[0].thumbnail"/> 		 
 		<div class="book-info">
 			<p> <b>{{gt("name")}}:</b> <md-chip @click="gotoparent(book.name)" md-static>{{book.name}}</md-chip></p>
-			<p v-if="chapter.author!=''"><b> {{gt("author_name")}}:</b> <md-chip @click="keyword_link(chapter.author)" md-static>{{chapter.author}}</md-chip></p>
+			<p v-if="chapter.author!=''&&chapter.author!=null"><b> {{gt("author_name")}}:</b> <md-chip @click="keyword_link(chapter.author)" md-static>{{chapter.author}}</md-chip></p>
 			
-			<p> <b>{{gt("keywords")}}:</b> <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in chapter.keywords" md-static>{{keyword}}</md-chip> </p>
+			<p> <b>{{gt("keywords")}}:</b><md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in chapter.keywords" md-static>{{keyword}}</md-chip> </p>
 		<div>
 		 <b>{{gt("information")}}:</b>
 		<div v-html="chapter.description"></div>
@@ -40,12 +40,22 @@
 	</md-card>
 	<md-card v-if="(signed_in &&member||admin)||(signed_in&&promotion)">
 		<md-card-content>
+			<hide-at breakpoint="mediumAndAbove">
 			<div>
-				<img  style="max-width:14vw; margin:2vw 1vw" @click="enter_read(page)" draggable="false" v-for="page in size" :key="page"  :alt="'page_'+page" :src="thumbnails[page-1].thumbnail"/> 
-				<div class="middle-center"> <md-button v-if="!hide&&signed_in" @click="loadmore">{{gt("load_more")}}</md-button></div>
+				
+				 <img  style="max-width:14vw; min-width:250px; border-radius: 3px;  margin: 0 auto; display:block" @click="enter_read(page)" draggable="false" v-for="page in size" :key="page"  :alt="'page_'+page" :src="thumbnails[page-1].thumbnail"/> 
+				
 			 </div>
-			 
-		</md-card-content>	
+			</hide-at>
+			<show-at breakpoint="mediumAndAbove">
+			<div>
+				
+				 <img  style="max-width:14vw; min-width:250px; border-radius: 3px; margin: 3px " @click="enter_read(page)" draggable="false" v-for="page in size" :key="page"  :alt="'page_'+page" :src="thumbnails[page-1].thumbnail"/> 
+				
+			 </div>
+			</show-at>
+		</md-card-content>
+		 
 	</md-card>
 	<md-card v-else>
 		<md-card-content>
@@ -77,12 +87,14 @@ import VuePdfApp from "vue-pdf-app";
 import moment from "moment";
 import loading from "@/components/parts/loading";
 import flag from "@/components/parts/flag";
+import {showAt, hideAt} from 'vue-breakpoints';
 
 
 
 	export default {
 		components: {
-		
+		hideAt,
+		showAt
 		},
 		name: 'Book',
 		data: () => ({
@@ -250,6 +262,7 @@ import flag from "@/components/parts/flag";
 				this.user=user_ref.data();
 				}
 
+			console.log(this.chapter.keywords)
 			this.dataReady=true;
 		},
 		methods: {

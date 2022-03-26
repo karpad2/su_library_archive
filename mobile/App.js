@@ -11,13 +11,14 @@ export default function App() {
       <WebView
         ref={webViewRef}
         source={{
-          uri: 'https://su-library-archive.web.app',
-          userAgent:"Electron_profile",
+          uri: 'https://digitalna.subiblioteka.rs',
+         
         
         }}
         scalesPageToFit={true}
         useWebKit={true}
-        style={{ marginTop: 0 }}
+        startInLoadingState={true}
+        style={{ marginTop: 30 }}
       />
    
   );

@@ -15,8 +15,8 @@
 				
 				</div>
 		<div class="newspaper-info">
-			<p v-if="newspaper.author!=''"><b> {{gt("author_name")}}:</b> <md-chip @click="keyword_link(newspaper.author)" md-static>{{newspaper.author}}</md-chip></p>
-			<p v-if="newspaper.publisher!=''"><b> {{gt("publisher")}}:</b> <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>
+			<p v-if="newspaper.author!=''&&newspaper.author!=null"><b> {{gt("author_name")}}:</b> <md-chip @click="keyword_link(newspaper.author)" md-static>{{newspaper.author}}</md-chip></p>
+			<p v-if="newspaper.publisher!=''&&newspaper.publisher!=null"><b> {{gt("publisher")}}:</b> <md-chip @click="keyword_link(newspaper.publisher)" md-static>{{newspaper.publisher}}</md-chip></p>
 			<p v-if="newspaper.keywords!=null"><b>{{gt("keywords")}}:</b> <md-chip @click="keyword_link(keyword)" :key="keyword" :v-model="keyword" v-for="keyword in newspaper.keywords" md-static>{{keyword}}</md-chip> </p>
 			<p v-if="newspaper.language!=null"><b>{{gt("language")}}:</b> <md-chip @click="keyword_link(newspaper.language)" md-static><flag :flag="newspaper.language" /></md-chip> </p>
 			<p v-if="newspaper.cobiss!=null"> <b>{{"Cobiss link"}}:</b> <md-chip @click="open_cobiss(newspaper.cobiss)" md-static>Cobiss</md-chip> </p>
@@ -45,24 +45,28 @@
         </md-card-content>
 	</md-card>
 	<md-card>
-		<md-table v-model="chapters" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
-            <md-table-toolbar>
-                <div class="md-toolbar-section-start">
-                <h1 class="md-title"></h1>
-                </div>
-            </md-table-toolbar>
+		<b-table
+		sticky-header
+		striped
+		hover
+		:items="chapter_f"
+		:fields="fields"
+		
+		>
+		 <template #cell(#)="data">
+        	{{ data.index + 1 }}
+     	 </template>
 
-            <md-table-empty-state :md-label="gt(`cant_found`)"></md-table-empty-state>
+		  <template #cell(link)="data">
+			  <b-button squared variant="outline-warning"  @click="$router.push(data.item.link)">{{gt("open")}}</b-button>
+     	 </template>
+		
 
-            <md-table-row slot="md-table-row" slot-scope="{ item }">
-               
-                <md-table-cell :md-label="gt(`name`)" md-sort-by="name">{{item.name}}</md-table-cell>
-                <md-table-cell :md-label="gt('release_date')" md-sort-by="release_date">{{ item.release_date }}</md-table-cell>
-                <md-table-cell :md-label="' '"><md-button @click="$router.push(`/view/${profile}/${newspaper_id}/${gy(newspaper.name)}/chapter/${item.id}`)">{{gt("open")}}</md-button></md-table-cell>
-            </md-table-row>
-        </md-table>
-		<div class="middle-center"> 
-			<md-button v-if="admin" class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
+		</b-table>
+
+		<div>
+					<md-button v-if="admin" class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
+	 
 		</div>
 	</md-card>
 	</div>
@@ -107,7 +111,17 @@ import flag from "@/components/parts/flag";
 			generated_keywords:"",
 			counted_chapters:0,
 			loading_values:10,
-			user:{}
+			chapter_f:[],
+			user:{},
+			fields:[
+				"#",
+				 { key: "name", label: get_text("name"),sortable: true },
+				 { key: "release_date", label: get_text("release_date"),sortable: true },
+				 { key: "link", label: ""},
+				
+			]
+
+			
 			
 		}),
 		metaInfo(){
@@ -154,7 +168,12 @@ import flag from "@/components/parts/flag";
 			{
 				this.generated_keywords+=`${e},`;
 			});
-			 //setDoc(doc(firestore,`/${this.profile}`,this.newspaper_id),{popularity:this.newspaper.popularity+1},{merge:true});
+			 if(isNaN(Number(this.newspaper.popularity)))
+			 {
+				 setDoc(doc(firestore,`/${this.profile}`,this.newspaper_id),{popularity:1},{merge:true});
+			 }
+			 else
+			 setDoc(doc(firestore,`/${this.profile}`,this.newspaper_id),{popularity:Number(this.newspaper.popularity)+1},{merge:true});
 			
 			if(FirebaseAuth.currentUser!=null)
 			{
@@ -240,7 +259,7 @@ import flag from "@/components/parts/flag";
 			var objectURL = URL.createObjectURL(blob);
 			this.newspaper_thumbnail=objectURL;
 			});
-
+			console.log(this.newspaper.keywords)
 			this.dataReady=true;
 		},
 		methods: {
@@ -271,11 +290,21 @@ import flag from "@/components/parts/flag";
 			async load_chapters()
 			{
 			this.chapters=[];
+			this.chapter_f=[];
 			let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`),orderBy("name","desc"))
 			let chapters_refread=await getDocs(querya);
 				chapters_refread.forEach(as=>{
 					this.chapters.push({data:as.data(),id:as.id,name:as.data().name,release_date:as.data().release_date});
 					});
+
+			this.chapters.forEach((a)=>{
+				this.chapter_f.push({
+				link:`/view/${this.profile}/${this.newspaper_id}/${this.gy(this.newspaper.name)}/chapter/${a.id}`,
+				name:a.data.name,
+				release_date:a.release_date
+				});
+			});		
+			//console.log(this.chapters);		
 			},
 			/*async add_favorite(){
 			this.is_favorite=!this.is_favorite;
@@ -340,6 +369,7 @@ import flag from "@/components/parts/flag";
 </script>
 
 <style lang="scss" >
+@import "../../../src/style/variables.scss";
 	.newspaper_cover{
 		width: 350px;
 		
@@ -372,5 +402,9 @@ import flag from "@/components/parts/flag";
 	overflow: auto;
 	margin-bottom: 25px;
 	padding: 30px 20px;
+}
+.open_button
+{
+	color: $accent;
 }
 </style>

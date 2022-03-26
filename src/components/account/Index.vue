@@ -100,7 +100,7 @@ import logo from '@/assets/logo';
 				height: 40pt;
 			}
 		.logo_full {
-				height: 200px;
+				max-width: auto;
 				margin: -30pt;
 			}	
 		.md-app {

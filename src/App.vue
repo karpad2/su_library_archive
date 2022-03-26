@@ -1,5 +1,5 @@
 <template>
-	<div id="app">
+	<div id="app" style="">
 		<router-view class="router-view"/>
 	<footer >
     	<cookie-law v-if="!disablecookiebanner" id="cookie_button" theme="dark-lime" :message="cookie_text" :buttonText="cookie_ok"></cookie-law>
@@ -45,6 +45,7 @@
 </script>
 
 <style lang="scss" scope>
+	
 	@import "../src/style/variables.scss";
 	@import "~vue-material/dist/theme/engine";
 	@include md-register-theme("default", (

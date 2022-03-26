@@ -4,11 +4,12 @@ $labelColor: #dadbc0;
 
 [v-cloak] {display: none}
 
-body {
+html,body {
 -webkit-user-select: none;
 -moz-user-select: none;
 -ms-user-select: none;
 user-select: none;
+overflow-y: hidden;
 
 }
 .icon-color

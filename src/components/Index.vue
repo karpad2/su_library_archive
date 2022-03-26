@@ -7,24 +7,31 @@
 					<md-icon>menu</md-icon>
 				</md-button>
 				
-				<hide-at  breakpoint="small">
+				
 				<router-link class="router-link" to="/home">
 					<logo class="bar-logo" />
+					<hide-at  breakpoint="small">
 					<span class="md-title">  {{gt("app-title")}}</span>
+					</hide-at>
 				</router-link>
+				
+				<hide-at v-if="!admin_page" breakpoint="large">
+				 
 				</hide-at>
-				<hide-at v-if="!admin_page" breakpoint="mediumAndBelow">
+
+				<show-at v-if="!admin_page" breakpoint="large">
 				 <md-field style="margin-left: 25px" v-if="signed_in">
 						<label>{{gt("search_by_name")}}</label>
 						<md-input  md-layout="box" @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 				</md-field>
-				</hide-at>
+				</show-at>
+
 				<div v-if="!library_user" class="md-toolbar-section-end">
-					<md-button v-if="signed_in&& admin" class="desktop" @click="$router.push('/printing')"> <md-icon>printer</md-icon></md-button>
+					<md-button v-if="signed_in && admin" class="desktop" @click="$router.push('/printing')"> <md-icon>printer</md-icon></md-button>
 					<md-button v-if="signed_in" class="desktop" @click="$router.push('/bookmarks')"><md-icon>bookmark</md-icon> <span v-if="!mini">{{gt("bookmarks")}}</span></md-button>
         			<md-button v-if="signed_in" class="desktop" @click="$router.push('/favorites')">❤️️ <span v-if="!mini">{{gt("favorites")}}</span></md-button>
 					
-					<md-button v-if="signed_in && !library_user" class="desktop profile" @click="$router.push('/user')">
+					<md-button v-if="signed_in" class="desktop profile" @click="$router.push('/user')">
 					<md-avatar style="z-index:999" >
 						<img  :src="profile_picture_url" alt="Avatar">
 					</md-avatar>
@@ -639,7 +646,10 @@ import * as firebaseui from 'firebaseui';
  		 }
 		  
 	}
-	
+	.btn-outline-warning {
+		color: $accent;
+		border-color:$accent;
+	}
   
   .search {
 	min-width: 130px;

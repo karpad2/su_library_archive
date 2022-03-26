@@ -27,18 +27,24 @@
 	
 		<p>{{gt('joined')}} : {{joined}}</p>
 
-		<p v-if="valid_until_flag">{{gt('valid_until')}} : {{valid_until}}</p>
+		<p v-if="admin">Administrator</p>
+		
+
+		
       		 
     	
 	
+		</div>
+		<div v-if="admin">
+		
+		<div>
+		
+		</div>
 		</div>
 		</div>
         </md-card-content>
 	</md-card>
 	</div>
-		<h1></h1>
-
-		
 		
 
 		
@@ -48,6 +54,7 @@
 
 <script>
 import {signOut,getAuth} from "firebase/auth";
+import PayPal from 'vue-paypal-checkout';
 import moment from "moment";
 import {FireDb,FirebaseAuth,change_Theme_Fb,firestore} from "@/firebase";
 import {collection, doc, setDoc, query, where, getDocs,getDoc,limit, updateDoc,getDocFromCache  } from "firebase/firestore";
@@ -57,7 +64,7 @@ import langa from "../../languages/languages";
 
 	export default {
 		components: {
-	
+			
 		},
 		metaInfo:{
 			title:title_page("","User"),
@@ -68,6 +75,8 @@ import langa from "../../languages/languages";
 			language:"",
 			valid_until_flag:false,
 			valid_until:"",
+			admin:false,
+			member:false,
 			options:[],
 			users_data:{},
 			user:{
@@ -77,7 +86,11 @@ import langa from "../../languages/languages";
 			},
 			languages:langa.languages,
 			dataReady: false,
-			library_user:false
+			library_user:false,
+			 credentials: {
+				sandbox: '<sandbox client id>',
+				production: '<production client id>'
+			}
 			
 		}),
 		async mounted() {
@@ -97,6 +110,9 @@ import langa from "../../languages/languages";
 			});
 
 			let valid_u;
+			let l= localStorage.getItem("language").substr(0,2);
+			if(l=="rs") l="sr";
+		    moment.locale(l);
 
 			try{
         valid_u=await getDocFromCache( doc(firestore, "users", this.user.uid));
@@ -107,6 +123,8 @@ import langa from "../../languages/languages";
            valid_u=await getDoc(doc(firestore, "users", this.user.uid));
            this.users_data=valid_u.data(); 
         }
+			this.admin=this.users_data.admin==null?false:this.users_data.admin;
+			this.member=this.users_data.member==null?false:this.users_data.member;
 			this.language=this.users_data.language;
 			let date=new Date(Number(0));
 			this.valid_until= moment(date).format('MMMM Do YYYY, h:mm:ss a');
@@ -115,9 +133,11 @@ import langa from "../../languages/languages";
 		computed:{
 			joined()
 			{
+
+				
 				let date=new Date(Number(this.user.metadata.createdAt));
 				
-				return moment(date).format('MMMM Do YYYY, h:mm:ss a');
+				return moment(date).fromNow();
 			}
 		},
 		methods: {
