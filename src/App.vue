@@ -35,7 +35,7 @@
 			/*	<Ribbon v-bind="ribbonOptions"></Ribbon>
 		ribbonOptions: {
         	text: 'Fork me on GitHub',
-        	linkUrl: "https://github.com/karpad2/obudai_diplomamunka",
+        	linkUrl: "https://github.com/karpad2/su_library_archive",
         	fixed: true
       }*/
 			}
@@ -48,6 +48,8 @@
 	
 	@import "../src/style/variables.scss";
 	@import "~vue-material/dist/theme/engine";
+	@import "~bootstrap/scss/bootstrap.scss";
+  	@import '~bootstrap-vue/dist/bootstrap-vue.css';
 	@include md-register-theme("default", (
 		primary: $primary,
 		accent: $accent,

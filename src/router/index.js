@@ -45,11 +45,7 @@ const router = new VueRouter ({
 	routes: [
 		
 		
-		{
-			path: '/',
-			name: 'unloggined',
-			component: PublicIndex,
-		},
+		
 		{
 			path: '/public',
 			component: PublicIndex,
@@ -89,12 +85,7 @@ const router = new VueRouter ({
 			component: Index,
 			meta: {requiresAuth: false},
 			children: [
-				{
-					path: '/',
-					name: 'homeindex',
-					component: Home,
-					meta: {requiresAuth: false}
-				},
+			
 				{
 					path: '/home',
 					name: 'home',
@@ -261,6 +252,12 @@ router.beforeEach((to, from, next) => {
 	if(!to.path.includes("/page/"))
 	{
 		localStorage.setItem("fullscreen",false);
+	}
+	//console.log(to.path);
+	if(to.path=="/") 
+	{
+		if(requiresAuth && !currentUser) next('/account/login');
+		else next('/home');
 	}
 	if(requiresAuth && !currentUser) next('/account/login');
 	else next();

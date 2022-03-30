@@ -3,6 +3,7 @@
 
 <md-card >
   <div v-if="dataReady">
+    <router-link :to="get_link()">
       <md-card-media-cover md-solid>
         <md-card-media @click="open_newspaper" md-ratio="1:1">
           <img draggable="false" v-if="imageload" class="cover" :src="newspaper_cover" alt="thumb_newspaper_cover">
@@ -35,6 +36,7 @@
           </md-card-actions>
         </md-card-area>
       </md-card-media-cover>
+      </router-link>
     </div>
     <div v-else>
       <md-card-media-cover md-solid>

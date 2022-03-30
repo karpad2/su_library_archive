@@ -16,7 +16,9 @@
 			<md-app-content>
 				<div  v-if="dataReady" class="middle-center">
 					<div>
+						<router-link to="/home">
 						<flogo class="logo_full" style="" />
+						</router-link>
 					</div>
 					
 					<router-view  v-if="dataReady" @themeChanged="themeChanged"/>

@@ -2,7 +2,8 @@
 	<div  id="vue-js-index-container">
 		<md-app v-if="dataReady"  md-waterfall md-mode="fixed" :md-theme="userTheme">
 			<md-app-toolbar  v-if="!fullscreen" class="md-primary" md-mode="reveal" md-elevation="5">
-				
+				<div class="md-toolbar-row">
+					 <div class="md-toolbar-section-start">
 				<md-button class="md-icon-button" @click="menuVisible1=!menuVisible1" v-if="!menuVisible1">
 					<md-icon>menu</md-icon>
 				</md-button>
@@ -25,21 +26,19 @@
 						<md-input  md-layout="box" @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 				</md-field>
 				</show-at>
+				</div>
 
 				<div v-if="!library_user" class="md-toolbar-section-end">
-					<md-button v-if="signed_in && admin" class="desktop" @click="$router.push('/printing')"> <md-icon>printer</md-icon></md-button>
-					<md-button v-if="signed_in" class="desktop" @click="$router.push('/bookmarks')"><md-icon>bookmark</md-icon> <span v-if="!mini">{{gt("bookmarks")}}</span></md-button>
-        			<md-button v-if="signed_in" class="desktop" @click="$router.push('/favorites')">❤️️ <span v-if="!mini">{{gt("favorites")}}</span></md-button>
-					
-					<md-button v-if="signed_in" class="desktop profile" @click="$router.push('/user')">
-					<md-avatar style="z-index:999" >
-						<img  :src="profile_picture_url" alt="Avatar">
-					</md-avatar>
+					<md-button v-if="signed_in"  @click="$router.push('/bookmarks')"><md-icon>bookmark</md-icon> <span v-if="!mini">{{gt("bookmarks")}}</span></md-button>
+        			<md-button v-if="signed_in"  @click="$router.push('/favorites')">❤️️ <span v-if="!mini">{{gt("favorites")}}</span></md-button>
+					<md-button v-if="signed_in"  @click="$router.push('/user')">
+					<md-avatar style="z-index:999" > <img  :src="profile_picture_url" alt="Avatar"/></md-avatar>
 					</md-button>
-					<md-button v-else class="desktop" @click="$router.push('/account/login')">️{{gt("login")}} <md-icon class="md-icon">login</md-icon> </md-button>
+					<md-button v-else  @click="$router.push('/account/login')">️{{gt("login")}} <md-icon class="md-icon">login</md-icon> </md-button>
      		 	</div>
 				<div v-else class="md-toolbar-section-end">
 				  <b-form-select v-if="library_user" @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
+				</div>
 				</div>
 				</md-app-toolbar>
 				<md-app-drawer ref="drawer" v-if="!fullscreen" :md-active.sync="menuVisible1" :md-persistent="size"  md-swipeable >
@@ -66,7 +65,7 @@
 											<md-icon class="md-icon">vpn_key</md-icon>
 											<span class="md-list-item-text">{{gt("enter_code")}}</span>
 								</md-list-item>
-								<md-list-item v-if="signed_in" @click="menuVisible1=false;changeTheme">
+								<md-list-item v-if="signed_in" @click="changeTheme">
 											<md-icon class="md-icon">settings_brightness</md-icon>
 											<span class="md-list-item-text">{{gt("ctheme")}}</span>
 								</md-list-item>
@@ -444,6 +443,15 @@ import * as firebaseui from 'firebaseui';
 					admin:true
 				
 					});
+				this.menuTab.push({
+						
+					icon: 'local_printshop',
+					title: this.gt("printing_queue"),
+					link: '/printing',
+					auth: true,
+					admin:true
+				
+					});	
 				
 				
 			}
