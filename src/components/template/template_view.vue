@@ -28,6 +28,10 @@
 		<div>
 			<p hidden>{{gt("upload_date")}}:{{newspaper.upload_date}}</p>
 		</div>
+
+		<div>
+			<p hidden>{{gt("last_update")}}:{{newspaper.last_update}}</p>
+		</div>
 		</div>
 		<div>
 			<b>{{gt("released_numbers")}}:</b> <md-chip>{{counted_chapters}}</md-chip>
@@ -65,7 +69,7 @@
 		</b-table>
 
 		<div>
-					<md-button v-if="admin" class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
+			<md-button v-if="admin" class="md-primary md-raised" @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/new`)">{{gt('add_new_chapter')}}</md-button>
 	 
 		</div>
 	</md-card>

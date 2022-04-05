@@ -32,7 +32,16 @@ function  get_text(indicator)
         case "en-EN":{text=contains_the_array(english,indicator);} break;
         case "hu-HU":{text=contains_the_array(hungarian,indicator);} break;
         case "rs-RS":{text=contains_the_array(serbian,indicator);} break;
-        case "sr-SR":{text=convertWordToCyrillic(contains_the_array(serbian,indicator));} break;
+        case "sr-SR":{
+            try{
+            text=convertWordToCyrillic(contains_the_array(serbian,indicator));
+            }
+            catch(ex)
+            {
+                console.log(ex);
+                text=contains_the_array(serbian,indicator);
+            }
+        } break;
         case "hr-HR":{text=contains_the_array(croatian,indicator);} break;
     }
     return text

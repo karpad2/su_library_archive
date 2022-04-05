@@ -1,6 +1,8 @@
 <template>
 	<div id="account-login-container">
-		<div v-if="enable_public_login">
+		<div v-if="true">
+		<div  v-if="enable_public_login">
+			<div  v-if="!hide_login">
 		<md-field>
 			<label>{{gt("email")}}</label>
 			<md-input id="email" v-model="email"></md-input>
@@ -14,10 +16,15 @@
 		
 
 		<md-button class="md-raised md-primary" @click="login">{{gt("login")}}</md-button>
-		
+			
 		<md-button class="md-raised md-primary" @click="registerbutton">{{gt("register")}}</md-button>
+		
 		<div>
 		<md-button class="md-raised md-primary" v-if="inlibrary" @click="libraryloginbutton">{{gt("libraryuser")}} <md-icon>computer</md-icon></md-button>
+		</div>
+		<div>
+		<md-button class="md-raised md-primary" v-if="true" @click="anonymlogin">{{gt("anonym_login")}} <md-icon>account_circle</md-icon> </md-button>
+		</div>
 		</div>
 		</div>
 		<div>
@@ -31,15 +38,17 @@
 			<md-button type="button" class="md-raised md-primary" style="background-color:#385898; color:white" @click="loginwithfacebook">{{gt("login_with")}} <md-icon style="color:white">facebook</md-icon></md-button>
 	</div>
 		<p style="color:red;">{{errorMessage}}</p>
-
+		</div>
+		 <div id="firebaseui-auth-container"></div>
 	</div>
 </template>
 
 <script>
-import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider,FacebookAuthProvider,getAuth } from "firebase/auth";
-	import {FirebaseAuth,firestore} from "@/firebase";
+import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuthProvider,EmailAuthProvider,FacebookAuthProvider,getAuth,signInAnonymously } from "firebase/auth";
+	import {FirebaseAuth,firestore,loginerror} from "@/firebase";
 	import {ref, set ,onValue,get, child,push,runTransaction } from "firebase/database";
-	
+	import firebaseui from 'firebaseui';
+
 	import axios from "axios";
 	import firebaseCredentials from '../../firebase/credentials';
 	import {get_text,title_page} from "@/languages";
@@ -59,22 +68,35 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				password: "",
 				errorMessage: "",
 				inlibrary:false,
-				enable_public_login:true
+				enable_public_login:true,
+				hide_login:false
 			}
 		},
 		async mounted() {
 			const auth = getAuth();
+	/*		
+	  var uiConfig = {
+      signInSuccessUrl: '/home',
+      signInOptions: [
+        GoogleAuthProvider.PROVIDER_ID,
+        EmailAuthProvider.PROVIDER_ID,
+		FacebookAuthProvider.PROVIDER_ID
+        ]
+      };
+    var ui = new firebaseui.auth.AuthUI(getAuth());
+    ui.start('#firebaseui-auth-container', uiConfig);
+*/
 
 			console.log(navigator.userAgent);
 			console.log(firebaseCredentials.public_profile.agent);
 			
 			if(navigator.userAgent==firebaseCredentials.public_profile.agent)
 			{
-				alert("test");
-				this.email=firebaseCredentials.public_profile.u;
-				this.password=firebaseCredentials.public_profile.p;
-				this.login();
-				
+				this.libraryloginbutton();	
+			} 
+			if(navigator.userAgent=="Mobile_profile")
+			{
+				this.anonymlogin();
 			} 
 			else {
 			onAuthStateChanged(auth,(user) => {
@@ -99,13 +121,8 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 						
 						this.$router.replace('/home'); // User logged
 						this.set_user_data_local();
-					}).catch((error) => {
-						if (error.code === 'auth/wrong-password') {
-							_this.errorMessage = "Password wrong";
-						} else {
-							_this.errorMessage = "Check email and password";
-						}
-					});
+
+					}).catch((error) =>{this.errorhandling(error)});
 				}
 			},
 			set_user_data_local: function ()
@@ -119,9 +136,25 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 			},
 			libraryloginbutton()
 			{
+				this.hide_login=true;
 				this.email=firebaseCredentials.public_profile.u;
 				this.password=firebaseCredentials.public_profile.p;
 				this.login();
+			},
+			async anonymlogin()
+			{
+				const auth = getAuth();
+					signInAnonymously(auth)
+					.then(async (result) => {
+						// Signed in..
+
+				const user = result.user;
+				await setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:"Anonym"},{merge:true});
+				this.$router.replace('/home');	
+					})
+					.catch((error) => {
+						this.loginerror(error);
+					});
 			},
 			async checkin()
 			{
@@ -153,16 +186,20 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				this.$router.replace('/home');	
 				this.set_user_data_local();
 				
-				await setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName},{merge:true});
+				await setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName,},{merge:true});
 
-				}).catch((error) => {
+				}).catch((error) =>{this.errorhandling(error)});
+			},
+			errorhandling(error)
+			{
+				 		//loginerror(error,error.code)
 						if (error.code === 'auth/wrong-password') {
-							_this.errorMessage = "Password wrong";
+							this.errorMessage = "Password wrong";
 						} else {
-							_this.errorMessage = "Check email and password";
+							this.errorMessage = "Check email and password";
 							console.log(error);
 						}
-					});
+					
 			},
 			loginwithfacebook: async function()
 			{
@@ -180,14 +217,7 @@ import {signInWithEmailAndPassword,onAuthStateChanged,signInWithPopup,GoogleAuth
 				
 				await setDoc(doc(firestore,"users",FirebaseAuth.currentUser.uid),{name:user.displayName},{merge:true});
 
-				}).catch((error) => {
-						if (error.code === 'auth/wrong-password') {
-							_this.errorMessage = "Password wrong";
-						} else {
-							_this.errorMessage = "Check email and password";
-							console.log(error);
-						}
-					});
+				}).catch((error) =>{this.errorhandling(error)});
 			}
 		},
 		computed:

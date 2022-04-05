@@ -285,7 +285,10 @@
     "privacy_text":"In order to improve the user experience, the City Library Subotica reserves the right to collect certain personal data while the users browse through the pages of Digital Library Subotica. Such data is collected in accordance with the privacy policy of this website, as well as the applicable personal data protection regulations. Some webpages may store cookies on your computer. They provide information on the ways and times the webpage is visited and the number of users. Personal data is not collected. Instead, the information is stored collectively. This technology is used to improve the website features.",
     "legal_title":"REGISTERED TRADEMARKS",
     "legal_text":"All names, logos, watermarks, trademarks or service marks displayed on the website are registered trademarks, which may not be used without the written consent of their legal owners.",
-    "all_rights_reserved":"All rights reserved."
+    "all_rights_reserved":"All rights reserved.",
+    "anonym_login":"Anonymous login",
+    "anonymous_user":"Anonymous user",
+    "not_found":"Content not found"
 
 
 

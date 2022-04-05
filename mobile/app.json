@@ -2,9 +2,9 @@
   "expo": {
     "name": "Gradska biblioteka Subotica",
     "slug": "sulibraryarchiveapp",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -20,14 +20,15 @@
       "supportsTablet": true
     },
     "android": {
+      "versionCode": 11,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ebaa6e"
       },
       "package": "com.karpad2.sulibraryarchive"
     },
     "web": {
-      "favicon": "./assets/icon.png"
+      "favicon": "./assets/logo.png"
     }
   }
 }

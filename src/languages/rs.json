@@ -266,6 +266,9 @@
         "privacy_text":"Gradska biblioteka Subotica zadržava pravo da prikuplja određene lične podatke prilikom pretrage nekih internet stranica Digitalne biblioteke Subotica da bi ispunio vaše zahteve ili potrebe. Svako prikupljanje takvih informacija na ovim stranicama biće sprovedeno u skladu sa pravilima o privatnosti sadržanom na ovim internet stranicama, kao i važećim propisima o zaštiti podataka o ličnosti. Neke stranice ovog portala bi mogle pohranjivati određene pakete informacija poznate kao “cookies” (kolačići) na vašem računaru. Kolačići nam daju odgovor na pitanje kako i kada je stranica ovog portala posećena i koliko ljudi je posetilo. Ova tehnologija ne skuplja informacije o ličnom identitetu, već se informacije nalaze u zbirnoj formi. Svrha ove tehnologije i informacija koje ona prikuplja je unapređenje Digitalne biblioteke Subotica.",
         "legal_title":"REGISTROVANI ZAŠTITNI ZNACI",
         "legal_text":" Svi nazivi, logotipi, žigovi, zaštitni znaci ili oznake usluga koji se pojavljuju na sajtu Digitalne biblioteke Subotica su registrovani zaštitni znaci. Ne mogu se koristiti bez prethodne pismene saglasnosti njihovog punopravnog vlasnika.",
-        "all_rights_reserved":"Sva prava zadržana"
+        "all_rights_reserved":"Sva prava zadržana",
+        "anonym_login":"Anonimna prijava",
+        "anonymous_user":"Anonim korisnik",
+        "not_found":"Sadržaj nije dostupan"
 
 }

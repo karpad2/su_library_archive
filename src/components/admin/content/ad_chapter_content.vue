@@ -326,9 +326,10 @@ export default {
       this.chapter_id=this.chapter_ref.id;
       this.$router.push(`/admin/content/${this.profile}/${this.$route.params.bid}/chapter/${this.chapter_id}`);
       }
-      
         let l=new Date();
         this.chapter.upload_date=l.toISOString().substring(0,10);
+       
+        this.chapter.last_update=l.toISOString();
         this.chapter_ref= await setDoc(doc(firestore,`/${this.profile}/${this.$route.params.bid}/chapters`,this.chapter_id),this.chapter,{merge:true});
            
       this.$noty.success(this.gt("saved"), {

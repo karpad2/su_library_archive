@@ -42,9 +42,9 @@ export default {
   {
     let _user= await getDoc(doc(firestore,"users",this.$route.params.uid));
     this.user=_user.data();
-    getAdditionalUserInfo().profile
+    //getAdditionalUserInfo().profile
 
-    this.cuuser= getAuth().currentUser;
+    this.cuuser=  await getAuth().currentUser;
 			let k;
 			try{
         k=await getDocFromCache(doc(firestore,"users",this.cuuser.uid));

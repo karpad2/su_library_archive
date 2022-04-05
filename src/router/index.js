@@ -111,11 +111,7 @@ const router = new VueRouter ({
 					name: 'terms',
 					component: Terms
 				},
-				{
-					path: 'printing',
-					name: 'printing',
-					component: Printing
-				},
+				
 				{
 					path: 'search/:bmode/:bsearch',
 					name: 'Search_a_withoutlogin',
@@ -213,6 +209,11 @@ const router = new VueRouter ({
 					name: 'admin-info-dashboard',
 					component: Admin_Dashboard,
 				},
+				{
+					path: 'admin/printing',
+					name: 'admin-printing',
+					component: Printing
+				}
 				]
 		},
 		
@@ -256,7 +257,7 @@ router.beforeEach((to, from, next) => {
 	//console.log(to.path);
 	if(to.path=="/") 
 	{
-		if(requiresAuth && !currentUser) next('/account/login');
+		if(!currentUser) next('/account/login');
 		else next('/home');
 	}
 	if(requiresAuth && !currentUser) next('/account/login');

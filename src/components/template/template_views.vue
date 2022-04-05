@@ -2,7 +2,8 @@
 	<div>
 	<md-card>	
 		<md-card-header>
-		{{profile!=""?gt(`search_for_${profile}`):""}}
+
+		<h2 style="margin:auto">{{profile!=""?gt(`search_for_${profile}`):""}}</h2>
 		<md-field>
 			<md-input @change="searching" v-model="seaching_text" >{{gt("search")}}</md-input>
 		</md-field>
@@ -12,7 +13,10 @@
 		<div class="section">
 			<card :profile="profile" v-for="newspaper in searchednewspapers" :key="newspaper.id" :id="newspaper.id"/>
 		</div>
-		<div class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
+		<div v-if="searchednewspapers.length==0" class="section">
+			<h3>{{gt("not_found")}}</h3>
+		</div>	
+		<div hidden class="middle-center"> <md-button @click="loadmore">{{gt("load_more")}}</md-button></div>
 		</md-card-content>
 	</md-card>
 	</div>

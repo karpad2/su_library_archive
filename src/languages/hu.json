@@ -283,7 +283,10 @@
         "privacy_text":" A Szabadkai Városi Könyvtár fenntartja a jogát, hogy a Szabadkai Digitális Könyvtár honlapjának böngészése során bizonyos személyes adatokat elkérjen, hogy a kérelmeit teljesíthesse és szolgáltatásokat nyújthasson. Minden információgyűjtés ezen az oldalon az itt közölt személyes adatok védelméről szóló szabályok betartása mellett, illetve az érvényben levő adatvédelmi előírásokkal összhangban történik. E honlap esetében előfordulhat, hogy bizonyos ún. cookies (sütik) információcsomagot töltenek le a számítógépére. A sütik arra adnak választ, hogy hogyan és mikor tekintették meg a honlapot, és hány felhasználó nézte meg. Ez a technológia nem a személyes identitásról gyűjt információkat, hanem ezek az információk csoportos formában kerülnek felhasználásra. Ennek a technológiának és információgyűjtésnek a célja a Szabadkai Digitális Könyvtár fejlesztése.",
         "legal_title":"REGISZTRÁLT VÉDJEGYEK ÉS ELNEVEZÉSEK",
         "legal_text":" Minden elnevezés, logó, védjegy vagy egyes szolgáltatás jelölése, amely megjelenik a Szabadkai Digitális Könyvtár honlapján, regisztrált védjegy, és nem használható fel a teljes jogú tulajdonos írásos beleegyezése nélkül.",
-        "all_rights_reserved":"Minden jog fenntartva"
+        "all_rights_reserved":"Minden jog fenntartva",
+        "anonym_login":"Névtelen bejelentkezés",
+        "anonymous_user":"Anonim felhasználó",
+        "not_found":"Tartalom nem található"
 
         
      

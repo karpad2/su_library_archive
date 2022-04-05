@@ -10,13 +10,15 @@
 		    <md-card-content>
 				<div class="user-container">
 				<div class="bigavatar">
-				<img  :src="user.photoURL" alt="Avatar">
+				<img  v-if="!anonymus" :src="photoURL" alt="Avatar"/>
+				<md-icon style="width:120px; height:120px; font-size:32px;" v-else>account_circle</md-icon>
 				</div>
 				<div class="user-info">
-      	<h3>{{user.displayName}}</h3>
+      	<h3 v-if="!anonymus">{{name}}</h3>
+		<h3 v-else>{{gt("anonymous_user")}}</h3>
 		<md-field>
 		<label for="useremail">{{gt('user_email')}}</label>
-      		<md-input id="useremail" v-if="!library_user" v-model="user.email" disabled></md-input>
+      		<md-input id="useremail" v-if="!library_user && !anonymus" v-model="email" disabled></md-input>
     	</md-field>
 		<md-field>
 		  	<b-form-select @change="lang_change" size="sm" class="mt-3 language" v-model="language" :options="languages"></b-form-select>
@@ -28,11 +30,6 @@
 		<p>{{gt('joined')}} : {{joined}}</p>
 
 		<p v-if="admin">Administrator</p>
-		
-
-		
-      		 
-    	
 	
 		</div>
 		<div v-if="admin">
@@ -79,11 +76,11 @@ import langa from "../../languages/languages";
 			member:false,
 			options:[],
 			users_data:{},
-			user:{
-				displayname:"",
-				photoURL:"",
-				email:""
-			},
+			photoURL:null,
+			name:"",
+			email:"",
+			anonymus:false,
+			user:null,
 			languages:langa.languages,
 			dataReady: false,
 			library_user:false,
@@ -95,7 +92,8 @@ import langa from "../../languages/languages";
 		}),
 		async mounted() {
 			//this.langs=;
-			this.user= await getAuth().currentUser;
+			this.anonymus=await getAuth().currentUser.isAnonymous;
+			this.user= await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
 			//let update_number=(await getDoc(collection(firestore,"books"),book_id)).data().favorites;
 			//collection(firestore,"books").doc(book_id).update({popularity: update_number+1});
 			this.language=get_defaultlanguage();
@@ -114,15 +112,14 @@ import langa from "../../languages/languages";
 			if(l=="rs") l="sr";
 		    moment.locale(l);
 
-			try{
-        valid_u=await getDocFromCache( doc(firestore, "users", this.user.uid));
-        this.users_data=valid_u.data();
-        }
-        catch(e)
-        {
-           valid_u=await getDoc(doc(firestore, "users", this.user.uid));
+			
+       
+           valid_u=await getDoc(doc(firestore, "users", getAuth().currentUser.uid));
            this.users_data=valid_u.data(); 
-        }
+		   this.name=this.users_data.name;
+		   this.email=this.users_data.email;
+		   this.photoURL=this.users_data.photoURL;
+        
 			this.admin=this.users_data.admin==null?false:this.users_data.admin;
 			this.member=this.users_data.member==null?false:this.users_data.member;
 			this.language=this.users_data.language;
@@ -135,7 +132,7 @@ import langa from "../../languages/languages";
 			{
 
 				
-				let date=new Date(Number(this.user.metadata.createdAt));
+				let date=new Date(Number( getAuth().currentUser.metadata.createdAt));
 				
 				return moment(date).fromNow();
 			}

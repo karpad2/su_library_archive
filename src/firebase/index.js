@@ -153,6 +153,11 @@ async function missingword(lang,word)
 	await axios.post(firebaseCredentials.bugreportwebhook,{username:"Language error",avatar_url:getAuth().currentUser.photoURL,content:`Lang error: missing keyword language:${lang}, keyword:'${word}'`});
 }
 
+async function loginerror(word,code)
+{
+	await axios.post(firebaseCredentials.bugreportwebhook,{username:"Login error",avatar_url:"",content:`Login error: message:'${word}',code:'${code}',platform:'${navigator.userAgent}'`});
+}
+
 
 export {
 	FirebaseAuth,
@@ -161,6 +166,7 @@ export {
 	FireDb,
 	firestore,
 	change_Theme_Fb,
+	loginerror,
 	user,
 	logerror,
 	userId,

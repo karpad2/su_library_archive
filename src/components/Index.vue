@@ -32,7 +32,7 @@
 					<md-button v-if="signed_in"  @click="$router.push('/bookmarks')"><md-icon>bookmark</md-icon> <span v-if="!mini">{{gt("bookmarks")}}</span></md-button>
         			<md-button v-if="signed_in"  @click="$router.push('/favorites')">❤️️ <span v-if="!mini">{{gt("favorites")}}</span></md-button>
 					<md-button v-if="signed_in"  @click="$router.push('/user')">
-					<md-avatar style="z-index:999" > <img  :src="profile_picture_url" alt="Avatar"/></md-avatar>
+					<md-avatar style="z-index:999" > <img v-if="!anonymus" :src="profile_picture_url" alt="Avatar"/> <md-icon v-else>account_circle</md-icon></md-avatar>
 					</md-button>
 					<md-button v-else  @click="$router.push('/account/login')">️{{gt("login")}} <md-icon class="md-icon">login</md-icon> </md-button>
      		 	</div>
@@ -100,7 +100,7 @@
 								</router-link>
 							
 								<md-divider></md-divider>
-								<md-list-item v-if="signed_in && (!library_user|| library_user_logout)" @click="logout">
+								<md-list-item v-if="signed_in" @click="logout">
 											<md-icon class="md-icon">logout</md-icon>
 											<span class="md-list-item-text">{{gt("logout")}}</span>
 								</md-list-item>
@@ -110,7 +110,7 @@
 											<md-icon class="md-icon">login</md-icon>
 											<span class="md-list-item-text">{{gt("login")}}</span>
 								</md-list-item>
-								</router-link>														
+								</router-link>												
 							</md-list>
 				</md-app-drawer>
 				
@@ -193,6 +193,7 @@ import * as firebaseui from 'firebaseui';
 			oath:false,
 			member:false,
 			library_user:false,
+			anonymus:false,
 			valid_until:new Date(),
 			dateFormat:"",
 			user:{},
@@ -300,29 +301,55 @@ import * as firebaseui from 'firebaseui';
 			
 			try{
 			this.user=await FirebaseAuth.currentUser;
-			if(this.user!=null)
+			if(getAuth().currentUser!=null)
 			{
+			
+			this.anonymus=await getAuth().currentUser.isAnonymous;
 			this.profile_picture_url=await FirebaseAuth.currentUser.photoURL;
 			this.profile_name=await FirebaseAuth.displayName;
 			
 			this.email_verified=await getAuth().currentUser.emailVerified;
 			this.library_user=await getAuth().currentUser.email==firebaseCredentials.public_profile.u;
 			//this.language= await this.get_user_language();
-			
+			console.log(getAuth().currentUser);
 			//let k=await getDoc(doc(firestore,"users",this.user.uid));
 			let k;
-			try{
-        k=await getDocFromCache(doc(firestore,"users",this.user.uid));
+		
+           	k=await getDoc(doc(firestore,"users",getAuth().currentUser.uid));
+			
+			
         
-        }
-        catch(e)
-        {
-           k=await getDoc(doc(firestore,"users",this.user.uid)); 
-        }
-			if(this.user.displayName!=k.data().name)
+			if(await getAuth().currentUser.displayName!=k.data().name)
 			{
-				await updateDoc(firestore,{name:this.user.displayName},{merge:true});	
+				await setDoc(doc(firestore,"users",getAuth().currentUser.uid),{name: await getAuth().currentUser.displayName},{merge:true});	
 			}
+			console.log("email")
+			console.log(k.data().email);
+			console.log("email")
+			if(k.data().email==null)
+			{
+			if(await getAuth().currentUser.email!=null)
+			{
+			if(await getAuth().currentUser.email!=k.data().email)
+			{
+				
+				await setDoc(doc(firestore,"users",getAuth().currentUser.uid),{email: await getAuth().currentUser.email},{merge:true});	
+			}}
+			else
+			{
+				await setDoc(doc(firestore,"users",getAuth().currentUser.uid),{email: await getAuth().currentUser.providerData[0].email},{merge:true});	
+			}
+			}
+			if(await getAuth().currentUser.phoneNumber!=k.data().phoneNumber)
+			{
+				await setDoc(doc(firestore,"users",getAuth().currentUser.uid),{phoneNumber: await getAuth().currentUser.phoneNumber},{merge:true});	
+			}
+
+			if(await getAuth().currentUser.photoURL!=k.data().photoURL)
+			{
+				await setDoc(doc(firestore,"users",getAuth().currentUser.uid),{photoURL: await getAuth().currentUser.photoURL},{merge:true});	
+			}
+
 
 			this.admin=(k.data().admin==null?false:k.data().admin);
 			this.oath=(k.data().oath==null?false:k.data().oath);
@@ -447,7 +474,7 @@ import * as firebaseui from 'firebaseui';
 						
 					icon: 'local_printshop',
 					title: this.gt("printing_queue"),
-					link: '/printing',
+					link: '/admin/printing',
 					auth: true,
 					admin:true
 				
@@ -457,9 +484,7 @@ import * as firebaseui from 'firebaseui';
 			}
 			this.dataReady=true;
 		},
-		computed:{
-			
-		},
+		
 		methods: {
 			toggleMenu() {
 				this.menuVisible = !this.menuVisible;
@@ -579,11 +604,7 @@ import * as firebaseui from 'firebaseui';
 					_this.$noty.error(this.gt("logout_error_pls_refresh"));
 				});
 			},
-			computed:{
-				
-					
-				
-			}
+			
 		}
 	}
 	

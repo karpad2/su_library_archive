@@ -28,8 +28,6 @@
 </md-toolbar> 
 <div class="section">
 	<vue-pdf-app :id-config="idConfig" style="width:auto; height: 80vh;" :page-number="page" :pdf="b64_file" ></vue-pdf-app>
-
-	
 </div>
 
 
