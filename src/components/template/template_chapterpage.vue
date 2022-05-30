@@ -5,9 +5,6 @@
 <md-toolbar class="md-primary">
 	<md-button @click="back_to_home" class="small"><md-icon>reply</md-icon></md-button>
 
-	
-	
-	
 	<hide-at breakpoint="small"> 
 	</hide-at>
 	<div class="md-toolbar-section-end">
@@ -271,7 +268,7 @@ import logo from "@/assets/logo";
 			},
 			back_to_home()
 			{
-				this.$router.push(`/view/${this.profile}/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}/chapter/${this.$route.params.cid}`);
+				this.$router.push(`/view/${this.profile}/${this.$route.params.nid}/${replace_white(this.$route.params.nname)}`);
 				
 			},
 			zoom_in()

@@ -286,7 +286,9 @@
         "all_rights_reserved":"Minden jog fenntartva",
         "anonym_login":"Névtelen bejelentkezés",
         "anonymous_user":"Anonim felhasználó",
-        "not_found":"Tartalom nem található"
+        "not_found":"Tartalom nem található",
+        "chapter_nr":"Szám",
+        "back":"Vissza"
 
         
      

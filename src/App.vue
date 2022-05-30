@@ -1,6 +1,6 @@
 <template>
 	<div id="app" style="">
-		<router-view class="router-view"/>
+	<router-view class="router-view"/>
 	<footer >
     	<cookie-law v-if="!disablecookiebanner" id="cookie_button" theme="dark-lime" :message="cookie_text" :buttonText="cookie_ok"></cookie-law>
   	</footer>
@@ -16,7 +16,6 @@
 		components: { CookieLaw },
 		mounted()
 		{
-		
 		if( localStorage.getItem("userTheme")===null) localStorage.userTheme = "light";
 		if(navigator.userAgent==firebaseCredentials.public_profile.agent)
 		{
@@ -38,6 +37,12 @@
         	linkUrl: "https://github.com/karpad2/su_library_archive",
         	fixed: true
       }*/
+			}
+		},
+		methods:{
+			gt(a)
+			{
+				return get_text(a);
 			}
 		}
 		

@@ -269,6 +269,8 @@
         "all_rights_reserved":"Sva prava zadržana",
         "anonym_login":"Anonimna prijava",
         "anonymous_user":"Anonim korisnik",
-        "not_found":"Sadržaj nije dostupan"
+        "not_found":"Sadržaj nije dostupan",
+        "chapter_nr":"Broj",
+        "back":"Nazad"
 
 }

@@ -288,7 +288,9 @@
     "all_rights_reserved":"All rights reserved.",
     "anonym_login":"Anonymous login",
     "anonymous_user":"Anonymous user",
-    "not_found":"Content not found"
+    "not_found":"Content not found",
+    "chapter_nr":"Number",
+    "back":"Back"
 
 
 

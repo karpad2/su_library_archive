@@ -61,6 +61,12 @@
         	{{ data.index + 1 }}
      	 </template>
 
+		  <template #cell(chapter_nr)="data">
+        	<span v-if="data.item.chapter_nr==''">-</span>
+			<span v-else>{{data.item.chapter_nr}}</span>
+
+     	 </template>
+
 		  <template #cell(link)="data">
 			  <b-button squared variant="outline-warning"  @click="$router.push(data.item.link)">{{gt("open")}}</b-button>
      	 </template>
@@ -121,7 +127,7 @@ import flag from "@/components/parts/flag";
 				"#",
 				 { key: "name", label: get_text("name"),sortable: true },
 				 { key: "release_date", label: get_text("release_date"),sortable: true },
-				 { key: "link", label: ""},
+				
 				
 			]
 
@@ -129,24 +135,40 @@ import flag from "@/components/parts/flag";
 			
 		}),
 		metaInfo(){
-			/*return{
+			return{
 			title:title_page(this.newspaper.name),
-			meta:[
-		/*	{ name: 'keywords',content:this.newspaper.keywords},
+			/*meta:[
+			{ name: 'keywords',content:this.newspaper.keywords},
 			{ name: 'description',content:this.newspaper.description},
 			{ name: 'og:description',content:this.newspaper.description},
 			{ name: 'og:image',content:`https://cdn.statically.io/screenshot/${window.location.href.replace('https://','')}`},
-			]
-			}*/
+			]*/
+			}
 		},
 		async mounted() {
 			this.newspaper_id=this.$route.params.nid;
 			let newspaper_ref;
-		//	this.libraryuser=libraryuser();
+
+			/*let get_under; //= await getDoc(doc(firestore,"properties","global_flags"));
+           	get_under=await getDoc(doc(firestore,"properties","global_flags"));
+			this.promotion=get_under.data().promotion;
+			console.log(this.promotion);*/
+			//this.libraryuser=libraryuser();
 			
 		if(this.$route.params.viewtype!=undefined)
 			{
 				this.profile=this.$route.params.viewtype;
+			}
+			if(this.profile=="newspapers")
+			{
+				this.fields=[
+				"#",
+				 { key: "name", label: get_text("name"),sortable: true },
+				 { key: "chapter_nr", label: get_text("chapter_nr"),sortable: true },
+				 { key: "release_date", label: get_text("release_date"),sortable: true },
+				
+				
+			];
 			}
 			/*try{
        // newspaper_ref=await getDocFromCache(doc(firestore,this.profile,this.newspaper_id));
@@ -160,7 +182,7 @@ import flag from "@/components/parts/flag";
            //this.newspaper=newspaper_ref.data(); 
         }*/
 		newspaper_ref=await getDoc(doc(firestore,`/${this.profile}`,this.newspaper_id));
-			this.newspaper=newspaper_ref.data();
+		this.newspaper=newspaper_ref.data();
 			
 			await this.load_chapters();
 			let querya=query(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`))
@@ -182,6 +204,9 @@ import flag from "@/components/parts/flag";
 			if(FirebaseAuth.currentUser!=null)
 			{
 				this.signed_in=true;
+
+				
+				this.fields.push({ key:"link", label: ""});
 			}
 			else
 			this.signed_in=false;
@@ -300,15 +325,28 @@ import flag from "@/components/parts/flag";
 				chapters_refread.forEach(as=>{
 					this.chapters.push({data:as.data(),id:as.id,name:as.data().name,release_date:as.data().release_date});
 					});
-
+			if(this.profile=="newspapers")
+			{
 			this.chapters.forEach((a)=>{
 				this.chapter_f.push({
-				link:`/view/${this.profile}/${this.newspaper_id}/${this.gy(this.newspaper.name)}/chapter/${a.id}`,
+				link:`/view/${this.profile}/${this.newspaper_id}/${this.gy(this.newspaper.name)}/chapter/${a.id}/page/1`,
+				name:a.data.name,
+				chapter_nr:a.data.chapter_nr==null?'':a.data.chapter_nr,
+				release_date:a.release_date
+				});
+			});		
+			//console.log(this.chapters);	
+			}
+			else 
+			{
+				this.chapters.forEach((a)=>{
+				this.chapter_f.push({
+				link:`/view/${this.profile}/${this.newspaper_id}/${this.gy(this.newspaper.name)}/chapter/${a.id}/page/1`,
 				name:a.data.name,
 				release_date:a.release_date
 				});
 			});		
-			//console.log(this.chapters);		
+			}	
 			},
 			/*async add_favorite(){
 			this.is_favorite=!this.is_favorite;

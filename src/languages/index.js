@@ -72,9 +72,15 @@ function contains_the_array(array,word)
 }
 
 function title_page(a,type="")
-{   let b=a;
+{   
+    try
+    {let b=a;
     if(a=="undefined"||a==undefined) b="";
     return `${b} ${get_text(type)==undefined?"":get_text(type).slice(0,1).toUpperCase()+get_text(type).slice(1,get_text(type).length)} » ${get_text("app-title")}`;
+    }
+    catch{
+        return "";
+    }
 }
 
 const languages =[

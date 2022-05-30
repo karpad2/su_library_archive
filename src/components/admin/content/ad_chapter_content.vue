@@ -23,6 +23,12 @@
             <label>{{gt('chapter_name')}}</label>
             <md-input @change="change" v-model="chapter.name" md-counter="100"></md-input>
           </md-field>
+           <md-field v-if="profile=='newspapers'">
+            <label>{{gt('chapter_nr')}}</label>
+            <md-input @change="change" v-model="chapter.chapter_nr" md-counter="100"></md-input>
+          </md-field>
+
+          
           <md-field>
           <quillEditor class="ql-editor" @change="change" v-model="chapter.description" />
           </md-field>
@@ -85,6 +91,11 @@
             <label>{{gt('chapter_author')}}</label>
             <md-input @change="change" v-model="chapter.author" md-counter="100"></md-input>
           </md-field>
+           <md-field v-if="profile=='newspapers'">
+            <label>{{gt('chapter_nr')}}</label>
+            <md-input @change="change" v-model="chapter.chapter_nr" md-counter="100"></md-input>
+          </md-field>
+          
           <md-field>
             <label>{{gt('publisher')}}</label>
             <md-input @change="change" v-model="chapter.publisher" md-counter="100"></md-input>

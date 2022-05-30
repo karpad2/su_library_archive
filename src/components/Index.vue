@@ -1,6 +1,6 @@
 <template>
 	<div  id="vue-js-index-container">
-		<md-app v-if="dataReady"  md-waterfall md-mode="fixed" :md-theme="userTheme">
+		<md-app v-if="dataReady" md-waterfall md-mode="fixed" :md-theme="userTheme">
 			<md-app-toolbar  v-if="!fullscreen" class="md-primary" md-mode="reveal" md-elevation="5">
 				<div class="md-toolbar-row">
 					 <div class="md-toolbar-section-start">
@@ -112,10 +112,7 @@
 								</md-list-item>
 								</router-link>												
 							</md-list>
-				</md-app-drawer>
-				
-				
-		
+				</md-app-drawer>	
 			<md-app-content>
 				<div v-if="!member">
 				    <b-alert v-if="promotion" variant="success" dismissible show>{{gt("promotion_text")}}</b-alert>
@@ -142,18 +139,19 @@
 						:md-confirm-text="gt('ok')"
 						:md-cancel-text="gt('cancel')"
 						@md-confirm="check_code" />
-					
-					
+								
 				<nointernetconnection v-if="!internet_connection" />
 				<undermaintenance v-else-if="undermaintenance_flag && !admin" />
 				<router-view  :fullscreen="fullscreen" v-else-if="!loading_screen"/>
 				<loading v-else />
 			</md-app-content>
 
-
-			
+				
+						
 		</md-app>
 		<loading  v-else/>
+
+		
 	</div>
 </template>
 
@@ -461,8 +459,7 @@ import * as firebaseui from 'firebaseui';
 			if(this.admin && this.signed_in)
 			{
 
-				this.menuTab.push({
-						
+				this.menuTab.push({	
 					icon: 'dashboard',
 					title: this.gt("admin_dashboard"),
 					link: '/admin/dashboard',
@@ -703,6 +700,16 @@ import * as firebaseui from 'firebaseui';
 	display:none;
   }
 }
+
+.phone-viewport {
+    width: 322px;
+    height: 200px;
+    display: inline-flex;
+    align-items: flex-end;
+    overflow: hidden;
+    border: 1px solid rgba(#000, .26);
+    background: rgba(#000, .06);
+  }
 
 /*
 
