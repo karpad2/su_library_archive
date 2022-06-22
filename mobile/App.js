@@ -1,31 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useRef,useEffect } from "react";
-import { StyleSheet, Text, View,BackHandler } from 'react-native';
+import React, { useRef,useEffect,Component } from "react";
+import { StyleSheet, Text, View,BackHandler,TouchableOpacity,Dimensions,Alert} from 'react-native';
 import { WebView } from 'react-native-webview';
-import StaticServer from 'react-native-static-server';
-import RNFS from 'react-native-fs';
 
 export default function App() {
- // const WEBVIEW_REF = useRef(null)
- let webview = null;
- let url="";
- let path = RNFS.DocumentDirectoryPath + '/dist';
- let server = new StaticServer(33400,path);
+  const webViewRef = useRef(null)
+  let currenturl="";
+  let i=0;
+  let starturl="https://digitalna.subiblioteka.rs";
 
-  server.start().then(_url)
-  {
-    console.log(_url);
-    url=_url;
-  }
-  const goback = () => {
-    //webViewRef.current.goBack();
-    //webview.goBack();
-    return true;
+  const _onNavigationStateChange=(webViewState)=>{
+    i++;
+    currenturl=webViewState.url;
+    console.log(currenturl);
+    console.log(i)
   };
   
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+  const goback = () => {
+    console.log(i)
+    //console.log(currenturl+`\n`+starturl)
+    if(currenturl==starturl || currenturl==starturl+'/home'||i==0)
+    {
+      Alert.alert("Hold on!", "Are you sure you want to exit the application?", [
         {
           text: "Cancel",
           onPress: () => null,
@@ -33,9 +29,17 @@ export default function App() {
         },
         { text: "YES", onPress: () => BackHandler.exitApp() }
       ]);
-      return true;
-    };
-
+    }
+    else
+    {
+    i--;
+    webViewRef.current?.goBack();
+    }
+    //webview.goBack();
+    return true;
+  };
+  
+  useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       goback
@@ -47,21 +51,21 @@ export default function App() {
   return (
     
       <WebView
-       //ref={(ref) => (webview = ref)}
-        /*source={{
-          uri: 'https://su-library-archive.web.app'
-        }}*/
-
-        source={{ uri: url }}
-        userAgent="Mobile_profile"
-        scalesPageToFit={true}
-        useWebKit={true}
-        
-        style={{ marginTop: 30 }}
+      ref={webViewRef}
+      source={{
+        uri:  starturl
+      }}
+      userAgent="Mobile_profile"
+      scalesPageToFit={true}
+      useWebKit={true}
+      viewportContent={'width=device-width, user-scalable=no'}
+      updateNavigationState={_onNavigationStateChange}
+      onNavigationStateChange={_onNavigationStateChange}
+      //injectedJavaScript={`const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=0.3, maximum-scale=0.5, user-scalable=0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `}
+      style={{ marginTop: 25 }}
       />
    
   );
- 
 }
 
 

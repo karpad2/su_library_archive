@@ -27,6 +27,10 @@
 			}
 		},
 		mounted() {
+
+
+			this.$router.push(`/home`);
+
 			if (localStorage.userTheme === "dark") {
 				this.themeSwitch = true;
 			}

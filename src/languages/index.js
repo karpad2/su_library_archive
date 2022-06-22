@@ -58,7 +58,11 @@ function contains_the_array(array,word)
         missingword(localStorage.getItem("language"),word);
         if(localStorage.getItem("language")=="hr-HR")
         {
-            return contains_the_array(serbian,word);
+            if(serbian[word]==undefined)
+            {
+                return word;
+            }
+            else return contains_the_array(serbian,word);
         }
         else return word;
 

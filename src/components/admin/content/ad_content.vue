@@ -93,6 +93,12 @@
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
                 <md-table-cell :md-label="gt('name')" md-sort-by="name">{{ item.name }}</md-table-cell>
                 <md-table-cell :md-label="gt('release_date')" md-sort-by="release_date">{{ item.release_date }}</md-table-cell>
+                 <md-table-cell v-if="profile=='newspapers'" :md-label="gt('chapter_nr')" md-sort-by="chapter_nr"> 
+                 <span v-if="item.chapter_nr!=null">
+                 {{ item.chapter_nr }}
+                 </span>
+                  <span v-else>-</span>
+                 </md-table-cell>
                 <md-table-cell :md-label="gt('edit')" md-sort-by="editnewspaper"><md-button @click="$router.push(`/admin/content/${profile}/${newspaper_id}/chapter/${item.id}`)">{{gt("edit")}}</md-button></md-table-cell>
             </md-table-row>
         </md-table>
@@ -204,7 +210,7 @@ export default {
         let chapters_refread=await getDocs(collection(firestore,`/${this.profile}/${this.newspaper_id}/chapters`));
         this.chapters=[];
         chapters_refread.forEach(as=>{
-          this.chapters.push({data:as.data(),id:as.id,name:as.data().name,release_date:as.data().release_date});
+          this.chapters.push({data:as.data(),id:as.id,name:as.data().name,release_date:as.data().release_date,chapter_nr:as.data().chapter_nr});
         });
 
       }

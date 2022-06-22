@@ -30,7 +30,7 @@
 		</div>
 
 		<div>
-			<p hidden>{{gt("last_update")}}:{{newspaper.last_update}}</p>
+			
 		</div>
 		</div>
 		<div>
